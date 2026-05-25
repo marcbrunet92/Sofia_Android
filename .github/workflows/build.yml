@@ -53,6 +53,9 @@ jobs:
           keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
           storeFile=keystore.jks
           EOF
+          
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       # Build AAB
       - name: Build AAB
