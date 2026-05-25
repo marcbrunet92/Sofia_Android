@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Sofia Wind Farm</string>
+    <string name="widget_small_description">Sofia small production widget</string>
+    <string name="widget_medium_description">Sofia medium production widget</string>
 </resources>
