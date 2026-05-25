@@ -1,8 +1,8 @@
 import java.util.Properties
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
 
@@ -19,12 +19,12 @@ val hasReleaseSigning = listOf("storeFile", "storePassword", "keyAlias", "keyPas
 
 android {
     namespace = "com.lemarc.sofia"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.lemarc.sofia"
-        minSdk = 24
-        targetSdk = 35
+        minSdk = 26
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
@@ -63,8 +63,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
     }
 
     buildFeatures {
