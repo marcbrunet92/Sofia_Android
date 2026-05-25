@@ -1,0 +1,122 @@
+name: Build Mobile
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: multi-platform-release
+  cancel-in-progress: true
+
+env:
+  JAVA_VERSION: 17
+  BUNDLETOOL_VERSION: 1.17.2
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Java
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: gradle
+
+      # Cache Gradle dependencies
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      # Decode keystore
+      - name: Decode keystore
+        run: |
+          mkdir -p app
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > app/keystore.jks
+
+      # Key properties
+      - name: Create keystore.properties
+        run: |
+          cat > keystore.properties <<EOF
+          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          storeFile=keystore.jks
+          EOF
+
+      # Build AAB
+      - name: Build AAB
+        run: ./gradlew bundleRelease
+
+      # Download bundletool
+      - name: Download bundletool
+        run: |
+          curl -L "https://github.com/google/bundletool/releases/download/${{ env.BUNDLETOOL_VERSION }}/bundletool-all-${{ env.BUNDLETOOL_VERSION }}.jar" \
+            -o bundletool.jar
+
+      # Generate APKs from AAB via bundletool
+      - name: Generate APKs with bundletool
+        run: |
+          java -jar bundletool.jar build-apks \
+            --bundle=app/build/outputs/bundle/release/app-release.aab \
+            --output=app/build/outputs/apks/app.apks \
+            --ks=app/keystore.jks \
+            --ks-pass=pass:${{ secrets.ANDROID_KEYSTORE_PASSWORD }} \
+            --ks-key-alias=${{ secrets.ANDROID_KEY_ALIAS }} \
+            --key-pass=pass:${{ secrets.ANDROID_KEY_PASSWORD }} \
+            --mode=universal
+
+          java -jar bundletool.jar build-apks \
+            --bundle=app/build/outputs/bundle/release/app-release.aab \
+            --output=app/build/outputs/apks/default.apks \
+            --ks=app/keystore.jks \
+            --ks-pass=pass:${{ secrets.ANDROID_KEYSTORE_PASSWORD }} \
+            --ks-key-alias=${{ secrets.ANDROID_KEY_ALIAS }} \
+            --key-pass=pass:${{ secrets.ANDROID_KEY_PASSWORD }} \
+            --mode=default
+
+      # Extract APKs
+      - name: Extract APKs
+        run: |
+          mkdir -p app/build/outputs/universal-apk
+          mkdir -p app/build/outputs/split-apks
+
+          unzip -j app/build/outputs/apks/app.apks \
+            "universal.apk" \
+            -d app/build/outputs/universal-apk/
+
+          unzip app/build/outputs/apks/default.apks \
+            "splits/*.apk" \
+            -d app/build/outputs/split-apks/
+
+      # SSH + send artifacts
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.PRIVATE_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p 18005 lemarc.fr >> ~/.ssh/known_hosts
+
+      - name: Send artifacts to server
+        run: |
+          ssh -p 18005 Marc@lemarc.fr "rm -rf /home/Marc/build/sofia/*"
+          ssh -p 18005 Marc@lemarc.fr "mkdir -p /home/Marc/build/sofia"
+
+          scp -P 18005 app/build/outputs/bundle/release/app-release.aab \
+            Marc@lemarc.fr:/home/Marc/build/sofia/
+
+          scp -P 18005 app/build/outputs/universal-apk/universal.apk \
+            Marc@lemarc.fr:/home/Marc/build/sofia/
+
+          scp -r -P 18005 app/build/outputs/split-apks/ \
+            Marc@lemarc.fr:/home/Marc/build/sofia/
