@@ -24,16 +24,15 @@
 
     <ProgressBar
         android:id="@+id/widget_small_ring"
-        style="?android:attr/progressBarStyleLarge"
+        style="?android:attr/progressBarStyle"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginTop="4dp"
+        android:indeterminateOnly="false"
         android:indeterminate="false"
         android:max="100"
         android:progress="0"
-        android:progressTint="#4FC3F7"
-        android:secondaryProgress="100"
-        android:secondaryProgressTint="#3A3F4C" />
+        android:progressDrawable="@drawable/widget_ring_progress_drawable" />
 
     <TextView
         android:id="@+id/widget_small_mw"
