@@ -21,9 +21,11 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.width
+import androidx.glance.layout.defaultWeight
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import androidx.glance.unit.ColorProvider
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
 import java.time.Instant
@@ -116,7 +118,7 @@ private fun SofiaWidgetContent(
                 Text(
                     text = "TEST",
                     style = TextStyle(
-                        color = Color(0xFF2B1D00),
+                        color = ColorProvider(Color(0xFF2B1D00)),
                         fontWeight = FontWeight.Bold,
                     ),
                 )
@@ -139,7 +141,7 @@ private fun SofiaWidgetContent(
                 Text(
                     text = "${snapshot.percent}%",
                     style = TextStyle(
-                        color = Color.White,
+                        color = ColorProvider(Color.White),
                         fontWeight = FontWeight.Bold,
                     ),
                 )
@@ -151,18 +153,18 @@ private fun SofiaWidgetContent(
                 Text(
                     text = "${snapshot.currentMw.roundToInt()} MW",
                     style = TextStyle(
-                        color = Color.White,
+                        color = ColorProvider(Color.White),
                         fontWeight = FontWeight.Bold,
                     ),
                 )
                 Text(
                     text = "${snapshot.percent}% capacity",
-                    style = TextStyle(color = Color(0xFFBFD4FF)),
+                    style = TextStyle(color = ColorProvider(Color(0xFFBFD4FF))),
                 )
                 if (medium) {
                     Text(
                         text = "Max ${snapshot.maxCapacityMw.roundToInt()} MW",
-                        style = TextStyle(color = Color(0xFFBFD4FF)),
+                        style = TextStyle(color = ColorProvider(Color(0xFFBFD4FF))),
                     )
                 }
             }
@@ -179,21 +181,23 @@ private fun SofiaWidgetContent(
                 text = "Last update: ${
                     snapshot.latestDataTimestamp?.let(widgetTimestampFormatter::format) ?: "—"
                 }",
-                style = TextStyle(color = Color(0xFFBFD4FF)),
+                style = TextStyle(color = ColorProvider(Color(0xFFBFD4FF))),
             )
             Text(
                 text = if (snapshot.hasError) "Status: data unavailable" else "Status: OK",
-                style = TextStyle(color = if (snapshot.hasError) Color(0xFFFF8A80) else Color(0xFF9FF7A7)),
+                style = TextStyle(
+                    color = ColorProvider(if (snapshot.hasError) Color(0xFFFF8A80) else Color(0xFF9FF7A7)),
+                ),
             )
             Text(
                 text = "Mode: ${if (snapshot.testMode) "TEST (T_HEYM11)" else "NORMAL (SOFIA aggregate)"}",
-                style = TextStyle(color = Color(0xFFBFD4FF)),
+                style = TextStyle(color = ColorProvider(Color(0xFFBFD4FF))),
             )
         } else if (snapshot.hasError) {
             Spacer(modifier = GlanceModifier.height(6.dp))
             Text(
                 text = "No data",
-                style = TextStyle(color = Color(0xFFFF8A80)),
+                style = TextStyle(color = ColorProvider(Color(0xFFFF8A80))),
             )
         }
     }
