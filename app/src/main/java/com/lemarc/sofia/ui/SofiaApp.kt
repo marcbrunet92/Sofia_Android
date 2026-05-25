@@ -35,7 +35,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -239,7 +239,7 @@ private fun ProductionGaugeCard(
         targetValue = currentMw.toFloat(),
         label = "productionGaugeValue",
     )
-
+    val color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
@@ -255,7 +255,7 @@ private fun ProductionGaugeCard(
                 val diameter = size.minDimension - stroke
                 val topLeft = Offset((size.width - diameter) / 2f, (size.height - diameter) / 2f)
                 drawArc(
-                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                    color = color,
                     startAngle = 135f,
                     sweepAngle = 270f,
                     useCenter = false,
