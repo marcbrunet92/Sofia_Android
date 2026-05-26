@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Sofia Wind Farm</string>
+    <string name="widget_test_badge">TEST</string>
+    <string name="widget_mw_value">%1$d MW</string>
+    <string name="widget_capacity_value">Capacity %1$d%%</string>
+    <string name="widget_capacity_of_max_value">Capacity %1$d%% of %2$d MW</string>
+    <string name="widget_last_refresh_value">Last update: %1$s</string>
+    <string name="widget_mode_test">TEST</string>
+    <string name="widget_mode_live">LIVE</string>
+    <string name="widget_details_value">Mode: %1$s • API: %2$s</string>
+    <string name="widget_small_description">Small Sofia production widget</string>
+    <string name="widget_medium_description">Medium Sofia production widget</string>
 </resources>
