@@ -2,8 +2,10 @@ package com.lemarc.sofia.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.LineChart
@@ -20,6 +22,9 @@ import kotlin.math.roundToInt
 
 @Composable
 fun ProductionChart(points: List<ProductionPoint>) {
+
+    val axisColor = MaterialTheme.colorScheme.onSurface.toArgb()
+
     AndroidView(
         modifier = Modifier
             .fillMaxWidth()
@@ -28,16 +33,29 @@ fun ProductionChart(points: List<ProductionPoint>) {
             LineChart(context).apply {
                 description.isEnabled = false
                 legend.isEnabled = false
+
                 setTouchEnabled(true)
                 isDragEnabled = true
                 setScaleEnabled(true)
                 setPinchZoom(true)
+
                 setNoDataText("No production data available")
+
                 axisRight.isEnabled = false
-                axisLeft.axisMinimum = 0f
-                xAxis.position = XAxis.XAxisPosition.BOTTOM
-                xAxis.granularity = 1f
-                xAxis.labelRotationAngle = -30f
+
+                axisLeft.apply {
+                    axisMinimum = 0f
+                    textColor = axisColor
+                }
+
+                xAxis.apply {
+                    position = XAxis.XAxisPosition.BOTTOM
+                    granularity = 1f
+                    labelRotationAngle = -30f
+
+                    textColor = axisColor
+                }
+
                 setViewPortOffsets(70f, 20f, 28f, 90f)
             }
         },
@@ -45,6 +63,7 @@ fun ProductionChart(points: List<ProductionPoint>) {
             val entries = points.mapIndexed { index, point ->
                 Entry(index.toFloat(), point.levelMw.toFloat())
             }
+
             val dataSet = LineDataSet(entries, "Production").apply {
                 color = android.graphics.Color.rgb(30, 136, 229)
                 lineWidth = 2.5f
@@ -55,14 +74,22 @@ fun ProductionChart(points: List<ProductionPoint>) {
                 fillAlpha = 48
                 mode = LineDataSet.Mode.HORIZONTAL_BEZIER
             }
+
             chart.data = LineData(dataSet)
-            chart.axisLeft.axisMaximum = (max(points.maxOfOrNull { it.levelMw } ?: 0.0, 10.0) * 1.15).toFloat()
+
+            chart.axisLeft.axisMaximum =
+                (max(points.maxOfOrNull { it.levelMw } ?: 0.0, 10.0) * 1.15).toFloat()
+
             chart.xAxis.valueFormatter = object : ValueFormatter() {
-                override fun getAxisLabel(value: Float, axis: com.github.mikephil.charting.components.AxisBase?): String {
+                override fun getAxisLabel(
+                    value: Float,
+                    axis: com.github.mikephil.charting.components.AxisBase?,
+                ): String {
                     val index = value.roundToInt().coerceIn(points.indices)
                     return shortAxisFormatter.format(points[index].timeFrom)
                 }
             }
+
             chart.invalidate()
         },
     )

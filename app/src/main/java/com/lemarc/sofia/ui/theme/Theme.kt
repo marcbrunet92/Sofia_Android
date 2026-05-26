@@ -10,6 +10,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -19,20 +20,40 @@ private val DarkColorScheme = darkColorScheme(
     primary = SofiaBlue,
     secondary = SofiaCyan,
     tertiary = SofiaIndigo,
-    surface = SofiaSurfaceDark,
+
+    background = Color(0xFF0F1724),
+    surface = Color(0xFF182233),
+
+    surfaceContainer = Color(0xFF1D2A3D),
+    surfaceContainerLow = Color(0xFF172131),
+    surfaceContainerHigh = Color(0xFF243248),
+
+    surfaceVariant = Color(0xFF2C3B52),
+
+    outline = Color(0xFF3A4A63),
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = SofiaBlue,
     secondary = SofiaCyan,
     tertiary = SofiaIndigo,
-    surface = SofiaSurfaceLight,
+
+    background = Color(0xFFF5F7FA),
+    surface = Color.White,
+
+    surfaceContainer = Color(0xFFF0F4FA),
+    surfaceContainerLow = Color(0xFFF7F9FC),
+    surfaceContainerHigh = Color(0xFFE7EDF7),
+
+    surfaceVariant = Color(0xFFE3E8F2),
+
+    outline = Color(0xFFD0D7E2),
 )
 
 @Composable
 fun Sofia_AndroidTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
