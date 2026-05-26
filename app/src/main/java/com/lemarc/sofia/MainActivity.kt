@@ -7,9 +7,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
+import com.lemarc.sofia.data.repository.SofiaRemitRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
 import com.lemarc.sofia.ui.SofiaApp
 import com.lemarc.sofia.ui.production.ProductionViewModel
+import com.lemarc.sofia.ui.remit.RemitViewModel
 import com.lemarc.sofia.ui.settings.SettingsViewModel
 import com.lemarc.sofia.ui.theme.Sofia_AndroidTheme
 import com.lemarc.sofia.widget.SofiaWidgetsUpdater
@@ -18,6 +20,7 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     private val settingsRepository by lazy { SettingsRepository(applicationContext) }
     private val productionRepository by lazy { SofiaProductionRepository.create() }
+    private val remitRepository by lazy { SofiaRemitRepository.create() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +39,15 @@ class MainActivity : ComponentActivity() {
                 val settingsViewModel: SettingsViewModel = viewModel(
                     factory = SettingsViewModel.Factory(settingsRepository),
                 )
+                val remitViewModel: RemitViewModel = viewModel(
+                    factory = RemitViewModel.Factory(
+                        repository = remitRepository,
+                        settingsRepository = settingsRepository,
+                    ),
+                )
                 SofiaApp(
                     productionViewModel = productionViewModel,
+                    remitViewModel = remitViewModel,
                     settingsViewModel = settingsViewModel,
                 )
             }
