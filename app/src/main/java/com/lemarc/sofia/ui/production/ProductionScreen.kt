@@ -22,6 +22,7 @@ import com.lemarc.sofia.ui.components.EmptyStateCard
 import com.lemarc.sofia.ui.components.ErrorBanner
 import com.lemarc.sofia.ui.components.ProductionGaugeCard
 import com.lemarc.sofia.ui.components.TimestampCard
+import com.lemarc.sofia.ui.components.TitleBanner
 import com.lemarc.sofia.ui.components.WarningBanner
 import com.lemarc.sofia.ui.filterPoints
 import kotlin.math.roundToInt
@@ -59,6 +60,11 @@ fun ProductionScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
+                item {
+                    TitleBanner(
+                        logoResId = com.lemarc.sofia.R.drawable.logo_sofia_rwe,
+                    )
+                }
                 if (state.testMode) {
                     item {
                         WarningBanner(text = "TEST MODE — displaying T_HEYM11 only")
