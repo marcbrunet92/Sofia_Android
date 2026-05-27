@@ -1,9 +1,11 @@
 package com.lemarc.sofia
 
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
@@ -36,8 +38,12 @@ class MainActivity : ComponentActivity() {
                         settingsRepository = settingsRepository,
                     ),
                 )
+                val application = LocalContext.current.applicationContext as Application
                 val settingsViewModel: SettingsViewModel = viewModel(
-                    factory = SettingsViewModel.Factory(settingsRepository),
+                    factory = SettingsViewModel.Factory(
+                        application = application,
+                        settingsRepository = settingsRepository,
+                    ),
                 )
                 val remitViewModel: RemitViewModel = viewModel(
                     factory = RemitViewModel.Factory(
