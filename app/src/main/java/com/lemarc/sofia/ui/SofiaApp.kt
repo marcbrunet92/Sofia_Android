@@ -4,6 +4,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -20,13 +28,16 @@ import com.lemarc.sofia.data.model.ProductionPoint
 import com.lemarc.sofia.ui.production.ProductionScreen
 import com.lemarc.sofia.ui.production.ProductionViewModel
 import com.lemarc.sofia.ui.production.TimeWindow
-import com.lemarc.sofia.ui.settings.SettingsScreen
+import com.lemarc.sofia.ui.remit.RemitScreen
+import com.lemarc.sofia.ui.remit.RemitViewModel
+import com.lemarc.sofia.ui.settings.SettingsUiState
 import com.lemarc.sofia.ui.settings.SettingsViewModel
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 private enum class AppTab(val label: String) {
     Production("Production"),
+    Remit("REMIT"),
     Settings("Settings"),
 }
 
@@ -40,9 +51,11 @@ val shortAxisFormatter: DateTimeFormatter =
 @Composable
 fun SofiaApp(
     productionViewModel: ProductionViewModel,
+    remitViewModel: RemitViewModel,
     settingsViewModel: SettingsViewModel,
 ) {
     val productionState by productionViewModel.uiState.collectAsStateWithLifecycle()
+    val remitState by remitViewModel.uiState.collectAsStateWithLifecycle()
     val settingsState by settingsViewModel.uiState.collectAsStateWithLifecycle()
     var selectedTab by rememberSaveable { mutableStateOf(AppTab.Production) }
 
@@ -54,6 +67,12 @@ fun SofiaApp(
                     onClick = { selectedTab = AppTab.Production },
                     icon = { Icon(Icons.Filled.Bolt, contentDescription = null) },
                     label = { Text(AppTab.Production.label) },
+                )
+                NavigationBarItem(
+                    selected = selectedTab == AppTab.Remit,
+                    onClick = { selectedTab = AppTab.Remit },
+                    icon = { Icon(Icons.Filled.Warning, contentDescription = null) },
+                    label = { Text(AppTab.Remit.label) },
                 )
                 NavigationBarItem(
                     selected = selectedTab == AppTab.Settings,
@@ -71,6 +90,13 @@ fun SofiaApp(
                 onRefresh = { productionViewModel.refresh() },
                 onSelectWindow = productionViewModel::selectWindow,
                 onDismissError = productionViewModel::dismissError,
+            )
+
+            AppTab.Remit -> RemitScreen(
+                state = remitState,
+                modifier = Modifier.padding(innerPadding),
+                onRefresh = remitViewModel::refresh,
+                onDismissError = remitViewModel::dismissError,
             )
 
             AppTab.Settings -> SettingsScreen(
