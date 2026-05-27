@@ -5,13 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -30,7 +23,7 @@ import com.lemarc.sofia.ui.production.ProductionViewModel
 import com.lemarc.sofia.ui.production.TimeWindow
 import com.lemarc.sofia.ui.remit.RemitScreen
 import com.lemarc.sofia.ui.remit.RemitViewModel
-import com.lemarc.sofia.ui.settings.SettingsUiState
+import com.lemarc.sofia.ui.settings.SettingsScreen
 import com.lemarc.sofia.ui.settings.SettingsViewModel
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
