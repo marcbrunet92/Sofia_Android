@@ -61,9 +61,7 @@ fun ProductionScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 item {
-                    TitleBanner(
-                        logoResId = com.lemarc.sofia.R.drawable.logo_sofia_rwe,
-                    )
+                    TitleBanner()
                 }
                 if (state.testMode) {
                     item {
