@@ -83,16 +83,6 @@ fun ProductionScreen(
                         maxCapacityMw = state.maxCapacityMw,
                     )
                 }
-                item {
-                    Text(
-                        text = "${state.currentMw.roundToInt()} MW",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                    )
-                }
-                item {
-                    ProductionRecordCard(records = state.topProduction)
-                }
                 if (displayedPoints.isEmpty()) {
                     item {
                         EmptyStateCard()
@@ -105,6 +95,9 @@ fun ProductionScreen(
                             onSelectWindow = onSelectWindow,
                         )
                     }
+                }
+                item {
+                    ProductionRecordCard(records = state.topProduction)
                 }
                 item {
                     TimestampCard(
