@@ -14,13 +14,12 @@ import com.lemarc.sofia.data.settings.SettingsRepository
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.first
 
 object SofiaWidgetsUpdater {
     private val timestampFormatter: DateTimeFormatter =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'", Locale.US)
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'")
             .withZone(ZoneOffset.UTC)
 
     suspend fun updateAll(context: Context) {
