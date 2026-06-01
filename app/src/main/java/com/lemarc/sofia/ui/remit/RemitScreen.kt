@@ -18,9 +18,10 @@ import com.lemarc.sofia.ui.components.RemitNoticeCard
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 private val remitTimestampFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'")
+    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'", Locale.US)
         .withZone(ZoneOffset.UTC)
 fun formatTimestamp(timestamp: Instant?): String = timestamp?.let(remitTimestampFormatter::format) ?: "—"
 

@@ -12,6 +12,9 @@ interface SofiaApiService {
         @Query("time_to") timeTo: String,
     ): List<PnEntryDto>
 
+    @GET("pn/top-production")
+    suspend fun getTopProduction(): PnTopProductionWindowsDto
+
     @GET("remit")
     suspend fun getRemits(
         @Query("bmu_id") bmuId: String? = null,
@@ -28,6 +31,18 @@ data class PnEntryDto(
     val settlement_period: Int,
     val level_mw: Double,
     val source: String,
+)
+
+data class PnTopProductionPointDto(
+    val max_mw: Double,
+    val max_date: String?,
+)
+
+data class PnTopProductionWindowsDto(
+    val all_time: PnTopProductionPointDto,
+    val last_7_days: PnTopProductionPointDto,
+    val last_30_days: PnTopProductionPointDto,
+    val last_90_days: PnTopProductionPointDto,
 )
 
 data class RemitEntryDto(

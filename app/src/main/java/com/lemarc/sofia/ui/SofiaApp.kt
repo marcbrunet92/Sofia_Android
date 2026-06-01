@@ -25,6 +25,7 @@ import com.lemarc.sofia.ui.remit.RemitScreen
 import com.lemarc.sofia.ui.remit.RemitViewModel
 import com.lemarc.sofia.ui.settings.SettingsScreen
 import com.lemarc.sofia.ui.settings.SettingsViewModel
+import java.util.Locale
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
@@ -35,10 +36,10 @@ private enum class AppTab(val label: String) {
 }
 
 val timestampFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'")
+    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'", Locale.US)
         .withZone(ZoneOffset.UTC)
 val shortAxisFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("MM-dd HH:mm")
+    DateTimeFormatter.ofPattern("MM-dd HH:mm", Locale.US)
         .withZone(ZoneOffset.UTC)
 
 @Composable
