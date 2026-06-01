@@ -21,6 +21,7 @@ import com.lemarc.sofia.ui.components.ChartCard
 import com.lemarc.sofia.ui.components.EmptyStateCard
 import com.lemarc.sofia.ui.components.ErrorBanner
 import com.lemarc.sofia.ui.components.ProductionGaugeCard
+import com.lemarc.sofia.ui.components.ProductionRecordCard
 import com.lemarc.sofia.ui.components.TimestampCard
 import com.lemarc.sofia.ui.components.TitleBanner
 import com.lemarc.sofia.ui.components.WarningBanner
@@ -88,6 +89,9 @@ fun ProductionScreen(
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                     )
+                }
+                item {
+                    ProductionRecordCard(records = state.topProduction)
                 }
                 if (displayedPoints.isEmpty()) {
                     item {

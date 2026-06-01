@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lemarc.sofia.data.model.ProductionPoint
+import com.lemarc.sofia.data.model.TopProductionWindows
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
 import java.time.Duration
@@ -35,6 +36,7 @@ data class ProductionUiState(
     val selectedWindow: TimeWindow = TimeWindow.HOURS_24,
     val latestDataTimestamp: Instant? = null,
     val lastFetchTimestamp: Instant? = null,
+    val topProduction: TopProductionWindows = TopProductionWindows.Empty,
     val errorMessage: String? = null,
 )
 
@@ -89,6 +91,7 @@ class ProductionViewModel(
                         maxCapacityMw = snapshot.maxCapacityMw,
                         latestDataTimestamp = snapshot.latestDataTimestamp,
                         lastFetchTimestamp = Instant.now(),
+                        topProduction = snapshot.topProduction,
                         errorMessage = null,
                     )
                 }

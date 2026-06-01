@@ -1,9 +1,14 @@
 package com.lemarc.sofia.data.repository
 
 import com.lemarc.sofia.data.api.PnEntryDto
+import com.lemarc.sofia.data.api.PnTopProductionPointDto
+import com.lemarc.sofia.data.api.PnTopProductionWindowsDto
 import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.data.model.ProductionPoint
 import com.lemarc.sofia.data.model.ProductionSnapshot
+import com.lemarc.sofia.data.model.TopProductionPoint
+import com.lemarc.sofia.data.model.TopProductionWindows
+import com.lemarc.sofia.util.parseApiInstant
 import com.lemarc.sofia.util.parseApiUtc
 import java.time.Instant
 import kotlin.math.ceil
@@ -20,16 +25,25 @@ class SofiaProductionRepository(
 ) {
     suspend fun fetchProduction(testMode: Boolean): ProductionSnapshot = withContext(Dispatchers.IO) {
         val requestedBmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
-        val entries = coroutineScope {
-            requestedBmus.map { bmuId ->
-                async {
-                    apiService.getProduction(
-                        bmuId = bmuId,
-                        timeFrom = HISTORY_START.toString(),
-                        timeTo = Instant.now().toString(),
-                    )
-                }
-            }.awaitAll().flatten()
+        val (entries, topProduction) = coroutineScope {
+            val productionDeferred = async {
+                requestedBmus.map { bmuId ->
+                    async {
+                        apiService.getProduction(
+                            bmuId = bmuId,
+                            timeFrom = HISTORY_START.toString(),
+                            timeTo = Instant.now().toString(),
+                        )
+                    }
+                }.awaitAll().flatten()
+            }
+            val topProductionDeferred = async {
+                runCatching { apiService.getTopProduction() }
+                    .getOrNull()
+                    ?.toTopProductionWindows()
+                    ?: TopProductionWindows.Empty
+            }
+            productionDeferred.await() to topProductionDeferred.await()
         }
         val aggregatedPoints = aggregateProduction(entries, testMode)
         ProductionSnapshot(
@@ -37,6 +51,7 @@ class SofiaProductionRepository(
             currentMw = aggregatedPoints.lastOrNull()?.levelMw ?: 0.0,
             maxCapacityMw = if (testMode) deriveTestCapacity(aggregatedPoints) else SOFIA_MAX_CAPACITY_MW,
             latestDataTimestamp = aggregatedPoints.lastOrNull()?.timeTo,
+            topProduction = topProduction,
         )
     }
 
@@ -86,4 +101,18 @@ private fun deriveTestCapacity(points: List<ProductionPoint>): Double {
     } else {
         ceil(peak / 50.0) * 50.0
     }
+
+    private fun PnTopProductionWindowsDto.toTopProductionWindows(): TopProductionWindows =
+        TopProductionWindows(
+            allTime = all_time.toTopProductionPoint(),
+            last7Days = last_7_days.toTopProductionPoint(),
+            last30Days = last_30_days.toTopProductionPoint(),
+            last90Days = last_90_days.toTopProductionPoint(),
+        )
+
+    private fun PnTopProductionPointDto.toTopProductionPoint(): TopProductionPoint =
+        TopProductionPoint(
+            maxMw = max_mw,
+            maxDate = parseApiInstant(max_date),
+        )
 }
