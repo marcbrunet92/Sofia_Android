@@ -101,18 +101,18 @@ private fun deriveTestCapacity(points: List<ProductionPoint>): Double {
     } else {
         ceil(peak / 50.0) * 50.0
     }
-
-    private fun PnTopProductionWindowsDto.toTopProductionWindows(): TopProductionWindows =
-        TopProductionWindows(
-            allTime = all_time.toTopProductionPoint(),
-            last7Days = last_7_days.toTopProductionPoint(),
-            last30Days = last_30_days.toTopProductionPoint(),
-            last90Days = last_90_days.toTopProductionPoint(),
-        )
-
-    private fun PnTopProductionPointDto.toTopProductionPoint(): TopProductionPoint =
-        TopProductionPoint(
-            maxMw = max_mw,
-            maxDate = parseApiInstant(max_date),
-        )
 }
+
+private fun PnTopProductionWindowsDto.toTopProductionWindows(): TopProductionWindows =
+    TopProductionWindows(
+        allTime = all_time.toTopProductionPoint(),
+        last7Days = last_7_days.toTopProductionPoint(),
+        last30Days = last_30_days.toTopProductionPoint(),
+        last90Days = last_90_days.toTopProductionPoint(),
+    )
+
+private fun PnTopProductionPointDto.toTopProductionPoint(): TopProductionPoint =
+    TopProductionPoint(
+        maxMw = max_mw,
+        maxDate = parseApiInstant(max_date),
+    )
