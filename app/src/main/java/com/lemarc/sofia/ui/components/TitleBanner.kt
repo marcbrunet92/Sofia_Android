@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TitleBanner() {
+fun TitleBanner(title: String = "Sofia Live Generation") {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -24,7 +24,7 @@ fun TitleBanner() {
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "Sofia Live Generation",
+                text = title,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
             )

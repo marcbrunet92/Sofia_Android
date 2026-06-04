@@ -8,11 +8,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lemarc.sofia.data.repository.SofiaB1610Repository
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import com.lemarc.sofia.data.repository.SofiaRemitRepository
 import com.lemarc.sofia.data.repository.SofiaWeatherRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
 import com.lemarc.sofia.ui.SofiaApp
+import com.lemarc.sofia.ui.b1610.B1610ViewModel
 import com.lemarc.sofia.ui.production.ProductionViewModel
 import com.lemarc.sofia.ui.remit.RemitViewModel
 import com.lemarc.sofia.ui.settings.SettingsViewModel
@@ -27,6 +29,7 @@ class MainActivity : ComponentActivity() {
     private val remitRepository by lazy { SofiaRemitRepository.create() }
 
     private val weatherRepository by lazy { SofiaWeatherRepository.create() }
+    private val b1610Repository by lazy { SofiaB1610Repository.create() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,11 +64,18 @@ class MainActivity : ComponentActivity() {
                         productionRepository = productionRepository,
                     ),
                 )
+                val b1610ViewModel: B1610ViewModel = viewModel(
+                    factory = B1610ViewModel.Factory(
+                        repository = b1610Repository,
+                        settingsRepository = settingsRepository,
+                    ),
+                )
                 SofiaApp(
                     productionViewModel = productionViewModel,
+                    b1610ViewModel = b1610ViewModel,
                     remitViewModel = remitViewModel,
                     settingsViewModel = settingsViewModel,
-                    weatherViewModel = weatherViewModel
+                    weatherViewModel = weatherViewModel,
                 )
             }
         }

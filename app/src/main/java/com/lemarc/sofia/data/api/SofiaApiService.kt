@@ -29,6 +29,16 @@ interface SofiaApiService {
         @Query("time_to") timeTo: String,
     ): List<WeatherEntryDto>
 
+    @GET("b1610/{bmuId}")
+    suspend fun getB1610(
+        @Path("bmuId") bmuId: String,
+        @Query("time_from") timeFrom: String,
+        @Query("time_to") timeTo: String,
+    ): List<B1610EntryDto>
+
+    @GET("b1610/top-production")
+    suspend fun getB1610TopProduction(): B1610TopProductionWindowsDto
+
 }
 
 data class PnEntryDto(
@@ -80,4 +90,24 @@ data class WeatherEntryDto(
     val time_to: String,
     val wind_speed: Double,
     val source: String,
+)
+
+data class B1610EntryDto(
+    val bmu_id: String,
+    val time_from: String,
+    val time_to: String,
+    val quantity: Double,
+    val settlement_period: Int,
+)
+
+data class B1610TopProductionPointDto(
+    val quantity: Double,
+    val max_date: String?,
+)
+
+data class B1610TopProductionWindowsDto(
+    val all_time: B1610TopProductionPointDto,
+    val last_7_days: B1610TopProductionPointDto,
+    val last_30_days: B1610TopProductionPointDto,
+    val last_90_days: B1610TopProductionPointDto,
 )
