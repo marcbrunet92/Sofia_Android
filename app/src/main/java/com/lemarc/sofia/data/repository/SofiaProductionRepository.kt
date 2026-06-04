@@ -1,5 +1,10 @@
 package com.lemarc.sofia.data.repository
 
+import com.lemarc.sofia.data.BASE_URL
+import com.lemarc.sofia.data.HISTORY_START
+import com.lemarc.sofia.data.SOFIA_BMUS
+import com.lemarc.sofia.data.SOFIA_MAX_CAPACITY_MW
+import com.lemarc.sofia.data.TEST_BMU
 import com.lemarc.sofia.data.api.PnEntryDto
 import com.lemarc.sofia.data.api.PnTopProductionPointDto
 import com.lemarc.sofia.data.api.PnTopProductionWindowsDto
@@ -56,12 +61,6 @@ class SofiaProductionRepository(
     }
 
     companion object {
-        const val BASE_URL = "https://sofia.lemarc.fr/"
-        const val TEST_BMU = "T_HEYM11"
-        const val SOFIA_MAX_CAPACITY_MW = 1400.0
-        val SOFIA_BMUS = listOf("T_SOFOW-11", "T_SOFOW-12", "T_SOFOW-21", "T_SOFOW-22")
-        val HISTORY_START: Instant = Instant.parse("2026-04-01T00:00:00Z")
-
         fun create(): SofiaProductionRepository {
             val retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -84,7 +83,7 @@ internal fun aggregateProduction(
         .map { (_, groupedEntries) ->
             val first = groupedEntries.first()
             ProductionPoint(
-                bmuId = if (testMode) SofiaProductionRepository.TEST_BMU else "SOFIA_TOTAL",
+                bmuId = if (testMode) TEST_BMU else "SOFIA_TOTAL",
                 timeFrom = parseApiUtc(first.time_from),
                 timeTo = parseApiUtc(first.time_to),
                 settlementPeriod = first.settlement_period,

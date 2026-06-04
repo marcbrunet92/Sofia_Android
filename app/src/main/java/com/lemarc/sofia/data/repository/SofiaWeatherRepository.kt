@@ -1,5 +1,7 @@
 package com.lemarc.sofia.data.repository
 
+import com.lemarc.sofia.data.BASE_URL
+import com.lemarc.sofia.data.HISTORY_START
 import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.data.api.WeatherEntryDto
 import com.lemarc.sofia.data.model.WeatherPoint
@@ -28,11 +30,9 @@ class SofiaWeatherRepository(
     }
 
     companion object {
-        val HISTORY_START: Instant = Instant.parse("2026-04-01T00:00:00Z")
-
         fun create(): SofiaWeatherRepository {
             val retrofit = Retrofit.Builder()
-                .baseUrl(SofiaProductionRepository.BASE_URL)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             return SofiaWeatherRepository(retrofit.create(SofiaApiService::class.java))

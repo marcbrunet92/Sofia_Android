@@ -1,5 +1,8 @@
 package com.lemarc.sofia.data.repository
 
+import com.lemarc.sofia.data.BASE_URL
+import com.lemarc.sofia.data.SOFIA_BMUS
+import com.lemarc.sofia.data.TEST_BMU
 import com.lemarc.sofia.data.api.RemitEntryDto
 import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.data.model.RemitNotice
@@ -16,7 +19,7 @@ class SofiaRemitRepository(
     private val apiService: SofiaApiService,
 ) {
     suspend fun fetchRemits(testMode: Boolean): List<RemitNotice> = withContext(Dispatchers.IO) {
-        val bmus = if (testMode) listOf(SofiaProductionRepository.TEST_BMU) else SofiaProductionRepository.SOFIA_BMUS
+        val bmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
         val remits = coroutineScope {
             bmus.map { bmuId ->
                 async {
@@ -38,7 +41,7 @@ class SofiaRemitRepository(
     companion object {
         fun create(): SofiaRemitRepository {
             val retrofit = Retrofit.Builder()
-                .baseUrl(SofiaProductionRepository.BASE_URL)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             return SofiaRemitRepository(retrofit.create(SofiaApiService::class.java))
