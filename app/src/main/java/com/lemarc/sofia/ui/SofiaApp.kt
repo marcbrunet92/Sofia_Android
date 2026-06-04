@@ -68,16 +68,16 @@ fun SofiaApp(
                     label = { Text(AppTab.Production.label) },
                 )
                 NavigationBarItem(
-                    selected = selectedTab == AppTab.Weather,
-                    onClick = { selectedTab = AppTab.Weather },
-                    icon = { Icon(Icons.Filled.Air, contentDescription = null) },
-                    label = { Text(AppTab.Weather.label) },
-                )
-                NavigationBarItem(
                     selected = selectedTab == AppTab.Remit,
                     onClick = { selectedTab = AppTab.Remit },
                     icon = { Icon(Icons.Filled.Warning, contentDescription = null) },
                     label = { Text(AppTab.Remit.label) },
+                )
+                NavigationBarItem(
+                    selected = selectedTab == AppTab.Weather,
+                    onClick = { selectedTab = AppTab.Weather },
+                    icon = { Icon(Icons.Filled.Air, contentDescription = null) },
+                    label = { Text(AppTab.Weather.label) },
                 )
                 NavigationBarItem(
                     selected = selectedTab == AppTab.Settings,
