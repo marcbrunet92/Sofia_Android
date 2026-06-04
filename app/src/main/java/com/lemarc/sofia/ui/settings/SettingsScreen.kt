@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import kotlin.math.roundToInt
 import androidx.core.net.toUri
+import com.lemarc.sofia.ui.components.DefinitionCard
 
 @Composable
 fun SettingsScreen(
@@ -123,6 +124,18 @@ fun SettingsScreen(
                     )
                 }
             }
+        }
+        item {
+            DefinitionCard(
+                "Production Data",
+                "These data are Physical Notification, they show what the unit expect to produce in the next 30 minutes"
+            )
+        }
+        item {
+            DefinitionCard(
+                "Real Output",
+                "These data are issued from RWE and show the energy (MWh) delivered to the British national network"
+            )
         }
     }
 }
