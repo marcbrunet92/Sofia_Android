@@ -1,5 +1,6 @@
 package com.lemarc.sofia.ui.remit
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,12 +12,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.lemarc.sofia.ui.components.RemitErrorBanner
+import com.lemarc.sofia.data.model.RemitNotice
 import com.lemarc.sofia.ui.components.InfoCard
+import com.lemarc.sofia.ui.components.RemitErrorBanner
 import com.lemarc.sofia.ui.components.RemitNoticeCard
 import java.time.Instant
 import java.time.ZoneOffset
@@ -25,7 +31,9 @@ import java.time.format.DateTimeFormatter
 private val remitTimestampFormatter: DateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'")
         .withZone(ZoneOffset.UTC)
-fun formatTimestamp(timestamp: Instant?): String = timestamp?.let(remitTimestampFormatter::format) ?: "—"
+
+fun formatTimestamp(timestamp: Instant?): String =
+    timestamp?.let(remitTimestampFormatter::format) ?: "—"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,6 +43,25 @@ fun RemitScreen(
     onRefresh: () -> Unit,
     onDismissError: () -> Unit,
 ) {
+    // Track which notice is selected for the detail view (by id)
+    var selectedNoticeId by rememberSaveable { mutableStateOf<Int?>(null) }
+    val selectedNotice: RemitNotice? = selectedNoticeId?.let { id ->
+        state.remits.firstOrNull { it.id == id }
+    }
+
+    // Intercept hardware/gesture back when detail is open
+    BackHandler(enabled = selectedNoticeId != null) {
+        selectedNoticeId = null
+    }
+
+    if (selectedNotice != null) {
+        RemitDetailScreen(
+            notice = selectedNotice,
+            onBack = { selectedNoticeId = null },
+        )
+        return
+    }
+
     PullToRefreshBox(
         isRefreshing = state.isRefreshing,
         onRefresh = onRefresh,
@@ -51,7 +78,7 @@ fun RemitScreen(
             else -> LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 if (state.errorMessage != null) {
                     item {
@@ -63,7 +90,7 @@ fun RemitScreen(
                 }
                 if (state.testMode) {
                     item {
-                        InfoCard("TEST MODE — displaying REMIT entries for T_HEYM11 only.")
+                        InfoCard("TEST MODE — T_HEYM11 uniquement.")
                     }
                 }
                 item {
@@ -74,22 +101,25 @@ fun RemitScreen(
                     )
                 }
                 item {
-                    InfoCard("Active REMIT notices: ${state.remits.size}")
+                    InfoCard("${state.remits.size} avis actif(s)")
                 }
                 if (state.remits.isEmpty()) {
                     item {
-                        InfoCard("No active REMIT notice found.")
+                        InfoCard("Aucun avis REMIT actif.")
                     }
                 } else {
                     items(
                         count = state.remits.size,
                         key = { index -> state.remits[index].id },
                     ) { index ->
-                        RemitNoticeCard(state.remits[index])
+                        RemitNoticeCard(
+                            notice = state.remits[index],
+                            onClick = { selectedNoticeId = state.remits[index].id },
+                        )
                     }
                 }
                 item {
-                    InfoCard("Last refresh: ${formatTimestamp(state.lastFetchTimestamp)}")
+                    InfoCard("Mis à jour : ${formatTimestamp(state.lastFetchTimestamp)}")
                 }
             }
         }

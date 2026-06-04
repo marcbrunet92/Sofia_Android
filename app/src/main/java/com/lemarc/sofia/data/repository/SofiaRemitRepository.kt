@@ -49,17 +49,25 @@ class SofiaRemitRepository(
 private fun toNotice(dto: RemitEntryDto): RemitNotice =
     RemitNotice(
         id = dto.id,
+        mrid = dto.mrid,
+        revisionNumber = dto.revision_number,
         bmuId = dto.bmu_id,
-        eventStatus = dto.event_status,
+        participantId = dto.participant_id,
+        assetId = dto.asset_id,
+        unavailabilityType = dto.unavailability_type,
         eventType = dto.event_type,
         messageHeading = dto.message_heading,
-        cause = dto.cause,
-        unavailableCapacityMw = dto.unavailable_capacity_mw,
-        availableCapacityMw = dto.available_capacity_mw,
+        fuelType = dto.fuel_type,
         normalCapacityMw = dto.normal_capacity_mw,
+        availableCapacityMw = dto.available_capacity_mw,
+        unavailableCapacityMw = dto.unavailable_capacity_mw,
+        eventStatus = dto.event_status,
         eventStartTime = parseApiInstant(dto.event_start_time),
         eventEndTime = parseApiInstant(dto.event_end_time),
+        cause = dto.cause,
+        relatedInformation = dto.related_information,
         publishTime = parseApiInstant(dto.publish_time),
+        outageProfile = dto.outage_profile,
     )
 
 private val InstantMin = java.time.Instant.EPOCH
