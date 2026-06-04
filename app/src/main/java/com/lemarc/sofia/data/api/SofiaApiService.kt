@@ -22,6 +22,13 @@ interface SofiaApiService {
         @Query("limit") limit: Int = 100,
         @Query("offset") offset: Int = 0,
     ): List<RemitEntryDto>
+
+    @GET("weather")
+    suspend fun getWeather(
+        @Query("time_from") timeFrom: String,
+        @Query("time_to") timeTo: String,
+    ): List<WeatherEntryDto>
+
 }
 
 data class PnEntryDto(
@@ -66,4 +73,11 @@ data class RemitEntryDto(
     val related_information: String,
     val publish_time: String?,
     val outage_profile: String,
+)
+
+data class WeatherEntryDto(
+    val time_from: String,
+    val time_to: String,
+    val wind_speed: Double,
+    val source: String,
 )
