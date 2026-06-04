@@ -12,9 +12,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 data class RemitUiState(
     val isLoading: Boolean = true,
@@ -43,7 +43,7 @@ class RemitViewModel(
         }
         viewModelScope.launch {
             while (true) {
-                delay(60_000)
+                delay(60_000.milliseconds)
                 refresh()
             }
         }

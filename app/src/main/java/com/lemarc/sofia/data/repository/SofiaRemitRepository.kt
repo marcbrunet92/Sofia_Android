@@ -1,8 +1,8 @@
 package com.lemarc.sofia.data.repository
 
-import com.lemarc.sofia.data.BASE_URL
-import com.lemarc.sofia.data.SOFIA_BMUS
-import com.lemarc.sofia.data.TEST_BMU
+import com.lemarc.sofia.BASE_URL
+import com.lemarc.sofia.SOFIA_BMUS
+import com.lemarc.sofia.TEST_BMU
 import com.lemarc.sofia.data.api.RemitEntryDto
 import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.data.model.RemitNotice

@@ -3,11 +3,10 @@ package com.lemarc.sofia.ui.weather
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.lemarc.sofia.data.model.ProductionPoint
-import com.lemarc.sofia.data.model.WeatherPoint
+import com.lemarc.sofia.TimeWindow
+import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import com.lemarc.sofia.data.repository.SofiaWeatherRepository
-import com.lemarc.sofia.ui.production.TimeWindow
 import java.time.Instant
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -23,8 +22,7 @@ import kotlin.time.Duration.Companion.milliseconds
 data class WeatherUiState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
-    val weatherPoints: List<WeatherPoint> = emptyList(),
-    val productionPoints: List<ProductionPoint> = emptyList(),
+    val weatherPoints: List<GraphPoint> = emptyList(),
     val latestWindSpeed: Double? = null,
     val latestDataTimestamp: Instant? = null,
     val lastFetchTimestamp: Instant? = null,
@@ -34,7 +32,6 @@ data class WeatherUiState(
 
 class WeatherViewModel(
     private val weatherRepository: SofiaWeatherRepository,
-    private val productionRepository: SofiaProductionRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(WeatherUiState())
@@ -70,16 +67,14 @@ class WeatherViewModel(
             runCatching {
                 coroutineScope {
                     val weatherDeferred = async { weatherRepository.fetchWeather() }
-                    val productionDeferred = async { productionRepository.fetchProduction(testMode = false) }
-                    weatherDeferred.await() to productionDeferred.await()
+                    weatherDeferred.await()
                 }
-            }.onSuccess { (weatherSnapshot, productionSnapshot) ->
+            }.onSuccess { weatherSnapshot ->
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         isRefreshing = false,
                         weatherPoints = weatherSnapshot.points,
-                        productionPoints = productionSnapshot.points,
                         latestWindSpeed = weatherSnapshot.latestWindSpeed,
                         latestDataTimestamp = weatherSnapshot.latestDataTimestamp,
                         lastFetchTimestamp = Instant.now(),
@@ -105,10 +100,9 @@ class WeatherViewModel(
 
     class Factory(
         private val weatherRepository: SofiaWeatherRepository,
-        private val productionRepository: SofiaProductionRepository,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            WeatherViewModel(weatherRepository, productionRepository) as T
+            WeatherViewModel(weatherRepository) as T
     }
 }

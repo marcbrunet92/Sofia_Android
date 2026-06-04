@@ -18,7 +18,7 @@ class SofiaProductionRepositoryTest {
 
         assertEquals(2, result.size)
         assertEquals(250.0, result.first().levelMw, 0.0)
-        assertEquals("SOFIA_TOTAL", result.first().bmuId)
+        assertEquals("SOFIA_TOTAL", result.first().id)
         assertEquals(200.0, result.last().levelMw, 0.0)
     }
 
@@ -31,7 +31,7 @@ class SofiaProductionRepositoryTest {
         val result = aggregateProduction(entries, testMode = true)
 
         assertEquals(1, result.size)
-        assertEquals(SofiaProductionRepository.TEST_BMU, result.single().bmuId)
+        assertEquals(SofiaProductionRepository.TEST_BMU, result.single().id)
         assertEquals(42.5, result.single().levelMw, 0.0)
         assertTrue(result.single().timeFrom.isBefore(result.single().timeTo))
     }

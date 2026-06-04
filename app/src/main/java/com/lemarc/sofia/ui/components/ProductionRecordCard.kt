@@ -13,13 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.lemarc.sofia.data.model.TopProductionPoint
-import com.lemarc.sofia.data.model.TopProductionWindows
+import com.lemarc.sofia.data.model.TopPoint
+import com.lemarc.sofia.data.model.TopWindows
 import com.lemarc.sofia.ui.timestampFormatter
 import kotlin.math.roundToInt
 
 @Composable
-fun ProductionRecordCard(records: TopProductionWindows, unit: String = "MW") {
+fun ProductionRecordCard(records: TopWindows, unit: String = "MW") {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
@@ -46,7 +46,7 @@ fun ProductionRecordCard(records: TopProductionWindows, unit: String = "MW") {
 @Composable
 private fun RecordRow(
     label: String,
-    point: TopProductionPoint,
+    point: TopPoint,
     unit: String = "MW",
 ) {
     val dateValue = point.maxDate?.let(timestampFormatter::format) ?: "—"
@@ -60,7 +60,7 @@ private fun RecordRow(
             fontWeight = FontWeight.Medium,
         )
         Text(
-            text = "${point.maxMw.roundToInt()} $unit • $dateValue",
+            text = "${point.maxQuantity.roundToInt()} $unit • $dateValue",
             style = MaterialTheme.typography.bodySmall,
         )
     }

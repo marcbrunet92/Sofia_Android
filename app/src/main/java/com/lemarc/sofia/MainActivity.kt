@@ -61,7 +61,6 @@ class MainActivity : ComponentActivity() {
                 val weatherViewModel: WeatherViewModel = viewModel(
                     factory = WeatherViewModel.Factory(
                         weatherRepository = weatherRepository,
-                        productionRepository = productionRepository,
                     ),
                 )
                 val b1610ViewModel: B1610ViewModel = viewModel(

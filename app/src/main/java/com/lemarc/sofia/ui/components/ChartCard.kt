@@ -14,12 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.lemarc.sofia.data.model.ProductionPoint
-import com.lemarc.sofia.ui.production.TimeWindow
+import com.lemarc.sofia.TimeWindow
+import com.lemarc.sofia.data.model.GraphPoint
 
 @Composable
 fun ChartCard(
-    points: List<ProductionPoint>,
+    points: List<GraphPoint>,
     selectedWindow: TimeWindow,
     onSelectWindow: (TimeWindow) -> Unit,
 ) {

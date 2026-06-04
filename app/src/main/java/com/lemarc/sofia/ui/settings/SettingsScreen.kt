@@ -28,6 +28,10 @@ import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import kotlin.math.roundToInt
 import androidx.core.net.toUri
+import com.lemarc.sofia.BASE_URL
+import com.lemarc.sofia.SOFIA_BMUS
+import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
+import com.lemarc.sofia.TEST_BMU
 import com.lemarc.sofia.ui.components.DefinitionCard
 
 @Composable
@@ -104,17 +108,17 @@ fun SettingsScreen(
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                     )
-                    AssistChip(onClick = {}, enabled = false, label = { Text("API: ${SofiaProductionRepository.BASE_URL}") })
+                    AssistChip(onClick = {}, enabled = false, label = { Text("API: ${BASE_URL}") })
                     Text(
-                        text = "Normal mode BMUs: ${SofiaProductionRepository.SOFIA_BMUS.joinToString()}",
+                        text = "Normal mode BMUs: ${SOFIA_BMUS.joinToString()}",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Text(
-                        text = "Test mode BMU: ${SofiaProductionRepository.TEST_BMU}",
+                        text = "Test mode BMU: ${TEST_BMU}",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Text(
-                        text = "Normal max capacity: ${SofiaProductionRepository.SOFIA_MAX_CAPACITY_MW.roundToInt()} MW",
+                        text = "Normal max capacity: ${SOFIA_MAX_CAPACITY_MW.roundToInt()} MW",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Text(

@@ -3,40 +3,33 @@ package com.lemarc.sofia.ui.production
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.lemarc.sofia.data.model.ProductionPoint
-import com.lemarc.sofia.data.model.TopProductionWindows
+import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
+import com.lemarc.sofia.TimeWindow
+import com.lemarc.sofia.data.model.GraphPoint
+import com.lemarc.sofia.data.model.TopWindows
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
-import java.time.Duration
 import java.time.Instant
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-enum class TimeWindow(val label: String, val duration: Duration?) {
-    HOURS_6("6h", Duration.ofHours(6)),
-    HOURS_24("24h", Duration.ofHours(24)),
-    HOURS_48("48h", Duration.ofHours(48)),
-    DAYS_7("7d", Duration.ofDays(7)),
-    ALL("All", null),
-}
+import kotlin.time.Duration.Companion.milliseconds
 
 data class ProductionUiState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val testMode: Boolean = false,
-    val points: List<ProductionPoint> = emptyList(),
+    val points: List<GraphPoint> = emptyList(),
     val currentMw: Double = 0.0,
-    val maxCapacityMw: Double = SofiaProductionRepository.SOFIA_MAX_CAPACITY_MW,
+    val maxCapacityMw: Double = SOFIA_MAX_CAPACITY_MW,
     val selectedWindow: TimeWindow = TimeWindow.HOURS_24,
     val latestDataTimestamp: Instant? = null,
     val lastFetchTimestamp: Instant? = null,
-    val topProduction: TopProductionWindows = TopProductionWindows.Empty,
+    val topProduction: TopWindows = TopWindows.Empty,
     val errorMessage: String? = null,
 )
 
@@ -58,7 +51,7 @@ class ProductionViewModel(
         }
         viewModelScope.launch {
             while (true) {
-                delay(60_000)
+                delay(60_000.milliseconds)
                 refresh()
             }
         }
@@ -88,7 +81,6 @@ class ProductionViewModel(
                         isRefreshing = false,
                         points = snapshot.points,
                         currentMw = snapshot.currentMw,
-                        maxCapacityMw = snapshot.maxCapacityMw,
                         latestDataTimestamp = snapshot.latestDataTimestamp,
                         lastFetchTimestamp = Instant.now(),
                         topProduction = snapshot.topProduction,

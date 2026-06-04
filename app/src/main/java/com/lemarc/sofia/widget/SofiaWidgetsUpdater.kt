@@ -8,6 +8,7 @@ import android.content.Intent
 import android.widget.RemoteViews
 import com.lemarc.sofia.MainActivity
 import com.lemarc.sofia.R
+import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
 import com.lemarc.sofia.data.model.ProductionSnapshot
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
@@ -67,7 +68,7 @@ object SofiaWidgetsUpdater {
         snapshot: ProductionSnapshot?,
         testMode: Boolean,
     ): RemoteViews {
-        val safeMaxCapacity = snapshot?.maxCapacityMw?.coerceAtLeast(1.0) ?: 1.0
+        val safeMaxCapacity = SOFIA_MAX_CAPACITY_MW
         val currentMw = snapshot?.currentMw ?: 0.0
         val capacityPercent = ((currentMw / safeMaxCapacity) * 100).roundToInt().coerceIn(0, 100)
         return RemoteViews(context.packageName, R.layout.widget_sofia_small).apply {
@@ -91,7 +92,7 @@ object SofiaWidgetsUpdater {
         testMode: Boolean,
         fetchedAt: Instant,
     ): RemoteViews {
-        val safeMaxCapacity = snapshot?.maxCapacityMw?.coerceAtLeast(1.0) ?: 1.0
+        val safeMaxCapacity = SOFIA_MAX_CAPACITY_MW
         val currentMw = snapshot?.currentMw ?: 0.0
         val capacityPercent = ((currentMw / safeMaxCapacity) * 100).roundToInt().coerceIn(0, 100)
         val lastApiUpdate = snapshot?.latestDataTimestamp?.let(timestampFormatter::format) ?: "—"

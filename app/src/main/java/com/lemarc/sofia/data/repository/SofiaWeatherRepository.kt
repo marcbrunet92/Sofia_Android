@@ -1,10 +1,10 @@
 package com.lemarc.sofia.data.repository
 
-import com.lemarc.sofia.data.BASE_URL
-import com.lemarc.sofia.data.HISTORY_START
+import com.lemarc.sofia.BASE_URL
+import com.lemarc.sofia.HISTORY_START
 import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.data.api.WeatherEntryDto
-import com.lemarc.sofia.data.model.WeatherPoint
+import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.data.model.WeatherSnapshot
 import com.lemarc.sofia.util.parseApiUtc
 import java.time.Instant
@@ -21,10 +21,10 @@ class SofiaWeatherRepository(
             timeFrom = HISTORY_START.toString(),
             timeTo = Instant.now().toString(),
         )
-        val points = entries.toWeatherPoints()
+        val points = entries.toGraphPoint()
         WeatherSnapshot(
             points = points,
-            latestWindSpeed = points.lastOrNull()?.windSpeed,
+            latestWindSpeed = points.lastOrNull()?.quantity,
             latestDataTimestamp = points.lastOrNull()?.timeTo,
         )
     }
@@ -40,11 +40,12 @@ class SofiaWeatherRepository(
     }
 }
 
-internal fun List<WeatherEntryDto>.toWeatherPoints(): List<WeatherPoint> =
+internal fun List<WeatherEntryDto>.toGraphPoint(): List<GraphPoint> =
     map { dto ->
-        WeatherPoint(
+        GraphPoint(
+            id = "WEATHER",
             timeFrom = parseApiUtc(dto.time_from),
             timeTo = parseApiUtc(dto.time_to),
-            windSpeed = dto.wind_speed,
+            quantity = dto.wind_speed,
         )
     }.sortedBy { it.timeFrom }

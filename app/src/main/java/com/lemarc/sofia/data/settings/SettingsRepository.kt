@@ -1,9 +1,9 @@
 package com.lemarc.sofia.data.settings
 
 import android.content.Context
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+import com.lemarc.sofia.TEST_MODE_KEY
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -20,9 +20,5 @@ class SettingsRepository(
         context.dataStore.edit { preferences ->
             preferences[TEST_MODE_KEY] = enabled
         }
-    }
-
-    private companion object {
-        val TEST_MODE_KEY = booleanPreferencesKey("test_mode")
     }
 }

@@ -1,18 +1,17 @@
 package com.lemarc.sofia.data.repository
 
-import com.lemarc.sofia.data.BASE_URL
-import com.lemarc.sofia.data.HISTORY_START
-import com.lemarc.sofia.data.SOFIA_BMUS
-import com.lemarc.sofia.data.SOFIA_MAX_CAPACITY_MW
-import com.lemarc.sofia.data.TEST_BMU
+import com.lemarc.sofia.BASE_URL
+import com.lemarc.sofia.HISTORY_START
+import com.lemarc.sofia.SOFIA_BMUS
+import com.lemarc.sofia.TEST_BMU
 import com.lemarc.sofia.data.api.B1610EntryDto
 import com.lemarc.sofia.data.api.B1610TopProductionPointDto
 import com.lemarc.sofia.data.api.B1610TopProductionWindowsDto
 import com.lemarc.sofia.data.api.SofiaApiService
-import com.lemarc.sofia.data.model.B1610Point
 import com.lemarc.sofia.data.model.B1610Snapshot
-import com.lemarc.sofia.data.model.TopB1610Point
-import com.lemarc.sofia.data.model.TopB1610Windows
+import com.lemarc.sofia.data.model.GraphPoint
+import com.lemarc.sofia.data.model.TopPoint
+import com.lemarc.sofia.data.model.TopWindows
 import com.lemarc.sofia.util.parseApiInstant
 import com.lemarc.sofia.util.parseApiUtc
 import java.time.Instant
@@ -44,8 +43,8 @@ class SofiaB1610Repository(
             val topB1610Deferred = async {
                 runCatching { apiService.getB1610TopProduction() }
                     .getOrNull()
-                    ?.toTopB1610Windows()
-                    ?: TopB1610Windows.Empty
+                    ?.toTopWindows()
+                    ?: TopWindows.Empty
             }
             b1610Deferred.await() to topB1610Deferred.await()
         }
@@ -71,7 +70,7 @@ class SofiaB1610Repository(
 internal fun aggregateB1610(
     entries: List<B1610EntryDto>,
     testMode: Boolean,
-): List<B1610Point> {
+): List<GraphPoint> {
     if (entries.isEmpty()) return emptyList()
     return entries
         .groupBy { entry ->
@@ -79,8 +78,8 @@ internal fun aggregateB1610(
         }
         .map { (_, groupedEntries) ->
             val first = groupedEntries.first()
-            B1610Point(
-                bmuId = if (testMode) TEST_BMU else "SOFIA_TOTAL",
+            GraphPoint(
+                id = if (testMode) TEST_BMU else "SOFIA_TOTAL",
                 timeFrom = parseApiUtc(first.time_from),
                 timeTo = parseApiUtc(first.time_to),
                 quantity = groupedEntries.sumOf { it.quantity },
@@ -89,16 +88,16 @@ internal fun aggregateB1610(
         .sortedBy { it.timeFrom }
 }
 
-private fun B1610TopProductionWindowsDto.toTopB1610Windows(): TopB1610Windows =
-    TopB1610Windows(
-        allTime = all_time.toTopB1610Point(),
-        last7Days = last_7_days.toTopB1610Point(),
-        last30Days = last_30_days.toTopB1610Point(),
-        last90Days = last_90_days.toTopB1610Point(),
+private fun B1610TopProductionWindowsDto.toTopWindows(): TopWindows =
+    TopWindows(
+        allTime = all_time.toTopPoint(),
+        last7Days = last_7_days.toTopPoint(),
+        last30Days = last_30_days.toTopPoint(),
+        last90Days = last_90_days.toTopPoint(),
     )
 
-private fun B1610TopProductionPointDto.toTopB1610Point(): TopB1610Point =
-    TopB1610Point(
+private fun B1610TopProductionPointDto.toTopPoint(): TopPoint =
+    TopPoint(
         maxQuantity = quantity,
         maxDate = parseApiInstant(max_date),
     )

@@ -14,6 +14,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.TimeWindow
+import com.lemarc.sofia.data.filterPoints
 import com.lemarc.sofia.ui.components.ChartCard
 import com.lemarc.sofia.ui.components.EmptyStateCard
 import com.lemarc.sofia.ui.components.ErrorBanner
@@ -22,8 +24,6 @@ import com.lemarc.sofia.ui.components.ProductionRecordCard
 import com.lemarc.sofia.ui.components.TimestampCard
 import com.lemarc.sofia.ui.components.TitleBanner
 import com.lemarc.sofia.ui.components.WarningBanner
-import com.lemarc.sofia.ui.filterPoints
-import com.lemarc.sofia.ui.production.TimeWindow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,7 +91,7 @@ fun B1610Screen(
                     }
                 }
                 item {
-                    ProductionRecordCard(records = state.topProduction, unit = "MWh")
+                    ProductionRecordCard(records = state.topB1610, unit = "MWh")
                 }
                 item {
                     TimestampCard(

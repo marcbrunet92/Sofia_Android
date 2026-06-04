@@ -19,12 +19,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.lemarc.sofia.data.model.ProductionPoint
 import com.lemarc.sofia.ui.b1610.B1610Screen
 import com.lemarc.sofia.ui.b1610.B1610ViewModel
 import com.lemarc.sofia.ui.production.ProductionScreen
 import com.lemarc.sofia.ui.production.ProductionViewModel
-import com.lemarc.sofia.ui.production.TimeWindow
 import com.lemarc.sofia.ui.remit.RemitScreen
 import com.lemarc.sofia.ui.remit.RemitViewModel
 import com.lemarc.sofia.ui.settings.SettingsScreen
@@ -139,13 +137,4 @@ fun SofiaApp(
             )
         }
     }
-}
-
-
-
-fun filterPoints(points: List<ProductionPoint>, window: TimeWindow): List<ProductionPoint> {
-    val duration = window.duration ?: return points
-    val lastTimestamp = points.lastOrNull()?.timeTo ?: return emptyList()
-    val threshold = lastTimestamp.minus(duration)
-    return points.filter { it.timeTo >= threshold }
 }

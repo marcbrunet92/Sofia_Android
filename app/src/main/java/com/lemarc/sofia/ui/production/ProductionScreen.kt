@@ -8,15 +8,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.TimeWindow
+import com.lemarc.sofia.data.filterPoints
 import com.lemarc.sofia.ui.components.ChartCard
 import com.lemarc.sofia.ui.components.EmptyStateCard
 import com.lemarc.sofia.ui.components.ErrorBanner
@@ -25,8 +24,6 @@ import com.lemarc.sofia.ui.components.ProductionRecordCard
 import com.lemarc.sofia.ui.components.TimestampCard
 import com.lemarc.sofia.ui.components.TitleBanner
 import com.lemarc.sofia.ui.components.WarningBanner
-import com.lemarc.sofia.ui.filterPoints
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -14,14 +14,14 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
-import com.lemarc.sofia.data.model.ProductionPoint
+import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.ui.shortAxisFormatter
 import kotlin.math.max
 import kotlin.math.roundToInt
 
 
 @Composable
-fun ProductionChart(points: List<ProductionPoint>) {
+fun ProductionChart(points: List<GraphPoint>) {
 
     val axisColor = MaterialTheme.colorScheme.onSurface.toArgb()
 
@@ -61,7 +61,7 @@ fun ProductionChart(points: List<ProductionPoint>) {
         },
         update = { chart ->
             val entries = points.mapIndexed { index, point ->
-                Entry(index.toFloat(), point.levelMw.toFloat())
+                Entry(index.toFloat(), point.quantity.toFloat())
             }
 
             val dataSet = LineDataSet(entries, "Production").apply {
@@ -78,7 +78,7 @@ fun ProductionChart(points: List<ProductionPoint>) {
             chart.data = LineData(dataSet)
 
             chart.axisLeft.axisMaximum =
-                (max(points.maxOfOrNull { it.levelMw } ?: 0.0, 10.0) * 1.15).toFloat()
+                (max(points.maxOfOrNull { it.quantity } ?: 0.0, 10.0) * 1.15).toFloat()
 
             chart.xAxis.valueFormatter = object : ValueFormatter() {
                 override fun getAxisLabel(
