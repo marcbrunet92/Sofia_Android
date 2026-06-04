@@ -235,26 +235,33 @@ private fun WindProductionChartCard(
                     if (weatherPoints.isEmpty() && productionPoints.isEmpty()) return@AndroidView
 
                     // Align both series on a shared epoch-second X axis
-                    val barEntries = productionPoints.map { pt ->
-                        BarEntry(pt.timeFrom.epochSecond.toFloat(), pt.levelMw.toFloat())
-                    }
-                    val lineEntries = weatherPoints.map { pt ->
-                        Entry(pt.timeFrom.epochSecond.toFloat(), pt.windSpeed.toFloat())
+                    val combinedData = CombinedData()
+
+                    if (productionPoints.isNotEmpty()) {
+                        val barEntries = productionPoints.map { pt ->
+                            BarEntry(pt.timeFrom.epochSecond.toFloat(), pt.levelMw.toFloat())
+                        }
+                        val barDataSet = BarDataSet(barEntries, "Production (MW)").apply {
+                            color = barColor
+                            setDrawValues(false)
+                            axisDependency = YAxis.AxisDependency.LEFT
+                        }
+                        combinedData.setData(BarData(barDataSet).apply { barWidth = 1800f })
                     }
 
-                    val barDataSet = BarDataSet(barEntries, "Production (MW)").apply {
-                        color = barColor
-                        setDrawValues(false)
-                        axisDependency = YAxis.AxisDependency.LEFT
-                    }
-
-                    val lineDataSet = LineDataSet(lineEntries, "Wind speed (m/s)").apply {
-                        color = lineColor
-                        lineWidth = 2f
-                        setDrawCircles(false)
-                        setDrawValues(false)
-                        mode = LineDataSet.Mode.CUBIC_BEZIER
-                        axisDependency = YAxis.AxisDependency.RIGHT
+                    if (weatherPoints.isNotEmpty()) {
+                        val lineEntries = weatherPoints.map { pt ->
+                            Entry(pt.timeFrom.epochSecond.toFloat(), pt.windSpeed.toFloat())
+                        }
+                        val lineDataSet = LineDataSet(lineEntries, "Wind speed (m/s)").apply {
+                            color = lineColor
+                            lineWidth = 2f
+                            setDrawCircles(false)
+                            setDrawValues(false)
+                            mode = LineDataSet.Mode.CUBIC_BEZIER
+                            axisDependency = YAxis.AxisDependency.RIGHT
+                        }
+                        combinedData.setData(LineData(lineDataSet))
                     }
 
                     // Format X labels as HH:mm or dd/MM depending on window
@@ -268,10 +275,7 @@ private fun WindProductionChartCard(
                             formatter.format(Instant.ofEpochSecond(value.toLong()))
                     }
 
-                    chart.data = CombinedData().apply {
-                        setData(BarData(barDataSet))
-                        setData(LineData(lineDataSet))
-                    }
+                    chart.data = combinedData
                     chart.invalidate()
                 },
             )
