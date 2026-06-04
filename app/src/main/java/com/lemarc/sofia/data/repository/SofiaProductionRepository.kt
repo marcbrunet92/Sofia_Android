@@ -49,7 +49,7 @@ class SofiaProductionRepository(
         ProductionSnapshot(
             points = aggregatedPoints,
             currentMw = aggregatedPoints.lastOrNull()?.levelMw ?: 0.0,
-            maxCapacityMw = if (testMode) deriveTestCapacity(aggregatedPoints) else SOFIA_MAX_CAPACITY_MW,
+            maxCapacityMw = SOFIA_MAX_CAPACITY_MW,
             latestDataTimestamp = aggregatedPoints.lastOrNull()?.timeTo,
             topProduction = topProduction,
         )
@@ -92,15 +92,6 @@ internal fun aggregateProduction(
             )
         }
         .sortedBy { it.timeFrom }
-}
-
-private fun deriveTestCapacity(points: List<ProductionPoint>): Double {
-    val peak = points.maxOfOrNull { it.levelMw } ?: 0.0
-    return if (peak <= 0.0) {
-        1.0
-    } else {
-        ceil(peak / 50.0) * 50.0
-    }
 }
 
 private fun PnTopProductionWindowsDto.toTopProductionWindows(): TopProductionWindows =
