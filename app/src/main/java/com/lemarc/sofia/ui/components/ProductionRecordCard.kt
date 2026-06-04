@@ -19,7 +19,7 @@ import com.lemarc.sofia.ui.timestampFormatter
 import kotlin.math.roundToInt
 
 @Composable
-fun ProductionRecordCard(records: TopProductionWindows) {
+fun ProductionRecordCard(records: TopProductionWindows, unit: String = "MW") {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
@@ -35,10 +35,10 @@ fun ProductionRecordCard(records: TopProductionWindows) {
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
-            RecordRow(label = "All-time", point = records.allTime)
-            RecordRow(label = "Last 7 days", point = records.last7Days)
-            RecordRow(label = "Last 30 days", point = records.last30Days)
-            RecordRow(label = "Last 90 days", point = records.last90Days)
+            RecordRow(label = "All-time", point = records.allTime, unit = unit)
+            RecordRow(label = "Last 7 days", point = records.last7Days, unit = unit)
+            RecordRow(label = "Last 30 days", point = records.last30Days, unit = unit)
+            RecordRow(label = "Last 90 days", point = records.last90Days, unit = unit)
         }
     }
 }
@@ -47,6 +47,7 @@ fun ProductionRecordCard(records: TopProductionWindows) {
 private fun RecordRow(
     label: String,
     point: TopProductionPoint,
+    unit: String = "MW",
 ) {
     val dateValue = point.maxDate?.let(timestampFormatter::format) ?: "—"
     Row(
@@ -59,7 +60,7 @@ private fun RecordRow(
             fontWeight = FontWeight.Medium,
         )
         Text(
-            text = "${point.maxMw.roundToInt()} MW • $dateValue",
+            text = "${point.maxMw.roundToInt()} $unit • $dateValue",
             style = MaterialTheme.typography.bodySmall,
         )
     }
