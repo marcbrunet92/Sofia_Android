@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Bolt
-import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
@@ -25,6 +24,7 @@ import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.ui.b1610.B1610Screen
 import com.lemarc.sofia.ui.b1610.B1610ViewModel
 import com.lemarc.sofia.ui.production.ProductionScreen
+import com.lemarc.sofia.ui.production.ProductionCombinedScreen
 import com.lemarc.sofia.ui.production.ProductionViewModel
 import com.lemarc.sofia.ui.graph.GraphScreen
 import com.lemarc.sofia.ui.graph.GraphViewModel
@@ -39,7 +39,6 @@ import java.time.format.DateTimeFormatter
 
 private enum class AppTab(val label: String) {
     Production("Production"),
-    RealOutput("Real Output"),
     Graph("Graph"),
     Weather("Weather"),
     Remit("REMIT"),
@@ -87,12 +86,7 @@ fun SofiaApp(
                     icon = { Icon(Icons.Filled.Bolt, contentDescription = null) },
                     label = { Text(AppTab.Production.label) },
                 )
-                NavigationBarItem(
-                    selected = selectedTab == AppTab.RealOutput,
-                    onClick = { selectedTab = AppTab.RealOutput },
-                    icon = { Icon(Icons.Filled.PowerSettingsNew, contentDescription = null) },
-                    label = { Text(AppTab.RealOutput.label) },
-                )
+                // Real Output merged into Production tab via pager
                 NavigationBarItem(
                     selected = selectedTab == AppTab.Graph,
                     onClick = { selectedTab = AppTab.Graph },
@@ -121,20 +115,16 @@ fun SofiaApp(
         },
     ) { innerPadding ->
         when (selectedTab) {
-            AppTab.Production -> ProductionScreen(
-                state = productionState,
+            AppTab.Production -> ProductionCombinedScreen(
+                productionState = productionState,
+                b1610State = b1610State,
                 modifier = Modifier.padding(innerPadding),
-                onRefresh = { productionViewModel.refresh() },
-                onSelectWindow = productionViewModel::selectWindow,
-                onDismissError = productionViewModel::dismissError,
-            )
-
-            AppTab.RealOutput -> B1610Screen(
-                state = b1610State,
-                modifier = Modifier.padding(innerPadding),
-                onRefresh = { b1610ViewModel.refresh() },
-                onSelectWindow = b1610ViewModel::selectWindow,
-                onDismissError = b1610ViewModel::dismissError,
+                onRefreshProduction = { productionViewModel.refresh() },
+                onSelectWindowProduction = productionViewModel::selectWindow,
+                onDismissErrorProduction = productionViewModel::dismissError,
+                onRefreshB1610 = { b1610ViewModel.refresh() },
+                onSelectWindowB1610 = b1610ViewModel::selectWindow,
+                onDismissErrorB1610 = b1610ViewModel::dismissError,
             )
 
             AppTab.Graph -> GraphScreen(
