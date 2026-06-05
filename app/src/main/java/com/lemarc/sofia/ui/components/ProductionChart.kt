@@ -21,7 +21,7 @@ import kotlin.math.roundToInt
 
 
 @Composable
-fun ProductionChart(points: List<GraphPoint>) {
+fun ProductionChart(points: List<GraphPoint>, allowNegative: Boolean, unit: String) {
 
     val axisColor = MaterialTheme.colorScheme.onSurface.toArgb()
 
@@ -44,7 +44,11 @@ fun ProductionChart(points: List<GraphPoint>) {
                 axisRight.isEnabled = false
 
                 axisLeft.apply {
-                    axisMinimum = 0f
+                    axisMinimum = if (allowNegative) {
+                        points.minOf { it.quantity }.toFloat()
+                    } else {
+                        0f
+                    }
                     textColor = axisColor
                 }
 
@@ -87,6 +91,22 @@ fun ProductionChart(points: List<GraphPoint>) {
                 ): String {
                     val index = value.roundToInt().coerceIn(points.indices)
                     return shortAxisFormatter.format(points[index].timeFrom)
+                }
+            }
+            chart.axisLeft.apply {
+                axisMinimum = if (allowNegative) {
+                    points.minOf { it.quantity }.toFloat()
+                } else {
+                    0f
+                }
+                textColor = axisColor
+            }
+            chart.axisLeft.valueFormatter = object : ValueFormatter() {
+                override fun getAxisLabel(
+                    value: Float,
+                    axis: com.github.mikephil.charting.components.AxisBase?
+                ): String {
+                    return "${value.roundToInt()} $unit"
                 }
             }
 

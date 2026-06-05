@@ -87,6 +87,8 @@ fun B1610Screen(
                             points = displayedPoints,
                             selectedWindow = state.selectedWindow,
                             onSelectWindow = onSelectWindow,
+                            allowNegative = true,
+                            unit = "MWh"
                         )
                     }
                 }

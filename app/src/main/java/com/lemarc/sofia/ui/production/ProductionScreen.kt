@@ -90,6 +90,7 @@ fun ProductionScreen(
                             points = displayedPoints,
                             selectedWindow = state.selectedWindow,
                             onSelectWindow = onSelectWindow,
+                            unit = "MW"
                         )
                     }
                 }

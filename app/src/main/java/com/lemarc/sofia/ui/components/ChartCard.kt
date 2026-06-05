@@ -22,6 +22,8 @@ fun ChartCard(
     points: List<GraphPoint>,
     selectedWindow: TimeWindow,
     onSelectWindow: (TimeWindow) -> Unit,
+    allowNegative: Boolean = false,
+    unit: String
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -51,7 +53,7 @@ fun ChartCard(
                     )
                 }
             }
-            ProductionChart(points = points)
+            ProductionChart(points = points, allowNegative = allowNegative, unit = unit)
             Text(
                 text = "Scroll and pinch to inspect the chart in detail.",
                 style = MaterialTheme.typography.bodySmall,

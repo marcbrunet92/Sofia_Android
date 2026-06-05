@@ -83,7 +83,7 @@ fun WeatherScreen(
                         points = filteredWeather,
                         onSelectWindow  = onSelectWindow,
                         selectedWindow = state.selectedWindow,
-
+                        unit = "m/s"
                     )
                 }
 
