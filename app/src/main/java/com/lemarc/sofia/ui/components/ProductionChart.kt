@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -87,7 +88,7 @@ fun ProductionChart(points: List<GraphPoint>, allowNegative: Boolean, unit: Stri
             chart.xAxis.valueFormatter = object : ValueFormatter() {
                 override fun getAxisLabel(
                     value: Float,
-                    axis: com.github.mikephil.charting.components.AxisBase?,
+                    axis: AxisBase?,
                 ): String {
                     val index = value.roundToInt().coerceIn(points.indices)
                     return shortAxisFormatter.format(points[index].timeFrom)
@@ -104,12 +105,15 @@ fun ProductionChart(points: List<GraphPoint>, allowNegative: Boolean, unit: Stri
             chart.axisLeft.valueFormatter = object : ValueFormatter() {
                 override fun getAxisLabel(
                     value: Float,
-                    axis: com.github.mikephil.charting.components.AxisBase?
+                    axis: AxisBase?
                 ): String {
-                    return "${value.roundToInt()} $unit"
+                    return if (value % 1f == 0f) {
+                        "${value.toInt()} $unit"
+                    } else {
+                        "$value $unit"
+                    }
                 }
             }
-
             chart.invalidate()
         },
     )
