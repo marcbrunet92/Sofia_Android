@@ -15,6 +15,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.ui.shortAxisFormatter
 import kotlin.math.max
@@ -22,7 +23,7 @@ import kotlin.math.roundToInt
 
 
 @Composable
-fun ProductionChart(points: List<GraphPoint>, allowNegative: Boolean, unit: String) {
+fun ProductionChart(points: List<GraphPoint>, allowNegative: Boolean, unit: String, tw: TimeWindow) {
 
     val axisColor = MaterialTheme.colorScheme.onSurface.toArgb()
 
@@ -91,7 +92,7 @@ fun ProductionChart(points: List<GraphPoint>, allowNegative: Boolean, unit: Stri
                     axis: AxisBase?,
                 ): String {
                     val index = value.roundToInt().coerceIn(points.indices)
-                    return shortAxisFormatter.format(points[index].timeFrom)
+                    return shortAxisFormatter(tw).format(points[index].timeFrom)
                 }
             }
             chart.axisLeft.apply {

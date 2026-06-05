@@ -196,7 +196,7 @@ private fun GraphChartCard(
                     )
                 }
             }
-            ProductionChartMulti(left = left, right = right)
+            ProductionChartMulti(left = left, right = right, tw = selectedWindow)
         }
     }
 }

@@ -20,6 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.ui.b1610.B1610Screen
 import com.lemarc.sofia.ui.b1610.B1610ViewModel
 import com.lemarc.sofia.ui.production.ProductionScreen
@@ -47,10 +48,18 @@ private enum class AppTab(val label: String) {
 val timestampFormatter: DateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'")
         .withZone(ZoneOffset.UTC)
-val shortAxisFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("MM-dd HH:mm")
-        .withZone(ZoneOffset.UTC)
+fun shortAxisFormatter(tw: TimeWindow): DateTimeFormatter {
+    val pattern = when (tw) {
+        TimeWindow.HOURS_6  -> "HH:mm"
+        TimeWindow.HOURS_24 -> "MM-dd HH:mm"
+        TimeWindow.HOURS_48 -> "MM-dd HH:mm"
+        TimeWindow.DAYS_7   -> "MM-dd"
+        TimeWindow.ALL      -> "MM-dd"
+    }
 
+    return DateTimeFormatter.ofPattern(pattern)
+        .withZone(ZoneOffset.UTC)
+}
 @Composable
 fun SofiaApp(
     productionViewModel: ProductionViewModel,

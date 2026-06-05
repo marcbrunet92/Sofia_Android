@@ -53,7 +53,7 @@ fun ChartCard(
                     )
                 }
             }
-            ProductionChart(points = points, allowNegative = allowNegative, unit = unit)
+            ProductionChart(points = points, allowNegative = allowNegative, unit = unit, tw = selectedWindow)
         }
     }
 }

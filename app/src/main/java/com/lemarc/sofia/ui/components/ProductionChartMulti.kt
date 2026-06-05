@@ -16,9 +16,9 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.ui.shortAxisFormatter
-import kotlin.math.max
 import kotlin.math.roundToInt
 
 data class ChartSeries(
@@ -32,6 +32,7 @@ data class ChartSeries(
 fun ProductionChartMulti(
     left: List<ChartSeries>,
     right: List<ChartSeries> = emptyList(),
+    tw: TimeWindow
 ) {
     val axisColor = MaterialTheme.colorScheme.onSurface.toArgb()
 
@@ -108,14 +109,12 @@ fun ProductionChartMulti(
                 }
 
                 val allPoints = left.flatMap { it.points }
-                val anyNegativeAllowed = left.any { it.allowNegative }
                 chart.axisLeft.apply {
-                    axisMinimum = if (anyNegativeAllowed && allPoints.isNotEmpty()) {
-                        allPoints.minOf { it.quantity }.toFloat()
-                    } else 0f
-                    axisMaximum = if (allPoints.isNotEmpty()) {
-                        (max(allPoints.maxOf { it.quantity }, 10.0) * 1.15).toFloat()
-                    } else 10f
+                    axisMinimum = if (allPoints.isNotEmpty()) {
+                        minOf(0f, allPoints.minOf { it.quantity }.toFloat())
+                    } else {
+                        0f
+                    }
                     textColor = axisColor
                 }
                 val leftUnit = left.first().unit
@@ -145,15 +144,13 @@ fun ProductionChartMulti(
                 }
 
                 val allPoints = right.flatMap { it.points }
-                val anyNegativeAllowed = right.any { it.allowNegative }
                 chart.axisRight.apply {
                     isEnabled = true
-                    axisMinimum = if (anyNegativeAllowed && allPoints.isNotEmpty()) {
-                        allPoints.minOf { it.quantity }.toFloat()
-                    } else 0f
-                    axisMaximum = if (allPoints.isNotEmpty()) {
-                        (max(allPoints.maxOf { it.quantity }, 10.0) * 1.15).toFloat()
-                    } else 10f
+                    axisMinimum = if (allPoints.isNotEmpty()) {
+                        minOf(0f, allPoints.minOf { it.quantity }.toFloat())
+                    } else {
+                        0f
+                    }
                     textColor = axisColor
                 }
                 val rightUnit = right.first().unit
@@ -175,7 +172,7 @@ fun ProductionChartMulti(
             chart.xAxis.valueFormatter = object : ValueFormatter() {
                 override fun getAxisLabel(value: Float, axis: AxisBase?): String {
                     val index = value.roundToInt().coerceIn(referencePoints.indices)
-                    return if (referencePoints.isNotEmpty()) shortAxisFormatter.format(referencePoints[index].timeFrom) else ""
+                    return if (referencePoints.isNotEmpty()) shortAxisFormatter(tw).format(referencePoints[index].timeFrom) else ""
                 }
             }
             chart.invalidate()
