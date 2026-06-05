@@ -15,6 +15,7 @@ import com.lemarc.sofia.data.repository.SofiaWeatherRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
 import com.lemarc.sofia.ui.SofiaApp
 import com.lemarc.sofia.ui.b1610.B1610ViewModel
+import com.lemarc.sofia.ui.graph.GraphViewModel
 import com.lemarc.sofia.ui.production.ProductionViewModel
 import com.lemarc.sofia.ui.remit.RemitViewModel
 import com.lemarc.sofia.ui.settings.SettingsViewModel
@@ -69,9 +70,18 @@ class MainActivity : ComponentActivity() {
                         settingsRepository = settingsRepository,
                     ),
                 )
+                val graphViewModel: GraphViewModel = viewModel(
+                    factory = GraphViewModel.Factory(
+                        productionRepository = productionRepository,
+                        b1610Repository = b1610Repository,
+                        weatherRepository = weatherRepository,
+                        settingsRepository = settingsRepository,
+                    ),
+                )
                 SofiaApp(
                     productionViewModel = productionViewModel,
                     b1610ViewModel = b1610ViewModel,
+                    graphViewModel = graphViewModel,
                     remitViewModel = remitViewModel,
                     settingsViewModel = settingsViewModel,
                     weatherViewModel = weatherViewModel,

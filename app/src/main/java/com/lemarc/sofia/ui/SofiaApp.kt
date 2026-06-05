@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
@@ -23,6 +24,8 @@ import com.lemarc.sofia.ui.b1610.B1610Screen
 import com.lemarc.sofia.ui.b1610.B1610ViewModel
 import com.lemarc.sofia.ui.production.ProductionScreen
 import com.lemarc.sofia.ui.production.ProductionViewModel
+import com.lemarc.sofia.ui.graph.GraphScreen
+import com.lemarc.sofia.ui.graph.GraphViewModel
 import com.lemarc.sofia.ui.remit.RemitScreen
 import com.lemarc.sofia.ui.remit.RemitViewModel
 import com.lemarc.sofia.ui.settings.SettingsScreen
@@ -35,6 +38,7 @@ import java.time.format.DateTimeFormatter
 private enum class AppTab(val label: String) {
     Production("Production"),
     RealOutput("Real Output"),
+    Graph("Graph"),
     Weather("Weather"),
     Remit("REMIT"),
     Settings("Settings"),
@@ -51,12 +55,14 @@ val shortAxisFormatter: DateTimeFormatter =
 fun SofiaApp(
     productionViewModel: ProductionViewModel,
     b1610ViewModel: B1610ViewModel,
+    graphViewModel: GraphViewModel,
     remitViewModel: RemitViewModel,
     settingsViewModel: SettingsViewModel,
     weatherViewModel: WeatherViewModel,
 ) {
     val productionState by productionViewModel.uiState.collectAsStateWithLifecycle()
     val b1610State by b1610ViewModel.uiState.collectAsStateWithLifecycle()
+    val graphState by graphViewModel.uiState.collectAsStateWithLifecycle()
     val remitState by remitViewModel.uiState.collectAsStateWithLifecycle()
     val settingsState by settingsViewModel.uiState.collectAsStateWithLifecycle()
     val weatherState by weatherViewModel.uiState.collectAsStateWithLifecycle()
@@ -76,6 +82,12 @@ fun SofiaApp(
                     onClick = { selectedTab = AppTab.RealOutput },
                     icon = { Icon(Icons.Filled.PowerSettingsNew, contentDescription = null) },
                     label = { Text(AppTab.RealOutput.label) },
+                )
+                NavigationBarItem(
+                    selected = selectedTab == AppTab.Graph,
+                    onClick = { selectedTab = AppTab.Graph },
+                    icon = { Icon(Icons.Filled.ShowChart, contentDescription = null) },
+                    label = { Text(AppTab.Graph.label) },
                 )
                 NavigationBarItem(
                     selected = selectedTab == AppTab.Remit,
@@ -113,6 +125,15 @@ fun SofiaApp(
                 onRefresh = { b1610ViewModel.refresh() },
                 onSelectWindow = b1610ViewModel::selectWindow,
                 onDismissError = b1610ViewModel::dismissError,
+            )
+
+            AppTab.Graph -> GraphScreen(
+                state = graphState,
+                modifier = Modifier.padding(innerPadding),
+                onRefresh = graphViewModel::refresh,
+                onSelectWindow = graphViewModel::selectWindow,
+                onSelectDataset = graphViewModel::selectDataset,
+                onDismissError = graphViewModel::dismissError,
             )
 
             AppTab.Weather -> WeatherScreen(
