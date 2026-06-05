@@ -132,7 +132,7 @@ fun SofiaApp(
                 modifier = Modifier.padding(innerPadding),
                 onRefresh = graphViewModel::refresh,
                 onSelectWindow = graphViewModel::selectWindow,
-                onSelectDataset = graphViewModel::selectDataset,
+                onToggleDataset = graphViewModel::toggleDataset,
                 onDismissError = graphViewModel::dismissError,
             )
 

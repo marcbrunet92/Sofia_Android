@@ -54,11 +54,6 @@ fun ChartCard(
                 }
             }
             ProductionChart(points = points, allowNegative = allowNegative, unit = unit)
-            Text(
-                text = "Scroll and pinch to inspect the chart in detail.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
     }
 }
