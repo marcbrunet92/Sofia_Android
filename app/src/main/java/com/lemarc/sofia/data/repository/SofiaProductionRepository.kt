@@ -28,7 +28,7 @@ class SofiaProductionRepository(
 ) {
     suspend fun fetchProduction(testMode: Boolean): ProductionSnapshot = withContext(Dispatchers.IO) {
         val requestedBmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
-        val (entries, topProduction) = coroutineScope {
+        var (entries, topProduction) = coroutineScope {
             val productionDeferred = async {
                 requestedBmus.map { bmuId ->
                     async {
@@ -49,6 +49,9 @@ class SofiaProductionRepository(
             productionDeferred.await() to topProductionDeferred.await()
         }
         val aggregatedPoints = aggregateProduction(entries, testMode)
+        if (topProduction.allTime.maxQuantity == 0.toDouble() && topProduction.last30Days.maxQuantity == 0.toDouble() && topProduction.last90Days.maxQuantity == 0.toDouble() && topProduction.last7Days.maxQuantity == 0.toDouble()) {
+            topProduction = calculateTopProduction(aggregatedPoints)
+        }
         ProductionSnapshot(
             points = aggregatedPoints,
             currentMw = aggregatedPoints.lastOrNull()?.quantity ?: 0.0,
@@ -67,7 +70,29 @@ class SofiaProductionRepository(
         }
     }
 }
+fun calculateTopProduction(points: List<GraphPoint>): TopWindows {
+    if (points.isEmpty()) return TopWindows.Empty
 
+    fun findMax(filteredPoints: List<GraphPoint>): TopPoint {
+        val maxPoint = filteredPoints.maxByOrNull { it.quantity }
+        return TopPoint(
+            maxQuantity = maxPoint?.quantity ?: 0.0,
+            maxDate = maxPoint?.timeFrom
+        )
+    }
+
+    val now = Instant.now()
+    val last7Days = points.filter { it.timeFrom >= now.minus(java.time.Duration.ofDays(7)) }
+    val last30Days = points.filter { it.timeFrom >= now.minus(java.time.Duration.ofDays(30)) }
+    val last90Days = points.filter { it.timeFrom >= now.minus(java.time.Duration.ofDays(90)) }
+
+    return TopWindows(
+        allTime = findMax(points),
+        last7Days = findMax(last7Days),
+        last30Days = findMax(last30Days),
+        last90Days = findMax(last90Days)
+    )
+}
 internal fun aggregateProduction(
     entries: List<PnEntryDto>,
     testMode: Boolean,
