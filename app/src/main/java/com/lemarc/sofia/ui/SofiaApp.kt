@@ -2,6 +2,7 @@ package com.lemarc.sofia.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.ShowChart
@@ -95,7 +96,7 @@ fun SofiaApp(
                 NavigationBarItem(
                     selected = selectedTab == AppTab.Graph,
                     onClick = { selectedTab = AppTab.Graph },
-                    icon = { Icon(Icons.Filled.ShowChart, contentDescription = null) },
+                    icon = { Icon(Icons.AutoMirrored.Filled.ShowChart, contentDescription = null) },
                     label = { Text(AppTab.Graph.label) },
                 )
                 NavigationBarItem(
