@@ -111,7 +111,7 @@ fun ProductionChartMulti(
                 val allPoints = left.flatMap { it.points }
                 chart.axisLeft.apply {
                     axisMinimum = if (allPoints.isNotEmpty()) {
-                        minOf(0f, allPoints.minOf { it.quantity }.toFloat())
+                        minOf(0f, allPoints.minOf { it.quantity }.toFloat()) -2f
                     } else {
                         0f
                     }
@@ -147,7 +147,7 @@ fun ProductionChartMulti(
                 chart.axisRight.apply {
                     isEnabled = true
                     axisMinimum = if (allPoints.isNotEmpty()) {
-                        minOf(0f, allPoints.minOf { it.quantity }.toFloat())
+                        minOf(0f, allPoints.minOf { it.quantity }.toFloat()) - 2f
                     } else {
                         0f
                     }
