@@ -11,6 +11,8 @@ import com.lemarc.sofia.data.api.PnEntryDto
 import com.lemarc.sofia.data.api.PnTopProductionPointDto
 import com.lemarc.sofia.data.api.PnTopProductionWindowsDto
 import com.lemarc.sofia.data.api.SofiaApiService
+import com.lemarc.sofia.data.local.ProductionPointEntity
+import com.lemarc.sofia.data.local.dao.SofiaDao
 import com.lemarc.sofia.data.model.ProductionSnapshot
 import com.lemarc.sofia.util.parseApiInstant
 import com.lemarc.sofia.util.parseApiUtc
@@ -19,57 +21,69 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SofiaProductionRepository(
     private val apiService: SofiaApiService,
+    private val sofiaDao: SofiaDao,
 ) {
-    suspend fun fetchProduction(testMode: Boolean): ProductionSnapshot = withContext(Dispatchers.IO) {
+    fun observeProduction(testMode: Boolean): Flow<ProductionSnapshot> {
+        return sofiaDao.getProductionPoints(testMode).map { entities ->
+            val points = entities.map { it.toModel() }
+            val topProduction = calculateTopProduction(points)
+            ProductionSnapshot(
+                points = points,
+                currentMw = points.lastOrNull()?.quantity ?: 0.0,
+                latestDataTimestamp = points.lastOrNull()?.timeTo,
+                topProduction = topProduction,
+            )
+        }
+    }
+
+    suspend fun refreshProduction(testMode: Boolean) = withContext(Dispatchers.IO) {
         val requestedBmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
-        var (entries, topProduction) = coroutineScope {
-            val productionDeferred = async {
-                requestedBmus.map { bmuId ->
-                    async {
-                        apiService.getProduction(
-                            bmuId = bmuId,
-                            timeFrom = HISTORY_START.toString(),
-                            timeTo = Instant.now().toString(),
-                        )
-                    }
-                }.awaitAll().flatten()
+        val entries = requestedBmus.map { bmuId ->
+            async {
+                apiService.getProduction(
+                    bmuId = bmuId,
+                    timeFrom = HISTORY_START.toString(),
+                    timeTo = Instant.now().toString(),
+                )
             }
-            val topProductionDeferred = async {
-                runCatching { apiService.getTopProduction() }
-                    .getOrNull()
-                    ?.toTopWindows()
-                    ?: TopWindows.Empty
-            }
-            productionDeferred.await() to topProductionDeferred.await()
-        }
+        }.awaitAll().flatten()
+
         val aggregatedPoints = aggregateProduction(entries, testMode)
-        if (topProduction.allTime.maxQuantity == 0.toDouble() && topProduction.last30Days.maxQuantity == 0.toDouble() && topProduction.last90Days.maxQuantity == 0.toDouble() && topProduction.last7Days.maxQuantity == 0.toDouble()) {
-            topProduction = calculateTopProduction(aggregatedPoints)
-        }
-        ProductionSnapshot(
-            points = aggregatedPoints,
-            currentMw = aggregatedPoints.lastOrNull()?.quantity ?: 0.0,
-            latestDataTimestamp = aggregatedPoints.lastOrNull()?.timeTo,
-            topProduction = topProduction,
-        )
+        val entities: List<ProductionPointEntity> = aggregatedPoints.map { it.toProductionEntity(testMode) }
+        sofiaDao.refreshProductionPoints(testMode, entities)
     }
 
     companion object {
-        fun create(): SofiaProductionRepository {
-            val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-            return SofiaProductionRepository(retrofit.create(SofiaApiService::class.java))
+        fun create(apiService: SofiaApiService, sofiaDao: SofiaDao): SofiaProductionRepository {
+            return SofiaProductionRepository(apiService, sofiaDao)
         }
     }
 }
+
+fun GraphPoint.toProductionEntity(testMode: Boolean): ProductionPointEntity =
+    ProductionPointEntity(
+        id = id,
+        timeFrom = timeFrom,
+        timeTo = timeTo,
+        quantity = quantity,
+        isTestMode = testMode
+    )
+
+fun ProductionPointEntity.toModel(): GraphPoint =
+    GraphPoint(
+        id = id,
+        timeFrom = timeFrom,
+        timeTo = timeTo,
+        quantity = quantity
+    )
 fun calculateTopProduction(points: List<GraphPoint>): TopWindows {
     if (points.isEmpty()) return TopWindows.Empty
 

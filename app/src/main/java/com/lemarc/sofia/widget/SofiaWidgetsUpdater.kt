@@ -7,8 +7,11 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import com.lemarc.sofia.MainActivity
+import com.lemarc.sofia.BASE_URL
 import com.lemarc.sofia.R
 import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
+import com.lemarc.sofia.data.api.SofiaApiService
+import com.lemarc.sofia.data.local.SofiaDatabase
 import com.lemarc.sofia.data.model.ProductionSnapshot
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
@@ -17,6 +20,8 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.first
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 object SofiaWidgetsUpdater {
     private val timestampFormatter: DateTimeFormatter =
@@ -36,8 +41,18 @@ object SofiaWidgetsUpdater {
 
         val testMode = SettingsRepository(appContext).testMode.first()
         val fetchedAt = Instant.now()
+        
+        val apiService = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SofiaApiService::class.java)
+        val sofiaDao = SofiaDatabase.getDatabase(appContext).sofiaDao()
+        val repository = SofiaProductionRepository.create(apiService, sofiaDao)
+
         val snapshot = runCatching {
-            SofiaProductionRepository.create().fetchProduction(testMode)
+            repository.refreshProduction(testMode)
+            repository.observeProduction(testMode).first()
         }.getOrNull()
 
         smallIds.forEach { appWidgetId ->

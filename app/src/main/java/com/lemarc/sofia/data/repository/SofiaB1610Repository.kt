@@ -12,6 +12,8 @@ import com.lemarc.sofia.data.model.B1610Snapshot
 import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.data.model.TopPoint
 import com.lemarc.sofia.data.model.TopWindows
+import com.lemarc.sofia.data.local.B1610PointEntity
+import com.lemarc.sofia.data.local.dao.SofiaDao
 import com.lemarc.sofia.util.parseApiInstant
 import com.lemarc.sofia.util.parseApiUtc
 import java.time.Instant
@@ -19,14 +21,29 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.Duration
 
 class SofiaB1610Repository(
     private val apiService: SofiaApiService,
+    private val sofiaDao: SofiaDao,
 ) {
-    suspend fun fetchB1610(testMode: Boolean): B1610Snapshot = withContext(Dispatchers.IO) {
+    fun observeB1610(testMode: Boolean): Flow<B1610Snapshot> {
+        return sofiaDao.getB1610Points(testMode).map { entities ->
+            val points: List<GraphPoint> = entities.map { it.toModel() }
+            B1610Snapshot(
+                points = points,
+                latestDataTimestamp = points.lastOrNull()?.timeTo,
+                topB1610 = calculateTopB1610(points)
+            )
+        }
+    }
+
+    suspend fun refreshB1610(testMode: Boolean) = withContext(Dispatchers.IO) {
         val requestedBmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
         val (entries, topB1610) = coroutineScope {
             val b1610Deferred = async {
@@ -48,23 +65,58 @@ class SofiaB1610Repository(
             }
             b1610Deferred.await() to topB1610Deferred.await()
         }
+
         val aggregatedPoints = aggregateB1610(entries, testMode)
-        B1610Snapshot(
-            points = aggregatedPoints,
-            latestDataTimestamp = aggregatedPoints.lastOrNull()?.timeTo,
-            topB1610 = topB1610,
-        )
+        val entities: List<B1610PointEntity> = aggregatedPoints.map { it.toB1610Entity(testMode) }
+        sofiaDao.refreshB1610Points(testMode, entities)
     }
 
     companion object {
-        fun create(): SofiaB1610Repository {
-            val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-            return SofiaB1610Repository(retrofit.create(SofiaApiService::class.java))
+        fun create(apiService: SofiaApiService, sofiaDao: SofiaDao): SofiaB1610Repository {
+            return SofiaB1610Repository(apiService, sofiaDao)
         }
     }
+}
+
+fun GraphPoint.toB1610Entity(testMode: Boolean): B1610PointEntity =
+    B1610PointEntity(
+        id = id,
+        timeFrom = timeFrom,
+        timeTo = timeTo,
+        quantity = quantity,
+        isTestMode = testMode
+    )
+
+fun B1610PointEntity.toModel(): GraphPoint =
+    GraphPoint(
+        id = id,
+        timeFrom = timeFrom,
+        timeTo = timeTo,
+        quantity = quantity
+    )
+
+fun calculateTopB1610(points: List<GraphPoint>): TopWindows {
+    if (points.isEmpty()) return TopWindows.Empty
+
+    fun findMax(filteredPoints: List<GraphPoint>): TopPoint {
+        val maxPoint = filteredPoints.maxByOrNull { it.quantity }
+        return TopPoint(
+            maxQuantity = maxPoint?.quantity ?: 0.0,
+            maxDate = maxPoint?.timeFrom
+        )
+    }
+
+    val now = Instant.now()
+    val last7Days = points.filter { it.timeFrom >= now.minus(Duration.ofDays(7)) }
+    val last30Days = points.filter { it.timeFrom >= now.minus(Duration.ofDays(30)) }
+    val last90Days = points.filter { it.timeFrom >= now.minus(Duration.ofDays(90)) }
+
+    return TopWindows(
+        allTime = findMax(points),
+        last7Days = findMax(last7Days),
+        last30Days = findMax(last30Days),
+        last90Days = findMax(last90Days)
+    )
 }
 
 internal fun aggregateB1610(

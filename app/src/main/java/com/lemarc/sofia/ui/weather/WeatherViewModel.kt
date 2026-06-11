@@ -38,13 +38,32 @@ class WeatherViewModel(
     val uiState: StateFlow<WeatherUiState> = _uiState.asStateFlow()
 
     private var refreshJob: Job? = null
+    private var observeJob: Job? = null
 
     init {
+        startObserving()
         refresh(forceLoading = true)
         viewModelScope.launch {
             while (true) {
                 delay(60_000.milliseconds)
                 refresh()
+            }
+        }
+    }
+
+    private fun startObserving() {
+        observeJob?.cancel()
+        observeJob = viewModelScope.launch {
+            weatherRepository.observeWeather().collect { snapshot ->
+                _uiState.update {
+                    it.copy(
+                        weatherPoints = snapshot.points,
+                        latestWindSpeed = snapshot.latestWindSpeed,
+                        latestDataTimestamp = snapshot.latestDataTimestamp,
+                        isLoading = false,
+                        isRefreshing = false
+                    )
+                }
             }
         }
     }
@@ -65,22 +84,9 @@ class WeatherViewModel(
                 )
             }
             runCatching {
-                coroutineScope {
-                    val weatherDeferred = async { weatherRepository.fetchWeather() }
-                    weatherDeferred.await()
-                }
-            }.onSuccess { weatherSnapshot ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        isRefreshing = false,
-                        weatherPoints = weatherSnapshot.points,
-                        latestWindSpeed = weatherSnapshot.latestWindSpeed,
-                        latestDataTimestamp = weatherSnapshot.latestDataTimestamp,
-                        lastFetchTimestamp = Instant.now(),
-                        errorMessage = null,
-                    )
-                }
+                weatherRepository.refreshWeather()
+            }.onSuccess {
+                _uiState.update { it.copy(lastFetchTimestamp = Instant.now(), errorMessage = null) }
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(

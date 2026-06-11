@@ -60,7 +60,7 @@ private fun RecordRow(
             fontWeight = FontWeight.Medium,
         )
         Text(
-            text = "${point.maxQuantity.roundToInt()} $unit • $dateValue",
+            text = "${point.maxQuantity} $unit • $dateValue",
             style = MaterialTheme.typography.bodySmall,
         )
     }

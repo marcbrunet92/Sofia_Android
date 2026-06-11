@@ -50,11 +50,13 @@ class GraphViewModel(
     val uiState: StateFlow<GraphUiState> = _uiState.asStateFlow()
 
     private var refreshJob: Job? = null
+    private var observeJob: Job? = null
 
     init {
         viewModelScope.launch {
             settingsRepository.testMode.collect { enabled ->
                 _uiState.update { current -> current.copy(testMode = enabled) }
+                startObserving(enabled)
                 refresh(forceLoading = _uiState.value.pnPoints.isEmpty() && _uiState.value.b1610PointsMwh.isEmpty() && _uiState.value.weatherPoints.isEmpty())
             }
         }
@@ -62,6 +64,35 @@ class GraphViewModel(
             while (true) {
                 delay(60_000.milliseconds)
                 refresh()
+            }
+        }
+    }
+
+    private fun startObserving(testMode: Boolean) {
+        observeJob?.cancel()
+        observeJob = viewModelScope.launch {
+            kotlinx.coroutines.flow.combine(
+                productionRepository.observeProduction(testMode),
+                b1610Repository.observeB1610(testMode),
+                weatherRepository.observeWeather()
+            ) { pn, b1610, weather ->
+                Triple(pn, b1610, weather)
+            }.collect { (pn, b1610, weather) ->
+                val latestTs = listOfNotNull(
+                    pn.latestDataTimestamp,
+                    b1610.latestDataTimestamp,
+                    weather.latestDataTimestamp,
+                ).maxOrNull()
+                _uiState.update {
+                    it.copy(
+                        pnPoints = pn.points,
+                        b1610PointsMwh = b1610.points,
+                        weatherPoints = weather.points,
+                        latestDataTimestamp = latestTs,
+                        isLoading = false,
+                        isRefreshing = false
+                    )
+                }
             }
         }
     }
@@ -98,25 +129,14 @@ class GraphViewModel(
 
             runCatching {
                 coroutineScope {
-                    val pnDeferred = async { productionRepository.fetchProduction(_uiState.value.testMode) }
-                    val b1610Deferred = async { b1610Repository.fetchB1610(_uiState.value.testMode) }
-                    val weatherDeferred = async { weatherRepository.fetchWeather() }
-                    Triple(pnDeferred.await(), b1610Deferred.await(), weatherDeferred.await())
+                    val pnRefresh = launch { productionRepository.refreshProduction(_uiState.value.testMode) }
+                    val b1610Refresh = launch { b1610Repository.refreshB1610(_uiState.value.testMode) }
+                    val weatherRefresh = launch { weatherRepository.refreshWeather() }
+                    listOf(pnRefresh, b1610Refresh, weatherRefresh).forEach { it.join() }
                 }
-            }.onSuccess { (pn, b1610, weather) ->
-                val latestTs = listOfNotNull(
-                    pn.latestDataTimestamp,
-                    b1610.latestDataTimestamp,
-                    weather.latestDataTimestamp,
-                ).maxOrNull()
+            }.onSuccess {
                 _uiState.update {
                     it.copy(
-                        isLoading = false,
-                        isRefreshing = false,
-                        pnPoints = pn.points,
-                        b1610PointsMwh = b1610.points,
-                        weatherPoints = weather.points,
-                        latestDataTimestamp = latestTs,
                         lastFetchTimestamp = Instant.now(),
                         errorMessage = null,
                     )

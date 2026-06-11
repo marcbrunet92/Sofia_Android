@@ -41,11 +41,13 @@ class ProductionViewModel(
     val uiState: StateFlow<ProductionUiState> = _uiState.asStateFlow()
 
     private var refreshJob: Job? = null
+    private var observeJob: Job? = null
 
     init {
         viewModelScope.launch {
             settingsRepository.testMode.collect { enabled ->
                 _uiState.update { current -> current.copy(testMode = enabled) }
+                startObserving(enabled)
                 refresh(forceLoading = _uiState.value.points.isEmpty())
             }
         }
@@ -53,6 +55,24 @@ class ProductionViewModel(
             while (true) {
                 delay(60_000.milliseconds)
                 refresh()
+            }
+        }
+    }
+
+    private fun startObserving(testMode: Boolean) {
+        observeJob?.cancel()
+        observeJob = viewModelScope.launch {
+            repository.observeProduction(testMode).collect { snapshot ->
+                _uiState.update {
+                    it.copy(
+                        points = snapshot.points,
+                        currentMw = snapshot.currentMw,
+                        latestDataTimestamp = snapshot.latestDataTimestamp,
+                        topProduction = snapshot.topProduction,
+                        isLoading = false,
+                        isRefreshing = false
+                    )
+                }
             }
         }
     }
@@ -73,20 +93,9 @@ class ProductionViewModel(
                 )
             }
             runCatching {
-                repository.fetchProduction(_uiState.value.testMode)
-            }.onSuccess { snapshot ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        isRefreshing = false,
-                        points = snapshot.points,
-                        currentMw = snapshot.currentMw,
-                        latestDataTimestamp = snapshot.latestDataTimestamp,
-                        lastFetchTimestamp = Instant.now(),
-                        topProduction = snapshot.topProduction,
-                        errorMessage = null,
-                    )
-                }
+                repository.refreshProduction(_uiState.value.testMode)
+            }.onSuccess {
+                _uiState.update { it.copy(lastFetchTimestamp = Instant.now(), errorMessage = null) }
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(

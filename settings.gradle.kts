@@ -9,6 +9,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven(url = "https://jitpack.io")
     }
 }
 plugins {
@@ -22,6 +23,6 @@ dependencyResolutionManagement {
         maven(url = "https://jitpack.io")
     }
 }
-
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "Sofia_Android"
 include(":app")

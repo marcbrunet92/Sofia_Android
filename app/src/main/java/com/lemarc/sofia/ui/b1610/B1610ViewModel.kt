@@ -38,11 +38,13 @@ class B1610ViewModel(
     val uiState: StateFlow<B1610UiState> = _uiState.asStateFlow()
 
     private var refreshJob: Job? = null
+    private var observeJob: Job? = null
 
     init {
         viewModelScope.launch {
             settingsRepository.testMode.collect { enabled ->
                 _uiState.update { current -> current.copy(testMode = enabled) }
+                startObserving(enabled)
                 refresh(forceLoading = _uiState.value.points.isEmpty())
             }
         }
@@ -50,6 +52,23 @@ class B1610ViewModel(
             while (true) {
                 delay(60_000.milliseconds)
                 refresh()
+            }
+        }
+    }
+
+    private fun startObserving(testMode: Boolean) {
+        observeJob?.cancel()
+        observeJob = viewModelScope.launch {
+            repository.observeB1610(testMode).collect { snapshot ->
+                _uiState.update {
+                    it.copy(
+                        points = snapshot.points,
+                        latestDataTimestamp = snapshot.latestDataTimestamp,
+                        topB1610 = snapshot.topB1610,
+                        isLoading = false,
+                        isRefreshing = false
+                    )
+                }
             }
         }
     }
@@ -70,19 +89,9 @@ class B1610ViewModel(
                 )
             }
             runCatching {
-                repository.fetchB1610(_uiState.value.testMode)
-            }.onSuccess { snapshot ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        isRefreshing = false,
-                        points = snapshot.points,
-                        latestDataTimestamp = snapshot.latestDataTimestamp,
-                        lastFetchTimestamp = Instant.now(),
-                        topB1610 = snapshot.topB1610,
-                        errorMessage = null,
-                    )
-                }
+                repository.refreshB1610(_uiState.value.testMode)
+            }.onSuccess {
+                _uiState.update { it.copy(lastFetchTimestamp = Instant.now(), errorMessage = null) }
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(

@@ -8,11 +8,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lemarc.sofia.data.local.SofiaDatabase
 import com.lemarc.sofia.data.repository.SofiaB1610Repository
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import com.lemarc.sofia.data.repository.SofiaRemitRepository
 import com.lemarc.sofia.data.repository.SofiaWeatherRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
+import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.ui.SofiaApp
 import com.lemarc.sofia.ui.b1610.B1610ViewModel
 import com.lemarc.sofia.ui.graph.GraphViewModel
@@ -23,14 +25,27 @@ import com.lemarc.sofia.ui.theme.Sofia_AndroidTheme
 import com.lemarc.sofia.ui.weather.WeatherViewModel
 import com.lemarc.sofia.widget.SofiaWidgetsUpdater
 import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
     private val settingsRepository by lazy { SettingsRepository(applicationContext) }
-    private val productionRepository by lazy { SofiaProductionRepository.create() }
-    private val remitRepository by lazy { SofiaRemitRepository.create() }
+    private val database by lazy { SofiaDatabase.getDatabase(applicationContext) }
+    private val sofiaDao by lazy { database.sofiaDao() }
+    
+    private val apiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SofiaApiService::class.java)
+    }
 
-    private val weatherRepository by lazy { SofiaWeatherRepository.create() }
-    private val b1610Repository by lazy { SofiaB1610Repository.create() }
+    private val productionRepository by lazy { SofiaProductionRepository.create(apiService, sofiaDao) }
+    private val remitRepository by lazy { SofiaRemitRepository.create(apiService, sofiaDao) }
+
+    private val weatherRepository by lazy { SofiaWeatherRepository.create(apiService, sofiaDao) }
+    private val b1610Repository by lazy { SofiaB1610Repository.create(apiService, sofiaDao) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

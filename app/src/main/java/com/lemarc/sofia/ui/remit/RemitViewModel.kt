@@ -33,18 +33,35 @@ class RemitViewModel(
     val uiState: StateFlow<RemitUiState> = _uiState.asStateFlow()
 
     private var refreshJob: Job? = null
+    private var observeJob: Job? = null
 
     init {
         viewModelScope.launch {
             settingsRepository.testMode.collect { enabled ->
                 _uiState.update { current -> current.copy(testMode = enabled) }
+                startObserving(enabled)
                 refresh(forceLoading = _uiState.value.remits.isEmpty())
             }
         }
         viewModelScope.launch {
             while (true) {
-                delay(60_000.milliseconds)
+                delay(120_000.milliseconds)
                 refresh()
+            }
+        }
+    }
+
+    private fun startObserving(testMode: Boolean) {
+        observeJob?.cancel()
+        observeJob = viewModelScope.launch {
+            repository.observeRemits(testMode).collect { remits ->
+                _uiState.update {
+                    it.copy(
+                        remits = remits,
+                        isLoading = false,
+                        isRefreshing = false
+                    )
+                }
             }
         }
     }
@@ -61,17 +78,9 @@ class RemitViewModel(
                 )
             }
             runCatching {
-                repository.fetchRemits(_uiState.value.testMode)
-            }.onSuccess { remits ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        isRefreshing = false,
-                        remits = remits,
-                        lastFetchTimestamp = Instant.now(),
-                        errorMessage = null,
-                    )
-                }
+                repository.refreshRemits(_uiState.value.testMode)
+            }.onSuccess {
+                _uiState.update { it.copy(lastFetchTimestamp = Instant.now(), errorMessage = null) }
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(

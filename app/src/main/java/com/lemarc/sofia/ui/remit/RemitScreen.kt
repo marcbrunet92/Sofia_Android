@@ -42,26 +42,8 @@ fun RemitScreen(
     modifier: Modifier = Modifier,
     onRefresh: () -> Unit,
     onDismissError: () -> Unit,
+    onNavigateToDetail: (Int) -> Unit,
 ) {
-    // Track which notice is selected for the detail view (by id)
-    var selectedNoticeId by rememberSaveable { mutableStateOf<Int?>(null) }
-    val selectedNotice: RemitNotice? = selectedNoticeId?.let { id ->
-        state.remits.firstOrNull { it.id == id }
-    }
-
-    // Intercept hardware/gesture back when detail is open
-    BackHandler(enabled = selectedNoticeId != null) {
-        selectedNoticeId = null
-    }
-
-    if (selectedNotice != null) {
-        RemitDetailScreen(
-            notice = selectedNotice,
-            onBack = { selectedNoticeId = null },
-        )
-        return
-    }
-
     PullToRefreshBox(
         isRefreshing = state.isRefreshing,
         onRefresh = onRefresh,
@@ -114,7 +96,7 @@ fun RemitScreen(
                     ) { index ->
                         RemitNoticeCard(
                             notice = state.remits[index],
-                            onClick = { selectedNoticeId = state.remits[index].id },
+                            onClick = { onNavigateToDetail(state.remits[index].id) },
                         )
                     }
                 }
