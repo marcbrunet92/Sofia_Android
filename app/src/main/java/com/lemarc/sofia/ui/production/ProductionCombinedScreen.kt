@@ -114,14 +114,14 @@ private fun FloatingPagerSlider(
             // Clickable segments + labels
             Row(modifier = Modifier.matchParentSize()) {
                 Segment(
-                    text = "Production",
+                    text = "Expected Production",
                     selected = pagerState.currentPage == 0,
                     onClick = { scope.launch { pagerState.animateScrollToPage(0) } },
                     width = segmentWidth,
                     height = segmentHeight,
                 )
                 Segment(
-                    text = "Real Output",
+                    text = "Actual Output",
                     selected = pagerState.currentPage == 1,
                     onClick = { scope.launch { pagerState.animateScrollToPage(1) } },
                     width = segmentWidth,
