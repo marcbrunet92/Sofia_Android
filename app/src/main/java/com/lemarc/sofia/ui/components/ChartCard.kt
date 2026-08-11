@@ -23,7 +23,8 @@ fun ChartCard(
     selectedWindow: TimeWindow,
     onSelectWindow: (TimeWindow) -> Unit,
     allowNegative: Boolean = false,
-    unit: String
+    unit: String,
+    title: String = "Production history"
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -36,7 +37,7 @@ fun ChartCard(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
-                text = "Production history",
+                text = title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
