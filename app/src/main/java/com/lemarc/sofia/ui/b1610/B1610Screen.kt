@@ -88,7 +88,8 @@ fun B1610Screen(
                             selectedWindow = state.selectedWindow,
                             onSelectWindow = onSelectWindow,
                             allowNegative = true,
-                            unit = "MWh"
+                            unit = "MWh",
+                            title = "Actual production history"
                         )
                     }
                 }
