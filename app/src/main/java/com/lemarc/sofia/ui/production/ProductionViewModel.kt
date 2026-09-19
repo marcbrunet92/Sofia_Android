@@ -10,6 +10,7 @@ import com.lemarc.sofia.data.model.TopWindows
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
 import java.time.Instant
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -97,6 +98,7 @@ class ProductionViewModel(
             }.onSuccess {
                 _uiState.update { it.copy(lastFetchTimestamp = Instant.now(), errorMessage = null) }
             }.onFailure { throwable ->
+                if (throwable is CancellationException) return@onFailure
                 _uiState.update {
                     it.copy(
                         isLoading = false,

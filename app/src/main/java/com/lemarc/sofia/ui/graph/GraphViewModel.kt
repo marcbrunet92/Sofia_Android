@@ -10,6 +10,7 @@ import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import com.lemarc.sofia.data.repository.SofiaWeatherRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
 import java.time.Instant
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -142,6 +143,7 @@ class GraphViewModel(
                     )
                 }
             }.onFailure { throwable ->
+                if (throwable is CancellationException) return@onFailure
                 _uiState.update {
                     it.copy(
                         isLoading = false,
