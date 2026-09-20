@@ -33,6 +33,13 @@ import com.lemarc.sofia.ui.components.ProductionGaugeCard
 import com.lemarc.sofia.ui.components.TitleBanner
 import com.lemarc.sofia.ui.components.WarningBanner
 
+private val GraphDataset.color: Int
+    get() = when (this) {
+        GraphDataset.PN -> Color.rgb(30, 136, 229)
+        GraphDataset.B1610 -> Color.rgb(255, 152, 0)
+        GraphDataset.Weather -> Color.rgb(76, 175, 80)
+    }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GraphScreen(
@@ -59,21 +66,21 @@ fun GraphScreen(
                     allowNegative = false,
                     unit = "MW",
                     label = GraphDataset.PN.label,
-                    color = Color.rgb(30, 136, 229),
+                    color = GraphDataset.PN.color,
                 )
                 GraphDataset.B1610 -> ChartSeries(
                     points = state.b1610PointsMwh.map { it.copy(quantity = it.quantity * 2) },
                     allowNegative = true,
                     unit = "MW",
                     label = GraphDataset.B1610.label,
-                    color = Color.rgb(255, 152, 0),
+                    color = GraphDataset.B1610.color,
                 )
                 GraphDataset.Weather -> ChartSeries(
                     points = state.weatherPoints.map { it.copy(quantity = it.quantity / 3.6) },
                     allowNegative = false,
                     unit = "km/h",
                     label = GraphDataset.Weather.label,
-                    color = Color.rgb(76, 175, 80),
+                    color = GraphDataset.Weather.color,
                 )
             }
         }
@@ -167,6 +174,14 @@ private fun DatasetSelector(
                 selected = option in selected,
                 onClick = { onSelect(option) },
                 label = { Text(option.label) },
+                leadingIcon = {
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .clip(RoundedCornerShape(2.dp))
+                            .background(ComposeColor(option.color)),
+                    )
+                },
             )
         }
     }
