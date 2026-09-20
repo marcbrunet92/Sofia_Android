@@ -4,21 +4,29 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.AxisBase
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.ValueFormatter
+import androidx.compose.ui.unit.sp
+import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.data.lineModel
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.cartesian.layer.LineCartesianLayer
 import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.ui.shortAxisFormatter
+import com.patrykandpatrick.vico.compose.cartesian.axis.Axis
+import com.patrykandpatrick.vico.compose.cartesian.axis.BaseAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.VerticalAxis
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
+import com.patrykandpatrick.vico.compose.common.Fill
+import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
+import java.time.Instant
 import kotlin.math.roundToInt
 
 data class ChartSeries(
@@ -28,154 +36,103 @@ data class ChartSeries(
     val label: String = "",
 )
 
+private val palette = listOf(
+    android.graphics.Color.rgb(30, 136, 229),  // bleu
+    android.graphics.Color.rgb(255, 152, 0),   // ambre
+    android.graphics.Color.rgb(76, 175, 80),   // vert
+    android.graphics.Color.rgb(244, 67, 54),   // rouge
+)
+
+private fun colorFor(index: Int) = androidx.compose.ui.graphics.Color(palette[index % palette.size])
+
+// x = timestamp en millisecondes epoch, pour que chaque quantity reste liée à son propre instant
+private fun xOf(point: GraphPoint): Double = point.timeFrom.toEpochMilli().toDouble()
+
 @Composable
 fun ProductionChartMulti(
     left: List<ChartSeries>,
     right: List<ChartSeries> = emptyList(),
-    tw: TimeWindow
+    tw: TimeWindow,
 ) {
-    val axisColor = MaterialTheme.colorScheme.onSurface.toArgb()
+    val modelProducer = remember { CartesianChartModelProducer() }
 
-    AndroidView(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(280.dp),
-        factory = { context ->
-            LineChart(context).apply {
-                description.isEnabled = false
-                legend.isEnabled = true
-
-                setTouchEnabled(true)
-                isDragEnabled = true
-                setScaleEnabled(true)
-                setPinchZoom(true)
-
-                setNoDataText("No data available")
-
-                axisRight.isEnabled = right.isNotEmpty()
-
-                axisLeft.apply {
-                    textColor = axisColor
-                }
-                xAxis.apply {
-                    position = XAxis.XAxisPosition.BOTTOM
-                    granularity = 1f
-                    labelRotationAngle = -30f
-                    textColor = axisColor
-                }
-                setViewPortOffsets(70f, 20f, 48f, 90f)
-            }
-        },
-        update = { chart ->
-            val dataSets = mutableListOf<LineDataSet>()
-
-            fun colorForLabel(label: String, index: Int): Int {
-                return when (label) {
-                    "PN" -> android.graphics.Color.rgb(30, 136, 229) // blue
-                    "B1610" -> android.graphics.Color.rgb(255, 152, 0) // amber
-                    "Weather" -> android.graphics.Color.rgb(76, 175, 80) // green
-                    else -> {
-                        // fallback palette
-                        val palette = listOf(
-                            android.graphics.Color.rgb(3, 169, 244), // light blue
-                            android.graphics.Color.rgb(0, 150, 136), // teal
-                            android.graphics.Color.rgb(244, 67, 54), // red
-                            android.graphics.Color.rgb(156, 39, 176), // purple
-                            android.graphics.Color.rgb(63, 81, 181), // indigo
-                        )
-                        palette[index % palette.size]
-                    }
-                }
-            }
-
-            // LEFT AXIS SERIES
+    LaunchedEffect(left, right) {
+        modelProducer.runTransaction {
             if (left.isNotEmpty()) {
-                left.forEachIndexed { idx, series ->
-                    val entries = series.points.mapIndexed { index, point ->
-                        Entry(index.toFloat(), point.quantity.toFloat())
+                lineModel {
+                    left.forEach { series ->
+                        series(x = series.points.map { xOf(it) }, y = series.points.map { it.quantity })
                     }
-                    val ds = LineDataSet(entries, series.label.ifEmpty { "Series L${idx + 1}" }).apply {
-                        color = colorForLabel(series.label, idx)
-                        lineWidth = 2.2f
-                        setDrawCircles(false)
-                        setDrawValues(false)
-                        setDrawFilled(idx == 0) // fill only first to reduce clutter
-                        fillColor = android.graphics.Color.argb(64, 33, 150, 243)
-                        fillAlpha = 48
-                        mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-                        axisDependency = YAxis.AxisDependency.LEFT
-                    }
-                    dataSets += ds
-                }
-
-                val allPoints = left.flatMap { it.points }
-                chart.axisLeft.apply {
-                    axisMinimum = if (allPoints.isNotEmpty()) {
-                        minOf(0f, allPoints.minOf { it.quantity }.toFloat()) -2f
-                    } else {
-                        0f
-                    }
-                    textColor = axisColor
-                }
-                val leftUnit = left.first().unit
-                chart.axisLeft.valueFormatter = object : ValueFormatter() {
-                    override fun getAxisLabel(value: Float, axis: AxisBase?): String =
-                        if (value % 1f == 0f) "${value.toInt()} $leftUnit" else "$value $leftUnit"
                 }
             }
-
-            // RIGHT AXIS SERIES
             if (right.isNotEmpty()) {
-                chart.axisRight.isEnabled = true
-                right.forEachIndexed { idx, series ->
-                    val entries = series.points.mapIndexed { index, point ->
-                        Entry(index.toFloat(), point.quantity.toFloat())
+                lineModel {
+                    right.forEach { series ->
+                        series(x = series.points.map { xOf(it) }, y = series.points.map { it.quantity })
                     }
-                    val ds = LineDataSet(entries, series.label.ifEmpty { "Series R${idx + 1}" }).apply {
-                        color = colorForLabel(series.label, idx)
-                        lineWidth = 2.2f
-                        setDrawCircles(false)
-                        setDrawValues(false)
-                        setDrawFilled(false)
-                        mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-                        axisDependency = YAxis.AxisDependency.RIGHT
-                    }
-                    dataSets += ds
-                }
-
-                val allPoints = right.flatMap { it.points }
-                chart.axisRight.apply {
-                    isEnabled = true
-                    axisMinimum = if (allPoints.isNotEmpty()) {
-                        minOf(0f, allPoints.minOf { it.quantity }.toFloat()) - 2f
-                    } else {
-                        0f
-                    }
-                    textColor = axisColor
-                }
-                val rightUnit = right.first().unit
-                chart.axisRight.valueFormatter = object : ValueFormatter() {
-                    override fun getAxisLabel(value: Float, axis: AxisBase?): String =
-                        if (value % 1f == 0f) "${value.toInt()} $rightUnit" else "$value $rightUnit"
-                }
-            } else {
-                chart.axisRight.isEnabled = false
-            }
-
-            chart.data = LineData(dataSets as List<LineDataSet>)
-
-            val referencePoints = when {
-                left.isNotEmpty() -> left.first().points
-                right.isNotEmpty() -> right.first().points
-                else -> emptyList()
-            }
-            chart.xAxis.valueFormatter = object : ValueFormatter() {
-                override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-                    val index = value.roundToInt().coerceIn(referencePoints.indices)
-                    return if (referencePoints.isNotEmpty()) shortAxisFormatter(tw).format(referencePoints[index].timeFrom) else ""
                 }
             }
-            chart.invalidate()
-        },
+        }
+    }
+
+    val leftLayer = rememberLineCartesianLayer(
+        lineProvider = LineCartesianLayer.LineProvider.series(
+            List(left.size) { i ->
+                LineCartesianLayer.rememberLine(fill = LineCartesianLayer.LineFill.single(Fill(colorFor(i))))
+            },
+        ),
+        verticalAxisPosition = Axis.Position.Vertical.Start,
+    )
+
+    val rightLayer = if (right.isNotEmpty()) {
+        rememberLineCartesianLayer(
+            lineProvider = LineCartesianLayer.LineProvider.series(
+                List(right.size) { i ->
+                    LineCartesianLayer.rememberLine(fill = LineCartesianLayer.LineFill.single(Fill(colorFor(left.size + i))))
+                },
+            ),
+            verticalAxisPosition = Axis.Position.Vertical.End,
+        )
+    } else null
+
+    val leftUnit = left.firstOrNull()?.unit.orEmpty()
+    val rightUnit = right.firstOrNull()?.unit.orEmpty()
+
+    CartesianChartHost(
+        modifier = Modifier.fillMaxWidth().height(280.dp),
+        chart = rememberCartesianChart(
+            leftLayer,
+            *listOfNotNull(rightLayer).toTypedArray(),
+            startAxis = VerticalAxis.rememberStart(
+                title = { leftUnit },
+                titleComponent = rememberTextComponent(
+                    style = TextStyle(
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 11.sp,
+                    ),
+                ),
+                titlePosition = BaseAxis.TitlePosition.End,
+                valueFormatter = { _, value, _ -> "${value.roundToInt()}" },
+            ),
+            endAxis = if (rightLayer != null) {
+                VerticalAxis.rememberEnd(
+                    title = { rightUnit },
+                    titleComponent = rememberTextComponent(
+                        style = TextStyle(
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 11.sp,
+                        ),
+                    ),
+                    titlePosition = BaseAxis.TitlePosition.End,
+                    valueFormatter = { _, value, _ -> "${value.roundToInt()}" },
+                )
+            } else null,
+            bottomAxis = HorizontalAxis.rememberBottom(
+                valueFormatter = { _, value, _ ->
+                    shortAxisFormatter(tw).format(Instant.ofEpochMilli(value.toLong()))
+                },
+            ),
+        ),
+        modelProducer = modelProducer,
     )
 }

@@ -65,9 +65,9 @@ fun GraphScreen(
                     label = GraphDataset.B1610.label,
                 )
                 GraphDataset.Weather -> ChartSeries(
-                    points = filterPoints(state.weatherPoints, state.selectedWindow),
+                    points = filterPoints(state.weatherPoints.map { it.copy(quantity = it.quantity / 3.6) }, state.selectedWindow),
                     allowNegative = false,
-                    unit = "m/s",
+                    unit = "km/h",
                     label = GraphDataset.Weather.label,
                 )
             }
@@ -78,7 +78,6 @@ fun GraphScreen(
         val otherUnits = byUnit.filterKeys { it != "MW" }
 
         if (mwSeries.isNotEmpty() && otherUnits.isNotEmpty()) {
-            // MW left, first other unit (m/s) right; ignore any additional different units for now
             val rightSeries = otherUnits.values.flatten()
             mwSeries to rightSeries
         } else if (otherUnits.isNotEmpty()) {

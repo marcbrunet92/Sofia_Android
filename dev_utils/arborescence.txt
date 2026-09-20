@@ -1,0 +1,76 @@
+﻿C:\Users\marcb\StudioProjects\Sofia_Android\app\src\main\java
+└── com
+    └── lemarc
+        └── sofia
+            ├── Constants.kt
+            ├── data
+            │   ├── api
+            │   │   └── SofiaApiService.kt
+            │   ├── local
+            │   │   ├── dao
+            │   │   │   └── SofiaDao.kt
+            │   │   ├── Entities.kt
+            │   │   └── SofiaDatabase.kt
+            │   ├── model
+            │   │   └── Model.kt
+            │   ├── repository
+            │   │   ├── SofiaB1610Repository.kt
+            │   │   ├── SofiaProductionRepository.kt
+            │   │   ├── SofiaRemitRepository.kt
+            │   │   └── SofiaWeatherRepository.kt
+            │   ├── settings
+            │   │   └── SettingsRepository.kt
+            │   └── utils.kt
+            ├── MainActivity.kt
+            ├── ui
+            │   ├── b1610
+            │   │   ├── B1610Screen.kt
+            │   │   └── B1610ViewModel.kt
+            │   ├── components
+            │   │   ├── Capacity Text.kt
+            │   │   ├── ChartCard.kt
+            │   │   ├── DefinitionCard.kt
+            │   │   ├── EmptyStateCard.kt
+            │   │   ├── ErrorBanner.kt
+            │   │   ├── InfoCard.kt
+            │   │   ├── ProductionChart.kt
+            │   │   ├── ProductionChartMulti.kt
+            │   │   ├── ProductionGaugeCard.kt
+            │   │   ├── ProductionRecordCard.kt
+            │   │   ├── RemitErrorBanner.kt
+            │   │   ├── RemitNoticeCard.kt
+            │   │   ├── TimestampCard.kt
+            │   │   ├── TimestampRow.kt
+            │   │   ├── TitleBanner.kt
+            │   │   └── WarningBanner.kt
+            │   ├── graph
+            │   │   ├── GraphScreen.kt
+            │   │   └── GraphViewModel.kt
+            │   ├── navigation
+            │   │   └── Routes.kt
+            │   ├── production
+            │   │   ├── ProductionCombinedScreen.kt
+            │   │   ├── ProductionScreen.kt
+            │   │   └── ProductionViewModel.kt
+            │   ├── remit
+            │   │   ├── RemitDetailScreen.kt
+            │   │   ├── RemitScreen.kt
+            │   │   └── RemitViewModel.kt
+            │   ├── settings
+            │   │   ├── SettingsScreen.kt
+            │   │   └── SettingsViewModel.kt
+            │   ├── SofiaApp.kt
+            │   ├── theme
+            │   │   ├── Color.kt
+            │   │   ├── Theme.kt
+            │   │   └── Type.kt
+            │   └── weather
+            │       ├── WeatherScreen.kt
+            │       └── WeatherViewModel.kt
+            ├── util
+            │   └── TimeUtils.kt
+            └── widget
+                ├── SofiaMediumWidgetProvider.kt
+                ├── SofiaSmallWidgetProvider.kt
+                └── SofiaWidgetsUpdater.kt
+

@@ -19,10 +19,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-enum class GraphDataset(val label: String) { Weather("Weather"), PN("PN"), B1610("B1610") }
+enum class GraphDataset(val label: String) { Weather("Weather"), PN("Comitted"), B1610("Actual Production") }
 
 data class GraphUiState(
     val isLoading: Boolean = true,
@@ -133,7 +134,7 @@ class GraphViewModel(
                     val pnRefresh = launch { productionRepository.refreshProduction(_uiState.value.testMode) }
                     val b1610Refresh = launch { b1610Repository.refreshB1610(_uiState.value.testMode) }
                     val weatherRefresh = launch { weatherRepository.refreshWeather() }
-                    listOf(pnRefresh, b1610Refresh, weatherRefresh).forEach { it.join() }
+                    listOf(pnRefresh, b1610Refresh, weatherRefresh).joinAll()
                 }
             }.onSuccess {
                 _uiState.update {
@@ -159,10 +160,6 @@ class GraphViewModel(
     fun dismissError() {
         _uiState.update { it.copy(errorMessage = null) }
     }
-
-    // Helper: convert B1610 MWh (per 30 min) to MW
-    private fun toMwFromMwh30(points: List<GraphPoint>): List<GraphPoint> =
-        points.map { p -> p.copy(quantity = p.quantity * 2) }
 
     class Factory(
         private val productionRepository: SofiaProductionRepository,
