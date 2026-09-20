@@ -22,7 +22,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.ui.graph.GraphScreen
 import com.lemarc.sofia.ui.graph.GraphViewModel
 import com.lemarc.sofia.ui.navigation.Route
@@ -34,7 +33,6 @@ import com.lemarc.sofia.ui.settings.SettingsViewModel
 import com.lemarc.sofia.ui.sofia.SofiaScreen
 import com.lemarc.sofia.ui.sofia.SofiaViewModel
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 private enum class AppTab(val label: String) {

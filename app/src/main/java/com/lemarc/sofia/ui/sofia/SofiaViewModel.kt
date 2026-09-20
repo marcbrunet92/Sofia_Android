@@ -1,10 +1,7 @@
 package com.lemarc.sofia.ui.sofia
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.lemarc.sofia.data.settings.SettingsRepository
-import com.lemarc.sofia.ui.settings.SettingsViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
