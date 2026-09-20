@@ -1,3 +1,34 @@
+val customFormatter = CartesianValueFormatter { x, chartValues, _ ->
+    // Calculate the visible range or span of x-values
+    val xRange = chartValues.maxVisibleX - chartValues.minVisibleX
+    
+    when {
+        xRange < 10 -> {
+            // Detailed format when showing few points
+            formatAsTime(x)
+        }
+        else -> {
+            // Compact format when showing many points
+            formatAsDate(x)
+        }
+    }
+}
+
+carte avec point 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Comprehensive Improvement Roadmap
 
 This document provides a detailed technical guide for evolving the Sofia app into a production-grade, highly scalable monitoring platform.
