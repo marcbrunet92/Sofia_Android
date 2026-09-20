@@ -16,6 +16,8 @@ val customFormatter = CartesianValueFormatter { x, chartValues, _ ->
 
 carte avec point 
 
+légende avant le graphique
+
 
 
 
