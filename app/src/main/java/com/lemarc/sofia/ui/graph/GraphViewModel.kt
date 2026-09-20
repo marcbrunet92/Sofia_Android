@@ -28,7 +28,7 @@ enum class GraphDataset(val label: String) { Weather("Weather"), PN("Comitted"),
 data class GraphUiState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
-    val selectedWindow: TimeWindow = TimeWindow.HOURS_24,
+    val selectedWindow: TimeWindow = TimeWindow.ALL,
     val selectedDatasets: Set<GraphDataset> = setOf(GraphDataset.PN),
     // Raw data
     val pnPoints: List<GraphPoint> = emptyList(), // MW

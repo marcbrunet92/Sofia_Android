@@ -1,5 +1,6 @@
 package com.lemarc.sofia.ui.graph
 
+import android.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -23,10 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.TimeWindow
-import com.lemarc.sofia.data.filterPoints
 import com.lemarc.sofia.ui.components.ChartSeries
 import com.lemarc.sofia.ui.components.ErrorBanner
 import com.lemarc.sofia.ui.components.ProductionChartMulti
+import com.lemarc.sofia.ui.components.ProductionGaugeCard
 import com.lemarc.sofia.ui.components.TitleBanner
 import com.lemarc.sofia.ui.components.WarningBanner
 
@@ -44,31 +47,33 @@ fun GraphScreen(
 
     val leftRightSeries = remember(
         state.selectedDatasets,
-        state.selectedWindow,
         state.pnPoints,
         state.b1610PointsMwh,
         state.weatherPoints,
+        // state.selectedWindow n'est plus une clé ici : il ne change plus les données affichées
     ) {
-        // Build series for each selected dataset
         val series = state.selectedDatasets.map { ds ->
             when (ds) {
                 GraphDataset.PN -> ChartSeries(
-                    points = filterPoints(state.pnPoints, state.selectedWindow),
+                    points = state.pnPoints, // toutes les données, plus de filterPoints
                     allowNegative = false,
                     unit = "MW",
                     label = GraphDataset.PN.label,
+                    color = Color.rgb(30, 136, 229),
                 )
                 GraphDataset.B1610 -> ChartSeries(
-                    points = filterPoints(state.b1610PointsMwh.map { it.copy(quantity = it.quantity * 2) }, state.selectedWindow),
+                    points = state.b1610PointsMwh.map { it.copy(quantity = it.quantity * 2) },
                     allowNegative = true,
                     unit = "MW",
                     label = GraphDataset.B1610.label,
+                    color = Color.rgb(255, 152, 0),
                 )
                 GraphDataset.Weather -> ChartSeries(
-                    points = filterPoints(state.weatherPoints.map { it.copy(quantity = it.quantity / 3.6) }, state.selectedWindow),
+                    points = state.weatherPoints.map { it.copy(quantity = it.quantity / 3.6) },
                     allowNegative = false,
                     unit = "km/h",
                     label = GraphDataset.Weather.label,
+                    color = Color.rgb(76, 175, 80),
                 )
             }
         }
@@ -122,7 +127,12 @@ fun GraphScreen(
                         )
                     }
                 }
-
+                item {
+                    ProductionGaugeCard(
+                        currentMw = state.pnPoints.maxByOrNull { it.timeFrom }?.quantity ?: 0.0,
+                        maxCapacityMw = 1400.toDouble()
+                    )
+                }
                 item {
                     DatasetSelector(
                         selected = state.selectedDatasets,
@@ -183,11 +193,11 @@ private fun GraphChartCard(
                 text = "Chart",
                 style = MaterialTheme.typography.titleMedium,
             )
-            Row(
+            LazyRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                TimeWindow.entries.forEach { window ->
+                items(TimeWindow.entries) { window ->
                     FilterChip(
                         selected = window == selectedWindow,
                         onClick = { onSelectWindow(window) },

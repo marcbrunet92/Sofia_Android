@@ -3,6 +3,7 @@ package com.lemarc.sofia.ui
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ShowChart
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
@@ -30,6 +31,9 @@ import com.lemarc.sofia.ui.remit.RemitScreen
 import com.lemarc.sofia.ui.remit.RemitViewModel
 import com.lemarc.sofia.ui.settings.SettingsScreen
 import com.lemarc.sofia.ui.settings.SettingsViewModel
+import com.lemarc.sofia.ui.sofia.SofiaScreen
+import com.lemarc.sofia.ui.sofia.SofiaViewModel
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
@@ -37,32 +41,23 @@ private enum class AppTab(val label: String) {
     Graph("Graph"),
     Remit("Alert"),
     Settings("Settings"),
+    Sofia("Sofia"),
 }
 
 val timestampFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("dd-MM-yy HH:mm 'UTC'")
-        .withZone(ZoneOffset.UTC)
-fun shortAxisFormatter(tw: TimeWindow): DateTimeFormatter {
-    val pattern = when (tw) {
-        TimeWindow.HOURS_6  -> "HH:mm"
-        TimeWindow.HOURS_24 -> "dd/MM HH:mm"
-        TimeWindow.HOURS_48 -> "dd/MM HH:mm"
-        TimeWindow.DAYS_7   -> "dd/MM"
-        TimeWindow.ALL      -> "dd/MM"
-    }
-
-    return DateTimeFormatter.ofPattern(pattern)
-        .withZone(ZoneOffset.UTC)
-}
+    DateTimeFormatter.ofPattern("dd-MM-yy HH:mm")
+        .withZone(ZoneId.systemDefault())
 @Composable
 fun SofiaApp(
     graphViewModel: GraphViewModel,
     remitViewModel: RemitViewModel,
     settingsViewModel: SettingsViewModel,
+    sofiaViewModel: SofiaViewModel,
 ) {
     val graphState by graphViewModel.uiState.collectAsStateWithLifecycle()
     val remitState by remitViewModel.uiState.collectAsStateWithLifecycle()
     val settingsState by settingsViewModel.uiState.collectAsStateWithLifecycle()
+    val sofiaState by sofiaViewModel.state.collectAsStateWithLifecycle()
 
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -71,6 +66,7 @@ fun SofiaApp(
     val tabs = listOf(
         AppTab.Graph to Route.Graph,
         AppTab.Remit to Route.Remit,
+        AppTab.Sofia to Route.Sofia,
         AppTab.Settings to Route.Settings,
     )
 
@@ -93,6 +89,7 @@ fun SofiaApp(
                                 AppTab.Graph -> Icons.AutoMirrored.Filled.ShowChart
                                 AppTab.Remit -> Icons.Filled.Warning
                                 AppTab.Settings -> Icons.Filled.Settings
+                                AppTab.Sofia -> Icons.Filled.Home
                             }
                             Icon(icon, contentDescription = null)
                         },
@@ -133,6 +130,12 @@ fun SofiaApp(
                         onBack = { navController.popBackStack() }
                     )
                 }
+            }
+            composable<Route.Sofia> {
+                SofiaScreen(
+                    state = sofiaState,
+                    onDismissError = sofiaViewModel::onDismissError,
+                )
             }
             composable<Route.Settings> {
                 SettingsScreen(

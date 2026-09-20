@@ -79,8 +79,6 @@ fun RemitDetailScreen(
             SectionTitle("Capacités")
             DetailRow("Normale",     notice.normalCapacityMw?.let     { "${it.toInt()} MW" } ?: "—")
             DetailRow("Disponible",  notice.availableCapacityMw?.let  { "${it.toInt()} MW" } ?: "—")
-            DetailRow("Indisponible",notice.unavailableCapacityMw?.let { "${it.toInt()} MW" } ?: "—")
-
             HorizontalDivider()
 
             // ── Dates ─────────────────────────────────────────────────────────
@@ -132,7 +130,6 @@ fun RemitDetailScreen(
                     fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
                 )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
         }
     }

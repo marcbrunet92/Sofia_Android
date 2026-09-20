@@ -15,6 +15,8 @@ enum class TimeWindow(val label: String, val duration: Duration?) {
     HOURS_24("24h", Duration.ofHours(24)),
     HOURS_48("48h", Duration.ofHours(48)),
     DAYS_7("7d", Duration.ofDays(7)),
+    MONTH_1("1m", Duration.ofDays(30)),
+    MONTH_3("3m", Duration.ofDays(90)),
     ALL("All", null),
 }
 val TEST_MODE_KEY = booleanPreferencesKey("test_mode")

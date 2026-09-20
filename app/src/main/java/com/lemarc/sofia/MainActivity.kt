@@ -19,6 +19,7 @@ import com.lemarc.sofia.ui.SofiaApp
 import com.lemarc.sofia.ui.graph.GraphViewModel
 import com.lemarc.sofia.ui.remit.RemitViewModel
 import com.lemarc.sofia.ui.settings.SettingsViewModel
+import com.lemarc.sofia.ui.sofia.SofiaViewModel
 import com.lemarc.sofia.ui.theme.Sofia_AndroidTheme
 import com.lemarc.sofia.widget.SofiaWidgetsUpdater
 import kotlinx.coroutines.launch
@@ -73,10 +74,14 @@ class MainActivity : ComponentActivity() {
                         settingsRepository = settingsRepository,
                     ),
                 )
+                val sofiaViewModel: SofiaViewModel = viewModel(
+                    factory = SofiaViewModel.Factory(),
+                )
                 SofiaApp(
                     graphViewModel = graphViewModel,
                     remitViewModel = remitViewModel,
                     settingsViewModel = settingsViewModel,
+                    sofiaViewModel = sofiaViewModel,
                 )
             }
         }

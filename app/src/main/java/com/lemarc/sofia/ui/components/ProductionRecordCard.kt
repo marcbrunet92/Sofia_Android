@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.data.model.TopPoint
 import com.lemarc.sofia.data.model.TopWindows
 import com.lemarc.sofia.ui.timestampFormatter
-import kotlin.math.roundToInt
 
 @Composable
 fun ProductionRecordCard(records: TopWindows, unit: String = "MW") {

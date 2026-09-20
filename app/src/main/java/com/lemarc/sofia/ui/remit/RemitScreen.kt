@@ -25,12 +25,13 @@ import com.lemarc.sofia.ui.components.InfoCard
 import com.lemarc.sofia.ui.components.RemitErrorBanner
 import com.lemarc.sofia.ui.components.RemitNoticeCard
 import java.time.Instant
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 private val remitTimestampFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'")
-        .withZone(ZoneOffset.UTC)
+    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+        .withZone(ZoneId.systemDefault())
 
 fun formatTimestamp(timestamp: Instant?): String =
     timestamp?.let(remitTimestampFormatter::format) ?: "—"
@@ -77,7 +78,7 @@ fun RemitScreen(
                 }
                 item {
                     Text(
-                        text = "REMIT Notices",
+                        text = "Notices",
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                     )
