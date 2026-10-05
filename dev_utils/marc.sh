@@ -4,7 +4,7 @@
 # PARAMÈTRES
 # ============================================================
 
-racine="/home/Marc/tmp/Sofia_Android/app/main"
+racine="/home/Marc/tmp/Sofia_Android/app/src/main"
 dossierSortie="/home/Marc/tmp/Sofia_Android/dev_utils"
 
 profondeur=-1   # -1 = pas de limite, 1 = un seul niveau
