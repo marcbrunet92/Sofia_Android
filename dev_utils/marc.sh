@@ -13,6 +13,7 @@ profondeur=-1   # -1 = pas de limite, 1 = un seul niveau
 extensionsAutorisees=(
     ".kt" 
     ".grade"
+    ".xml"
 )
 
 dossiersIgnores=(
