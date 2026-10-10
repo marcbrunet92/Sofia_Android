@@ -100,7 +100,7 @@ dependencies {
     implementation(libs.retrofit.converter.gson)
     implementation(libs.vico.compose)
     implementation(libs.vico.compose.m3)
-
+    implementation(libs.androidx.glance.appwidget)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)

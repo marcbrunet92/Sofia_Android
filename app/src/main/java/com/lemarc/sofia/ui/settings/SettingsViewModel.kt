@@ -35,6 +35,9 @@ class SettingsViewModel(
                 SofiaWidgetsUpdater.updateAll(
                     getApplication<Application>().applicationContext
                 )
+                com.lemarc.sofia.widget.modern.SofiaModernWidgets.updateAll(
+                    getApplication<Application>().applicationContext
+                )
             }
         }
     }

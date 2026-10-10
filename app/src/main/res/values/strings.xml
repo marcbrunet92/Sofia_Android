@@ -10,4 +10,10 @@
     <string name="widget_details_value">Mode: %1$s • API: %2$s</string>
     <string name="widget_small_description">Small Sofia production widget</string>
     <string name="widget_medium_description">Medium Sofia production widget</string>
+    <string name="widget_live_label">Sofia · Production</string>
+    <string name="widget_units_label">Sofia · Disponibilité par unité</string>
+    <string name="widget_graph_label">Sofia · Graphique 24 h</string>
+    <string name="widget_live_description">Production en direct avec jauge</string>
+    <string name="widget_units_description">Disponibilité REMIT de chaque unité</string>
+    <string name="widget_graph_description">Production engagée vs réelle sur 24 h</string>
 </resources>

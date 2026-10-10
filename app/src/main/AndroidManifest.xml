@@ -46,6 +46,41 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/sofia_medium_widget_info" />
         </receiver>
+        <receiver
+            android:name=".widget.modern.SofiaLiveGlanceReceiver"
+            android:exported="true"
+            android:label="@string/widget_live_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sofia_live_glance_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.modern.SofiaUnitsGlanceReceiver"
+            android:exported="true"
+            android:label="@string/widget_units_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sofia_units_glance_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.modern.SofiaGraphGlanceReceiver"
+            android:exported="true"
+            android:label="@string/widget_graph_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sofia_graph_glance_info" />
+        </receiver>
     </application>
 
 </manifest>
