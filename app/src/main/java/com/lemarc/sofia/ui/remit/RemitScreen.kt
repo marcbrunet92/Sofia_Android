@@ -20,6 +20,7 @@ import com.lemarc.sofia.R
 import com.lemarc.sofia.ui.components.InfoCard
 import com.lemarc.sofia.ui.components.RemitErrorBanner
 import com.lemarc.sofia.ui.components.RemitNoticeCard
+import com.lemarc.sofia.ui.components.UnitsAvailabilityCard
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -76,6 +77,9 @@ fun RemitScreen(
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                     )
+                }
+                state.units?.let { units ->
+                    item { UnitsAvailabilityCard(units) }
                 }
                 item {
                     InfoCard(

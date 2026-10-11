@@ -26,13 +26,16 @@ import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.R
 import com.lemarc.sofia.ui.theme.SofiaBlue
 import com.lemarc.sofia.ui.theme.SofiaCyan
+import com.lemarc.sofia.ui.remit.formatTimestamp
 import com.lemarc.sofia.ui.theme.SofiaIndigo
+import java.time.Instant
 import kotlin.math.roundToInt
 
 @Composable
 fun ProductionGaugeCard(
     currentMw: Double,
     maxCapacityMw: Double,
+    dataTimestamp: Instant?,
 ) {
     val safeMaxCapacity = maxCapacityMw.coerceAtLeast(1.0)
     val progress = (currentMw / safeMaxCapacity).toFloat().coerceIn(0f, 1f)
@@ -94,6 +97,12 @@ fun ProductionGaugeCard(
                         safeMaxCapacity.roundToInt(),
                     ),
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = stringResource(R.string.gauge_data_timestamp_format, formatTimestamp(dataTimestamp)),
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }

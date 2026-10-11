@@ -160,23 +160,28 @@ object SofiaWidgetData {
         val notices = fresh ?: SofiaDatabase.getDatabase(app).sofiaDao()
             .getRemitNotices(testMode).first().map { it.toModel() }
 
-        // En mode test (T_HEYM11) la capacité nominale d'une unité est inconnue sans avis.
-        val nominal = if (testMode) null else SOFIA_MAX_CAPACITY_MW / SOFIA_BMUS.size
-
-        val units = bmus.map { id ->
-            val active = notices.filter { it.bmuId == id && it.isInEffectAt(now) }
-            val normal = active.firstNotNullOfOrNull { it.normalCapacityMw } ?: nominal
-            val available = active.mapNotNull { it.availableMw() }.minOrNull() ?: normal
-            UnitStatus(
-                bmuId = id,
-                normalMw = normal,
-                availableMw = available,
-                hasNotice = active.isNotEmpty(),
-                cause = active.firstOrNull()?.cause?.takeIf { it.isNotBlank() },
-            )
-        }
+        val units = computeUnitStatuses(notices, testMode, now)
         UnitsData(testMode, units, now, fromCache = fresh == null)
             .also { if (fresh != null) SofiaWidgetSnapshots.saveUnits(app, it) }
+    }
+}
+
+/** Disponibilité par unité à l'instant [now] d'après les avis REMIT (sans avis → pleine capacité nominale). */
+fun computeUnitStatuses(notices: List<RemitNotice>, testMode: Boolean, now: Instant): List<UnitStatus> {
+    val bmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
+    // En mode test (T_HEYM11) la capacité nominale d'une unité est inconnue sans avis.
+    val nominal = if (testMode) null else SOFIA_MAX_CAPACITY_MW / SOFIA_BMUS.size
+    return bmus.map { id ->
+        val active = notices.filter { it.bmuId == id && it.isInEffectAt(now) }
+        val normal = active.firstNotNullOfOrNull { it.normalCapacityMw } ?: nominal
+        val available = active.mapNotNull { it.availableMw() }.minOrNull() ?: normal
+        UnitStatus(
+            bmuId = id,
+            normalMw = normal,
+            availableMw = available,
+            hasNotice = active.isNotEmpty(),
+            cause = active.firstOrNull()?.cause?.takeIf { it.isNotBlank() },
+        )
     }
 }
 

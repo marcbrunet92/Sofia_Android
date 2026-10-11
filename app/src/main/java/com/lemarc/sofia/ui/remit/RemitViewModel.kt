@@ -9,6 +9,8 @@ import com.lemarc.sofia.R
 import com.lemarc.sofia.data.model.RemitNotice
 import com.lemarc.sofia.data.repository.SofiaRemitRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
+import com.lemarc.sofia.widget.modern.UnitsData
+import com.lemarc.sofia.widget.modern.computeUnitStatuses
 import java.time.Instant
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -25,6 +27,7 @@ data class RemitUiState(
     val isRefreshing: Boolean = false,
     val testMode: Boolean = false,
     val remits: List<RemitNotice> = emptyList(),
+    val units: UnitsData? = null,
     val lastFetchTimestamp: Instant? = null,
     @StringRes val errorMessageRes: Int? = null,
 )
@@ -59,9 +62,11 @@ class RemitViewModel(
         observeJob?.cancel()
         observeJob = viewModelScope.launch {
             repository.observeRemits(testMode).collect { remits ->
+                val now = Instant.now()
                 _uiState.update {
                     it.copy(
                         remits = remits,
+                        units = UnitsData(testMode, computeUnitStatuses(remits, testMode, now), now, fromCache = false),
                         isLoading = false,
                         isRefreshing = false
                     )

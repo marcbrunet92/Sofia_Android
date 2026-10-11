@@ -41,6 +41,7 @@
     <string name="mw_value_format">%1$d MW</string>
     <string name="capacity_format">%1$s: %2$s MW</string>
     <string name="gauge_capacity_format">%1$d%% of %2$d MW</string>
+    <string name="gauge_data_timestamp_format">Data from %1$s</string>
 
     <!-- Graph Screen -->
     <string name="title_graph">Graph</string>
