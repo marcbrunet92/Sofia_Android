@@ -1,6 +1,5 @@
 package com.lemarc.sofia.data.repository
 
-import com.lemarc.sofia.BASE_URL
 import com.lemarc.sofia.HISTORY_START
 import com.lemarc.sofia.SOFIA_BMUS
 import com.lemarc.sofia.TEST_BMU
@@ -24,8 +23,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.time.Duration
 
 class SofiaB1610Repository(
@@ -45,7 +42,7 @@ class SofiaB1610Repository(
 
     suspend fun refreshB1610(testMode: Boolean) = withContext(Dispatchers.IO) {
         val requestedBmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
-        val (entries, topB1610) = coroutineScope {
+        val (entries, _) = coroutineScope {
             val b1610Deferred = async {
                 requestedBmus.map { bmuId ->
                     async {

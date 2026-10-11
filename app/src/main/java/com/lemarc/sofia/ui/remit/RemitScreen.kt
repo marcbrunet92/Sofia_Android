@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -29,7 +28,6 @@ private val remitTimestampFormatter: DateTimeFormatter =
 fun formatTimestamp(timestamp: Instant?): String =
     timestamp?.let(remitTimestampFormatter::format) ?: "—"
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RemitScreen(
     state: RemitUiState,

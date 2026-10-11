@@ -21,8 +21,7 @@ class SofiaViewModel : ViewModel() {
         _state.update { it.copy(errorMessage = null) }
     }
 
-    class Factory(
-    ) : ViewModelProvider.Factory {
+    class Factory : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

@@ -1,6 +1,5 @@
 package com.lemarc.sofia.data.repository
 
-import com.lemarc.sofia.BASE_URL
 import com.lemarc.sofia.HISTORY_START
 import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.data.api.WeatherEntryDto
@@ -14,8 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SofiaWeatherRepository(
     private val apiService: SofiaApiService,

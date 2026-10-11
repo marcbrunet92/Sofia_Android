@@ -12,9 +12,6 @@ interface SofiaApiService {
         @Query("time_to") timeTo: String,
     ): List<PnEntryDto>
 
-    @GET("pn/top-production")
-    suspend fun getTopProduction(): PnTopProductionWindowsDto
-
     @GET("remit")
     suspend fun getRemits(
         @Query("bmu_id") bmuId: String? = null,

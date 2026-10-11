@@ -1,6 +1,5 @@
 package com.lemarc.sofia.data.repository
 
-import com.lemarc.sofia.BASE_URL
 import com.lemarc.sofia.HISTORY_START
 import com.lemarc.sofia.SOFIA_BMUS
 import com.lemarc.sofia.TEST_BMU
@@ -8,24 +7,18 @@ import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.data.model.TopPoint
 import com.lemarc.sofia.data.model.TopWindows
 import com.lemarc.sofia.data.api.PnEntryDto
-import com.lemarc.sofia.data.api.PnTopProductionPointDto
-import com.lemarc.sofia.data.api.PnTopProductionWindowsDto
 import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.data.local.ProductionPointEntity
 import com.lemarc.sofia.data.local.dao.SofiaDao
 import com.lemarc.sofia.data.model.ProductionSnapshot
-import com.lemarc.sofia.util.parseApiInstant
 import com.lemarc.sofia.util.parseApiUtc
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SofiaProductionRepository(
     private val apiService: SofiaApiService,
@@ -128,16 +121,3 @@ internal fun aggregateProduction(
         .sortedBy { it.timeFrom }
 }
 
-private fun PnTopProductionWindowsDto.toTopWindows(): TopWindows =
-    TopWindows(
-        allTime = all_time.toTopPoint(),
-        last7Days = last_7_days.toTopPoint(),
-        last30Days = last_30_days.toTopPoint(),
-        last90Days = last_90_days.toTopPoint(),
-    )
-
-private fun PnTopProductionPointDto.toTopPoint(): TopPoint =
-    TopPoint(
-        maxQuantity = max_mw,
-        maxDate = parseApiInstant(max_date),
-    )

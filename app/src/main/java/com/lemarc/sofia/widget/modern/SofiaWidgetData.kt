@@ -27,6 +27,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.time.Duration.Companion.milliseconds
 
 // ── Modèles ──────────────────────────────────────────────────────────────────
 
@@ -99,7 +100,7 @@ object SofiaWidgetData {
         val snapshotName = "live_${window?.toMinutes() ?: "all"}_${if (includeActual) "a" else "c"}"
 
         val fresh = runCatching {
-            withTimeout(30_000) {
+            withTimeout(30_000.milliseconds) {
                 coroutineScope {
                     val pn = bmus.map { id -> async { api.getProduction(id, from.toString(), to.toString()) } }
                     val b1610 = if (includeActual) {
@@ -143,7 +144,7 @@ object SofiaWidgetData {
         val now = Instant.now()
 
         val fresh: List<RemitNotice>? = runCatching {
-            withTimeout(20_000) {
+            withTimeout(20_000.milliseconds) {
                 coroutineScope {
                     bmus.map { id ->
                         async { api.getRemits(bmuId = id, eventStatus = "Active", limit = 100, offset = 0) }
