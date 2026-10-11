@@ -16,4 +16,10 @@
     <string name="widget_live_description">Production en direct avec jauge</string>
     <string name="widget_units_description">Disponibilité REMIT de chaque unité</string>
     <string name="widget_graph_description">Production engagée vs réelle sur 24 h</string>
+    <string name="_24_h_test">24 H · TEST</string>
+    <string name="derni_res_24_h">DERNIÈRES 24 H</string>
+    <string name="pas_de_donn_es">Pas de données</string>
+    <string name="production_des_derni_res_24_heures">Production des dernières 24 heures</string>
+    <string name="engag">Engagé</string>
+    <string name="r_el">Réel</string>
 </resources>

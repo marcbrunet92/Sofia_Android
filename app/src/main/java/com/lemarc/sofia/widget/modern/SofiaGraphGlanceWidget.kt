@@ -22,6 +22,8 @@ import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.stringResource
+import com.lemarc.sofia.R
 
 /** Courbe des dernières 24 h : production engagée (PN, remplie) vs réelle (B1610). Idéal en 4x2. */
 class SofiaGraphGlanceWidget : GlanceAppWidget() {
@@ -52,25 +54,27 @@ class SofiaGraphGlanceWidget : GlanceAppWidget() {
             WidgetRoot {
                 Column(modifier = GlanceModifier.fillMaxSize().padding(horizontal = 12.dp, vertical = 10.dp)) {
                     Row(modifier = GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        WText(if (data.testMode) "24 H · TEST" else "DERNIÈRES 24 H", 10, WidgetPalette.Muted, bold = true)
+                        WText(if (data.testMode) stringResource(R.string._24_h_test) else stringResource(
+                            R.string.derni_res_24_h
+                        ), 10, WidgetPalette.Muted, bold = true)
                         Spacer(modifier = GlanceModifier.defaultWeight())
                         Dot(WidgetPalette.Committed)
                         Spacer(modifier = GlanceModifier.width(4.dp))
-                        WText("Engagé", 10)
+                        WText(stringResource(R.string.engag), 10)
                         Spacer(modifier = GlanceModifier.width(10.dp))
                         Dot(WidgetPalette.Actual)
                         Spacer(modifier = GlanceModifier.width(4.dp))
-                        WText("Réel", 10)
+                        WText(stringResource(R.string.r_el), 10)
                     }
                     Spacer(modifier = GlanceModifier.height(6.dp))
                     if (chart == null) {
                         Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            WText("Pas de données", 12, WidgetPalette.Muted)
+                            WText(stringResource(R.string.pas_de_donn_es), 12, WidgetPalette.Muted)
                         }
                     } else {
                         Image(
                             provider = ImageProvider(chart),
-                            contentDescription = "Production des dernières 24 heures",
+                            contentDescription = stringResource(R.string.production_des_derni_res_24_heures),
                             modifier = GlanceModifier.fillMaxWidth().defaultWeight(),
                             contentScale = ContentScale.Fit,
                         )
