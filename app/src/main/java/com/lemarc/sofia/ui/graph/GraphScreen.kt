@@ -141,9 +141,11 @@ fun GraphScreen(
                     }
                 }
                 item {
+                    val latestPn = remember(state.pnPoints) { state.pnPoints.maxByOrNull { it.timeFrom } }
                     ProductionGaugeCard(
-                        currentMw = state.pnPoints.maxByOrNull { it.timeFrom }?.quantity ?: 0.0,
-                        maxCapacityMw = 1400.toDouble()
+                        currentMw = latestPn?.quantity ?: 0.0,
+                        maxCapacityMw = 1400.toDouble(),
+                        pointTime = latestPn?.timeFrom,
                     )
                 }
                 item {
