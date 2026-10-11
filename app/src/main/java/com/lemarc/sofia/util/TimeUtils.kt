@@ -15,3 +15,9 @@ fun parseApiInstant(value: String?): Instant? {
     return runCatching { Instant.parse(normalized) }
         .getOrElse { parseApiUtc(normalized) }
 }
+
+fun formatLocalDateTime(instant: Instant): String =
+    DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+        .withLocale(Locale.getDefault())
+        .withZone(ZoneId.systemDefault())
+        .format(instant)
