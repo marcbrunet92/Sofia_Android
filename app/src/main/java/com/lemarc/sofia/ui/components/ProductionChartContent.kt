@@ -82,7 +82,7 @@ data class ChartSeries(
         unit: String,
         label: Int,
         color: Int
-    ) : this(points, allowNegative, unit, label, color)
+    ) : this(points, allowNegative, unit, label.toString(), color)
 }
 
 private fun colorFor(color: Int) = androidx.compose.ui.graphics.Color(color)
