@@ -28,11 +28,14 @@ import com.lemarc.sofia.ui.theme.SofiaBlue
 import com.lemarc.sofia.ui.theme.SofiaCyan
 import com.lemarc.sofia.ui.theme.SofiaIndigo
 import kotlin.math.roundToInt
+import com.lemarc.sofia.util.formatLocalDateTime
+import java.time.Instant
 
 @Composable
 fun ProductionGaugeCard(
     currentMw: Double,
     maxCapacityMw: Double,
+    pointTime: Instant? = null,
 ) {
     val safeMaxCapacity = maxCapacityMw.coerceAtLeast(1.0)
     val progress = (currentMw / safeMaxCapacity).toFloat().coerceIn(0f, 1f)
@@ -96,6 +99,14 @@ fun ProductionGaugeCard(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                if (pointTime != null) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(R.string.gauge_point_date_format, formatLocalDateTime(pointTime)),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
     }
