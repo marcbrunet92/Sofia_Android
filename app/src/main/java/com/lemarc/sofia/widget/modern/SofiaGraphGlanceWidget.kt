@@ -1,12 +1,14 @@
 package com.lemarc.sofia.widget.modern
 
 import android.content.Context
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
@@ -21,30 +23,40 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.width
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.res.stringResource
-import com.lemarc.sofia.R
 
-/** Courbe des dernières 24 h : production engagée (PN, remplie) vs réelle (B1610). Idéal en 4x2. */
+/**
+ * Courbe de production sur la fenêtre choisie à la création du widget (SofiaGraphConfigActivity) :
+ * production engagée (PN, remplie) et, si la fenêtre est ≥ 7 jours, production réelle (B1610).
+ * Idéal en 4x2.
+ */
 class SofiaGraphGlanceWidget : GlanceAppWidget() {
 
     override val sizeMode = SizeMode.Single
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val data = SofiaWidgetData.loadLive(context)
+        val appWidgetId = GlanceAppWidgetManager(context).getAppWidgetId(id)
+        val window = GraphWidgetPrefs.getWindow(context, appWidgetId)
+        val showActual = window.showsActual()
+
+        val data = SofiaWidgetData.loadLive(
+            context = context,
+            window = window.duration, // null pour « All »
+            includeActual = showActual,
+        )
         val density = context.resources.displayMetrics.density
 
-        val chart = if (data.committed.isEmpty() && data.actual.isEmpty()) {
+        val chart = if (data.committed.isEmpty() && (!showActual || data.actual.isEmpty())) {
             null
         } else {
+            val lines = buildList {
+                add(ChartLine(data.committed, WidgetPalette.Committed.toArgb(), filled = true))
+                if (showActual) add(ChartLine(data.actual, WidgetPalette.Actual.toArgb()))
+            }
             SofiaWidgetCharts.lineChart(
                 widthPx = (320 * density).toInt(),
                 heightPx = (140 * density).toInt(),
                 density = density,
-                lines = listOf(
-                    ChartLine(data.committed, WidgetPalette.Committed.toArgb(), filled = true),
-                    ChartLine(data.actual, WidgetPalette.Actual.toArgb()),
-                ),
+                lines = lines,
                 from = data.from,
                 to = data.to,
             )
@@ -54,27 +66,32 @@ class SofiaGraphGlanceWidget : GlanceAppWidget() {
             WidgetRoot {
                 Column(modifier = GlanceModifier.fillMaxSize().padding(horizontal = 12.dp, vertical = 10.dp)) {
                     Row(modifier = GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        WText(if (data.testMode) stringResource(R.string._24_h_test) else stringResource(
-                            R.string.derni_res_24_h
-                        ), 10, WidgetPalette.Muted, bold = true)
+                        WText(
+                            text = "PRODUCTION · ${window.shortTitle()}" + if (data.testMode) " · TEST" else "",
+                            size = 10,
+                            color = WidgetPalette.Muted,
+                            bold = true,
+                        )
                         Spacer(modifier = GlanceModifier.defaultWeight())
                         Dot(WidgetPalette.Committed)
                         Spacer(modifier = GlanceModifier.width(4.dp))
-                        WText(stringResource(R.string.engag), 10)
-                        Spacer(modifier = GlanceModifier.width(10.dp))
-                        Dot(WidgetPalette.Actual)
-                        Spacer(modifier = GlanceModifier.width(4.dp))
-                        WText(stringResource(R.string.r_el), 10)
+                        WText("Engagé", 10)
+                        if (showActual) {
+                            Spacer(modifier = GlanceModifier.width(10.dp))
+                            Dot(WidgetPalette.Actual)
+                            Spacer(modifier = GlanceModifier.width(4.dp))
+                            WText("Réel", 10)
+                        }
                     }
                     Spacer(modifier = GlanceModifier.height(6.dp))
                     if (chart == null) {
                         Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            WText(stringResource(R.string.pas_de_donn_es), 12, WidgetPalette.Muted)
+                            WText("Pas de données", 12, WidgetPalette.Muted)
                         }
                     } else {
                         Image(
                             provider = ImageProvider(chart),
-                            contentDescription = stringResource(R.string.production_des_derni_res_24_heures),
+                            contentDescription = "Production sur ${window.longLabel()}",
                             modifier = GlanceModifier.fillMaxWidth().defaultWeight(),
                             contentScale = ContentScale.Fit,
                         )
@@ -87,4 +104,10 @@ class SofiaGraphGlanceWidget : GlanceAppWidget() {
 
 class SofiaGraphGlanceReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = SofiaGraphGlanceWidget()
+
+    // Nettoie la fenêtre mémorisée quand le widget est retiré
+    override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+        super.onDeleted(context, appWidgetIds)
+        GraphWidgetPrefs.clear(context, appWidgetIds)
+    }
 }

@@ -70,6 +70,16 @@
                 android:resource="@xml/sofia_units_glance_info" />
         </receiver>
 
+        <!-- Choix de la fenêtre de temps à l'ajout du widget graphique -->
+        <activity
+            android:name=".widget.modern.SofiaGraphConfigActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Sofia_Android">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
         <receiver
             android:name=".widget.modern.SofiaGraphGlanceReceiver"
             android:exported="true"

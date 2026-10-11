@@ -16,6 +16,7 @@ import com.lemarc.sofia.ui.theme.SofiaIndigo
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import kotlin.math.ceil
 
 data class ChartLine(
@@ -107,7 +108,13 @@ object SofiaWidgetCharts {
         }
 
         // Axe X : 5 repères horaires
-        val timeFmt = DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault())
+        val pattern = when {
+            spanMs <= 12 * 3_600_000f -> "HH:mm"
+            spanMs <= 3 * 86_400_000f -> "EEE HH:mm"
+            spanMs <= 365 * 86_400_000f -> "dd/MM"
+            else -> "MM/yy"
+        }
+        val timeFmt = DateTimeFormatter.ofPattern(pattern, Locale.getDefault()).withZone(ZoneId.systemDefault())
         val ticks = 4
         for (i in 0..ticks) {
             val t = Instant.ofEpochMilli(fromMs + (spanMs * i / ticks).toLong())

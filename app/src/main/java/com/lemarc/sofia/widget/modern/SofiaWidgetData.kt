@@ -3,6 +3,7 @@ package com.lemarc.sofia.widget.modern
 import android.content.Context
 import androidx.glance.appwidget.updateAll
 import com.lemarc.sofia.BASE_URL
+import com.lemarc.sofia.HISTORY_START
 import com.lemarc.sofia.SOFIA_BMUS
 import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
 import com.lemarc.sofia.TEST_BMU
@@ -86,40 +87,49 @@ object SofiaWidgetData {
      * en secours. On n'ÉCRIT volontairement pas en base : refreshProductionPoints() efface tout, ça
      * tronquerait l'historique de l'appli.
      */
-    suspend fun loadLive(context: Context, window: Duration = Duration.ofHours(24)): LiveData =
-        withContext(Dispatchers.IO) {
-            val app = context.applicationContext
-            val testMode = SettingsRepository(app).testMode.first()
-            val to = Instant.now()
-            val from = to.minus(window)
-            val bmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
+    suspend fun loadLive(
+        context: Context,
+        window: Duration? = Duration.ofHours(24), // null = tout l'historique
+        includeActual: Boolean = true,            // false = on ne charge pas du tout le B1610
+    ): LiveData = withContext(Dispatchers.IO) {
+        val app = context.applicationContext
+        val testMode = SettingsRepository(app).testMode.first()
+        val to = Instant.now()
+        val from = window?.let { to.minus(it) } ?: HISTORY_START
+        val bmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
 
-            val fresh = runCatching {
-                withTimeout(20_000.milliseconds) {
-                    coroutineScope {
-                        val pn = bmus.map { id -> async { api.getProduction(id, from.toString(), to.toString()) } }
-                        val b1610 = bmus.map { id -> async { api.getB1610(id, from.toString(), to.toString()) } }
-                        val committed = aggregateProduction(pn.awaitAll().flatten(), testMode)
-                        val actual = aggregateB1610(b1610.awaitAll().flatten(), testMode)
-                            .map { it.copy(quantity = it.quantity * 2) }
-                        committed to actual
-                    }
+        val fresh = runCatching {
+            withTimeout(30_000.milliseconds) {
+                coroutineScope {
+                    val pn = bmus.map { id -> async { api.getProduction(id, from.toString(), to.toString()) } }
+                    val b1610 = if (includeActual) {
+                        bmus.map { id -> async { api.getB1610(id, from.toString(), to.toString()) } }
+                    } else null
+                    val committed = aggregateProduction(pn.awaitAll().flatten(), testMode)
+                    val actual = b1610
+                        ?.let { calls -> aggregateB1610(calls.awaitAll().flatten(), testMode) }
+                        ?.map { it.copy(quantity = it.quantity * 2) }
+                        ?: emptyList()
+                    committed to actual
                 }
-            }.getOrNull()
+            }
+        }.getOrNull()
 
-            if (fresh != null) {
-                LiveData(testMode, fresh.first, fresh.second, from, to, fromCache = false)
-            } else {
-                val dao = SofiaDatabase.getDatabase(app).sofiaDao()
-                val committed = dao.getProductionPoints(testMode).first()
-                    .filter { it.timeFrom >= from }.map { it.toModel() }
-                val actual = dao.getB1610Points(testMode).first()
+        if (fresh != null) {
+            LiveData(testMode, fresh.first, fresh.second, from, to, fromCache = false)
+        } else {
+            val dao = SofiaDatabase.getDatabase(app).sofiaDao()
+            val committed = dao.getProductionPoints(testMode).first()
+                .filter { it.timeFrom >= from }.map { it.toModel() }
+            val actual = if (includeActual) {
+                dao.getB1610Points(testMode).first()
                     .filter { it.timeFrom >= from }
                     .map { it.toModel() }
                     .map { it.copy(quantity = it.quantity * 2) }
-                LiveData(testMode, committed, actual, from, to, fromCache = true)
-            }
+            } else emptyList()
+            LiveData(testMode, committed, actual, from, to, fromCache = true)
         }
+    }
 
     /** Disponibilité par unité d'après les avis REMIT actifs (sans avis → pleine capacité nominale). */
     suspend fun loadUnits(context: Context): UnitsData = withContext(Dispatchers.IO) {
