@@ -11,7 +11,6 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalSize
 import androidx.glance.appwidget.GlanceAppWidget
-import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
 import androidx.glance.layout.Alignment
@@ -120,6 +119,6 @@ private fun WideLayout(data: LiveData, gauge: Bitmap) {
     }
 }
 
-class SofiaLiveGlanceReceiver : GlanceAppWidgetReceiver() {
+class SofiaLiveGlanceReceiver : ModernWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = SofiaLiveGlanceWidget()
 }

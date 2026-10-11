@@ -8,7 +8,6 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.LocalSize
 import androidx.glance.appwidget.GlanceAppWidget
-import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.LinearProgressIndicator
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.cornerRadius
@@ -120,6 +119,6 @@ private fun UnitTile(unit: UnitStatus, modifier: GlanceModifier, compact: Boolea
     }
 }
 
-class SofiaUnitsGlanceReceiver : GlanceAppWidgetReceiver() {
+class SofiaUnitsGlanceReceiver : ModernWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = SofiaUnitsGlanceWidget()
 }

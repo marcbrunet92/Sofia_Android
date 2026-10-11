@@ -27,7 +27,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.time.Duration.Companion.milliseconds
 
 // ── Modèles ──────────────────────────────────────────────────────────────────
 
@@ -97,9 +96,10 @@ object SofiaWidgetData {
         val to = Instant.now()
         val from = window?.let { to.minus(it) } ?: HISTORY_START
         val bmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
+        val snapshotName = "live_${window?.toMinutes() ?: "all"}_${if (includeActual) "a" else "c"}"
 
         val fresh = runCatching {
-            withTimeout(30_000.milliseconds) {
+            withTimeout(30_000) {
                 coroutineScope {
                     val pn = bmus.map { id -> async { api.getProduction(id, from.toString(), to.toString()) } }
                     val b1610 = if (includeActual) {
@@ -117,6 +117,7 @@ object SofiaWidgetData {
 
         if (fresh != null) {
             LiveData(testMode, fresh.first, fresh.second, from, to, fromCache = false)
+                .also { SofiaWidgetSnapshots.saveLive(app, snapshotName, it) }
         } else {
             val dao = SofiaDatabase.getDatabase(app).sofiaDao()
             val committed = dao.getProductionPoints(testMode).first()
@@ -127,7 +128,10 @@ object SofiaWidgetData {
                     .map { it.toModel() }
                     .map { it.copy(quantity = it.quantity * 2) }
             } else emptyList()
-            LiveData(testMode, committed, actual, from, to, fromCache = true)
+            val room = LiveData(testMode, committed, actual, from, to, fromCache = true)
+            // Cache Room vide/périmé (appli pas ouverte depuis longtemps) → dernier snapshot du widget
+            if (committed.isNotEmpty()) room
+            else SofiaWidgetSnapshots.loadLive(app, snapshotName)?.takeIf { it.testMode == testMode } ?: room
         }
     }
 
@@ -139,7 +143,7 @@ object SofiaWidgetData {
         val now = Instant.now()
 
         val fresh: List<RemitNotice>? = runCatching {
-            withTimeout(20_000.milliseconds) {
+            withTimeout(20_000) {
                 coroutineScope {
                     bmus.map { id ->
                         async { api.getRemits(bmuId = id, eventStatus = "Active", limit = 100, offset = 0) }
@@ -147,6 +151,10 @@ object SofiaWidgetData {
                 }
             }
         }.getOrNull()
+
+        if (fresh == null) {
+            SofiaWidgetSnapshots.loadUnits(app)?.takeIf { it.testMode == testMode }?.let { return@withContext it }
+        }
 
         val notices = fresh ?: SofiaDatabase.getDatabase(app).sofiaDao()
             .getRemitNotices(testMode).first().map { it.toModel() }
@@ -167,6 +175,7 @@ object SofiaWidgetData {
             )
         }
         UnitsData(testMode, units, now, fromCache = fresh == null)
+            .also { if (fresh != null) SofiaWidgetSnapshots.saveUnits(app, it) }
     }
 }
 

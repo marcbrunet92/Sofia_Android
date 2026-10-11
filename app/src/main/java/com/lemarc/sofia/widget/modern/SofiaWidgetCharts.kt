@@ -18,6 +18,8 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.math.ceil
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.withRotation
 
 data class ChartLine(
     val points: List<GraphPoint>,
@@ -32,7 +34,7 @@ object SofiaWidgetCharts {
 
     /** Jauge 270° avec dégradé cyan → bleu → indigo, comme dans l'appli. */
     fun gauge(sizePx: Int, fraction: Float): Bitmap {
-        val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(sizePx, sizePx)
         val canvas = Canvas(bitmap)
         val stroke = sizePx * 0.12f
         val inset = stroke / 2f + 1f
@@ -59,10 +61,9 @@ object SofiaWidgetCharts {
                     floatArrayOf(0f, 0.35f, 0.75f, 1f),
                 )
             }
-            canvas.save()
-            canvas.rotate(135f, center, center) // le dégradé démarre au début de l'arc
-            canvas.drawArc(oval, 0f, sweep, false, progress)
-            canvas.restore()
+            canvas.withRotation(135f, center, center) {
+                drawArc(oval, 0f, sweep, false, progress)
+            }
         }
         return bitmap
     }
@@ -76,7 +77,7 @@ object SofiaWidgetCharts {
         from: Instant,
         to: Instant,
     ): Bitmap {
-        val bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(widthPx, heightPx)
         val canvas = Canvas(bitmap)
         val plot = RectF(34f * density, 8f * density, widthPx - 8f * density, heightPx - 20f * density)
 

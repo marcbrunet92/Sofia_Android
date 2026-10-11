@@ -1,7 +1,6 @@
 package com.lemarc.sofia.widget.modern
 
 import android.appwidget.AppWidgetManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -32,13 +31,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.content.edit
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.lifecycle.lifecycleScope
 import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.ui.theme.Sofia_AndroidTheme
-import kotlinx.coroutines.launch
 import java.time.Duration
+import kotlinx.coroutines.launch
 
 /** Les données réelles (B1610) ne sont affichées qu'à partir de 7 jours (« All » inclus). */
 private val ActualMinWindow: Duration = Duration.ofDays(7)
@@ -68,26 +69,12 @@ fun TimeWindow.shortTitle(): String = when (this) {
     TimeWindow.ALL -> "TOUT"
 }
 
-/** Fenêtre choisie par instance de widget (clé = appWidgetId). */
+/** Fenêtre choisie, stockée dans l'état Glance de chaque instance de widget. */
 object GraphWidgetPrefs {
-    private const val FILE = "sofia_graph_widget"
-    private fun key(appWidgetId: Int) = "window_$appWidgetId"
+    val WINDOW_KEY = stringPreferencesKey("graph_window")
 
-    fun getWindow(context: Context, appWidgetId: Int): TimeWindow {
-        val name = context.getSharedPreferences(FILE, Context.MODE_PRIVATE).getString(key(appWidgetId), null)
-        return TimeWindow.entries.firstOrNull { it.name == name } ?: TimeWindow.HOURS_24
-    }
-
-    fun setWindow(context: Context, appWidgetId: Int, window: TimeWindow) {
-        context.getSharedPreferences(FILE, Context.MODE_PRIVATE)
-            .edit { putString(key(appWidgetId), window.name) }
-    }
-
-    fun clear(context: Context, appWidgetIds: IntArray) {
-        context.getSharedPreferences(FILE, Context.MODE_PRIVATE).edit {
-            appWidgetIds.forEach { remove(key(it)) }
-        }
-    }
+    fun windowOf(prefs: Preferences): TimeWindow =
+        TimeWindow.entries.firstOrNull { it.name == prefs[WINDOW_KEY] } ?: TimeWindow.HOURS_24
 }
 
 /**
@@ -113,7 +100,7 @@ class SofiaGraphConfigActivity : ComponentActivity() {
             return
         }
 
-        val initial = GraphWidgetPrefs.getWindow(this, appWidgetId)
+        val initial = TimeWindow.HOURS_24
         setContent {
             Sofia_AndroidTheme {
                 var busy by remember { mutableStateOf(false) }
@@ -130,11 +117,14 @@ class SofiaGraphConfigActivity : ComponentActivity() {
     }
 
     private fun confirm(window: TimeWindow) {
-        GraphWidgetPrefs.setWindow(this, appWidgetId, window)
         lifecycleScope.launch {
-            // Avec une activité de configuration, le système n'envoie pas la 1re mise à jour : on la déclenche.
+            // 1) on enregistre le choix dans l'état Glance du widget, 2) on déclenche la mise à jour.
+            // (Avec une activité de configuration, le système n'envoie pas la 1re mise à jour.)
             runCatching {
                 val glanceId = GlanceAppWidgetManager(this@SofiaGraphConfigActivity).getGlanceIdBy(appWidgetId)
+                updateAppWidgetState(this@SofiaGraphConfigActivity, glanceId) { prefs ->
+                    prefs[GraphWidgetPrefs.WINDOW_KEY] = window.name
+                }
                 SofiaGraphGlanceWidget().update(this@SofiaGraphConfigActivity, glanceId)
             }
             setResult(RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId))
