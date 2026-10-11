@@ -1,82 +1,237 @@
-C:\Users\marcb\StudioProjects\Sofia_Android\app\src\main\java
-└── com
-    └── lemarc
-        └── sofia
-            ├── Constants.kt
-            ├── data
-            │   ├── api
-            │   │   └── SofiaApiService.kt
-            │   ├── local
-            │   │   ├── dao
-            │   │   │   └── SofiaDao.kt
-            │   │   ├── Entities.kt
-            │   │   └── SofiaDatabase.kt
-            │   ├── model
-            │   │   └── Model.kt
-            │   ├── repository
-            │   │   ├── SofiaB1610Repository.kt
-            │   │   ├── SofiaProductionRepository.kt
-            │   │   ├── SofiaRemitRepository.kt
-            │   │   └── SofiaWeatherRepository.kt
-            │   └── settings
-            │       └── SettingsRepository.kt
-            ├── MainActivity.kt
-            ├── ui
-            │   ├── components
-            │   │   ├── Capacity Text.kt
-            │   │   ├── EmptyChartPlaceHolder.kt
-            │   │   ├── EmptyStateCard.kt
-            │   │   ├── ErrorBanner.kt
-            │   │   ├── InfoCard.kt
-            │   │   ├── ProductionChartContent.kt
-            │   │   ├── ProductionChartMulti.kt
-            │   │   ├── ProductionGaugeCard.kt
-            │   │   ├── ProductionRecordCard.kt
-            │   │   ├── RemitErrorBanner.kt
-            │   │   ├── RemitNoticeCard.kt
-            │   │   ├── TimestampCard.kt
-            │   │   ├── TimestampRow.kt
-            │   │   ├── TitleBanner.kt
-            │   │   └── WarningBanner.kt
-            │   ├── graph
-            │   │   ├── GraphScreen.kt
-            │   │   └── GraphViewModel.kt
-            │   ├── navigation
-            │   │   └── Routes.kt
-            │   ├── remit
-            │   │   ├── RemitDetailScreen.kt
-            │   │   ├── RemitScreen.kt
-            │   │   └── RemitViewModel.kt
-            │   ├── settings
-            │   │   ├── SettingsScreen.kt
-            │   │   └── SettingsViewModel.kt
-            │   ├── sofia
-            │   │   ├── SofiaScreen.kt
-            │   │   └── SofiaViewModel.kt
-            │   ├── SofiaApp.kt
-            │   └── theme
-            │       ├── Color.kt
-            │       ├── Theme.kt
-            │       └── Type.kt
-            ├── util
-            │   └── TimeUtils.kt
-            └── widget
-                ├── modern
-                │   ├── SofiaGraphConfig.kt
-                │   ├── SofiaGraphGlanceWidget.kt
-                │   ├── SofiaLiveGlanceWidget.kt
-                │   ├── SofiaUnitsGlanceWidget.kt
-                │   ├── SofiaWidgetCharts.kt
-                │   ├── SofiaWidgetData.kt
-                │   ├── SofiaWidgetRefreshWorker.kt
-                │   ├── SofiaWidgetSnapshots.kt
-                │   └── SofiaWidgetUi.kt
-                ├── SofiaMediumWidgetProvider.kt
-                ├── SofiaSmallWidgetProvider.kt
-                └── SofiaWidgetsUpdater.kt
 
+/home/Marc/tmp/Sofia_Android/app/src/main
+├── AndroidManifest.xml
+├── ic_launcher-playstore.png
+├── java
+│   └── com
+│       └── lemarc
+│           └── sofia
+│               ├── Constants.kt
+│               ├── data
+│               │   ├── api
+│               │   │   └── SofiaApiService.kt
+│               │   ├── local
+│               │   │   ├── dao
+│               │   │   │   └── SofiaDao.kt
+│               │   │   ├── Entities.kt
+│               │   │   └── SofiaDatabase.kt
+│               │   ├── model
+│               │   │   └── Model.kt
+│               │   ├── repository
+│               │   │   ├── SofiaB1610Repository.kt
+│               │   │   ├── SofiaProductionRepository.kt
+│               │   │   ├── SofiaRemitRepository.kt
+│               │   │   └── SofiaWeatherRepository.kt
+│               │   └── settings
+│               │       └── SettingsRepository.kt
+│               ├── MainActivity.kt
+│               ├── ui
+│               │   ├── components
+│               │   │   ├── Capacity Text.kt
+│               │   │   ├── EmptyChartPlaceHolder.kt
+│               │   │   ├── EmptyStateCard.kt
+│               │   │   ├── ErrorBanner.kt
+│               │   │   ├── InfoCard.kt
+│               │   │   ├── ProductionChartContent.kt
+│               │   │   ├── ProductionChartMulti.kt
+│               │   │   ├── ProductionGaugeCard.kt
+│               │   │   ├── ProductionRecordCard.kt
+│               │   │   ├── RemitErrorBanner.kt
+│               │   │   ├── RemitNoticeCard.kt
+│               │   │   ├── TimestampCard.kt
+│               │   │   ├── TimestampRow.kt
+│               │   │   ├── TitleBanner.kt
+│               │   │   └── WarningBanner.kt
+│               │   ├── graph
+│               │   │   ├── GraphScreen.kt
+│               │   │   └── GraphViewModel.kt
+│               │   ├── navigation
+│               │   │   └── Routes.kt
+│               │   ├── remit
+│               │   │   ├── RemitDetailScreen.kt
+│               │   │   ├── RemitScreen.kt
+│               │   │   └── RemitViewModel.kt
+│               │   ├── settings
+│               │   │   ├── SettingsScreen.kt
+│               │   │   └── SettingsViewModel.kt
+│               │   ├── sofia
+│               │   │   ├── SofiaScreen.kt
+│               │   │   └── SofiaViewModel.kt
+│               │   ├── SofiaApp.kt
+│               │   └── theme
+│               │       ├── Color.kt
+│               │       ├── Theme.kt
+│               │       └── Type.kt
+│               ├── util
+│               │   └── TimeUtils.kt
+│               └── widget
+│                   ├── modern
+│                   │   ├── SofiaGraphConfig.kt
+│                   │   ├── SofiaGraphGlanceWidget.kt
+│                   │   ├── SofiaLiveGlanceWidget.kt
+│                   │   ├── SofiaUnitsGlanceWidget.kt
+│                   │   ├── SofiaWidgetCharts.kt
+│                   │   ├── SofiaWidgetData.kt
+│                   │   ├── SofiaWidgetRefreshWorker.kt
+│                   │   ├── SofiaWidgetSnapshots.kt
+│                   │   └── SofiaWidgetUi.kt
+│                   ├── SofiaMediumWidgetProvider.kt
+│                   ├── SofiaSmallWidgetProvider.kt
+│                   └── SofiaWidgetsUpdater.kt
+└── res
+    ├── drawable
+    │   ├── ic_launcher_background.xml
+    │   ├── ic_launcher_foreground.xml
+    │   ├── logo_sofia_rwe.png
+    │   ├── sofia_maps.png
+    │   ├── widget_background.xml
+    │   ├── widget_progress_bar_drawable.xml
+    │   ├── widget_ring_background.xml
+    │   ├── widget_ring_progress_drawable.xml
+    │   └── widget_test_badge_background.xml
+    ├── layout
+    │   ├── widget_sofia_medium.xml
+    │   └── widget_sofia_small.xml
+    ├── mipmap-anydpi
+    │   ├── ic_launcher_round.xml
+    │   └── ic_launcher.xml
+    ├── mipmap-hdpi
+    │   ├── ic_launcher_foreground.webp
+    │   ├── ic_launcher_round.webp
+    │   └── ic_launcher.webp
+    ├── mipmap-mdpi
+    │   ├── ic_launcher_foreground.webp
+    │   ├── ic_launcher_round.webp
+    │   └── ic_launcher.webp
+    ├── mipmap-xhdpi
+    │   ├── ic_launcher_foreground.webp
+    │   ├── ic_launcher_round.webp
+    │   └── ic_launcher.webp
+    ├── mipmap-xxhdpi
+    │   ├── ic_launcher_foreground.webp
+    │   ├── ic_launcher_round.webp
+    │   └── ic_launcher.webp
+    ├── mipmap-xxxhdpi
+    │   ├── ic_launcher_foreground.webp
+    │   ├── ic_launcher_round.webp
+    │   └── ic_launcher.webp
+    ├── values
+    │   ├── ic_launcher_background.xml
+    │   ├── strings.xml
+    │   └── themes.xml
+    ├── values-fr
+    │   └── strings.xml
+    └── xml
+        ├── backup_rules.xml
+        ├── data_extraction_rules.xml
+        ├── locales_config.xml
+        ├── sofia_graph_glance_info.xml
+        ├── sofia_live_glance_info.xml
+        ├── sofia_medium_widget_info.xml
+        ├── sofia_small_widget_info.xml
+        └── sofia_units_glance_info.xml
 
-===== Fichier: com\lemarc\sofia\Constants.kt =====
+===== Fichier: AndroidManifest.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Sofia_Android"
+        android:localeConfig="@xml/locales_config"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Sofia_Android">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <receiver
+            android:name=".widget.SofiaSmallWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sofia_small_widget_info" />
+        </receiver>
+        <receiver
+            android:name=".widget.SofiaMediumWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sofia_medium_widget_info" />
+        </receiver>
+        <receiver
+            android:name=".widget.modern.SofiaLiveGlanceReceiver"
+            android:exported="true"
+            android:label="@string/widget_live_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sofia_live_glance_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.modern.SofiaUnitsGlanceReceiver"
+            android:exported="true"
+            android:label="@string/widget_units_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sofia_units_glance_info" />
+        </receiver>
+
+        <!-- Choix de la fenêtre de temps à l'ajout du widget graphique -->
+        <activity
+            android:name=".widget.modern.SofiaGraphConfigActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Sofia_Android">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".widget.modern.SofiaGraphGlanceReceiver"
+            android:exported="true"
+            android:label="@string/widget_graph_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sofia_graph_glance_info" />
+        </receiver>
+    </application>
+
+</manifest>
+
+===== Fichier: java/com/lemarc/sofia/Constants.kt =====
 
 package com.lemarc.sofia
 
@@ -106,99 +261,7 @@ enum class TimeWindow(
 }
 val TEST_MODE_KEY = booleanPreferencesKey("test_mode")
 
-===== Fichier: com\lemarc\sofia\MainActivity.kt =====
-
-package com.lemarc.sofia
-
-import android.app.Application
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lemarc.sofia.data.api.SofiaApiService
-import com.lemarc.sofia.data.local.SofiaDatabase
-import com.lemarc.sofia.data.repository.SofiaB1610Repository
-import com.lemarc.sofia.data.repository.SofiaProductionRepository
-import com.lemarc.sofia.data.repository.SofiaRemitRepository
-import com.lemarc.sofia.data.repository.SofiaWeatherRepository
-import com.lemarc.sofia.data.settings.SettingsRepository
-import com.lemarc.sofia.ui.SofiaApp
-import com.lemarc.sofia.ui.graph.GraphViewModel
-import com.lemarc.sofia.ui.remit.RemitViewModel
-import com.lemarc.sofia.ui.settings.SettingsViewModel
-import com.lemarc.sofia.ui.sofia.SofiaViewModel
-import com.lemarc.sofia.ui.theme.Sofia_AndroidTheme
-import com.lemarc.sofia.widget.SofiaWidgetsUpdater
-import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-
-class MainActivity : ComponentActivity() {
-    private val settingsRepository by lazy { SettingsRepository(applicationContext) }
-    private val database by lazy { SofiaDatabase.getDatabase(applicationContext) }
-    private val sofiaDao by lazy { database.sofiaDao() }
-    
-    private val apiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(SofiaApiService::class.java)
-    }
-
-    private val productionRepository by lazy { SofiaProductionRepository.create(apiService, sofiaDao) }
-    private val remitRepository by lazy { SofiaRemitRepository.create(apiService, sofiaDao) }
-
-    private val weatherRepository by lazy { SofiaWeatherRepository.create(apiService, sofiaDao) }
-    private val b1610Repository by lazy { SofiaB1610Repository.create(apiService, sofiaDao) }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        lifecycleScope.launch {
-            SofiaWidgetsUpdater.updateAll(applicationContext)
-        }
-        setContent {
-            Sofia_AndroidTheme {
-                val application = LocalContext.current.applicationContext as Application
-                val settingsViewModel: SettingsViewModel = viewModel(
-                    factory = SettingsViewModel.Factory(
-                        application = application,
-                        settingsRepository = settingsRepository,
-                    ),
-                )
-                val remitViewModel: RemitViewModel = viewModel(
-                    factory = RemitViewModel.Factory(
-                        repository = remitRepository,
-                        settingsRepository = settingsRepository,
-                    ),
-                )
-                val graphViewModel: GraphViewModel = viewModel(
-                    factory = GraphViewModel.Factory(
-                        productionRepository = productionRepository,
-                        b1610Repository = b1610Repository,
-                        weatherRepository = weatherRepository,
-                        settingsRepository = settingsRepository,
-                    ),
-                )
-                val sofiaViewModel: SofiaViewModel = viewModel(
-                    factory = SofiaViewModel.Factory(),
-                )
-                SofiaApp(
-                    graphViewModel = graphViewModel,
-                    remitViewModel = remitViewModel,
-                    settingsViewModel = settingsViewModel,
-                    sofiaViewModel = sofiaViewModel,
-                )
-            }
-        }
-    }
-}
-
-===== Fichier: com\lemarc\sofia\data\api\SofiaApiService.kt =====
+===== Fichier: java/com/lemarc/sofia/data/api/SofiaApiService.kt =====
 
 package com.lemarc.sofia.data.api
 
@@ -311,126 +374,7 @@ data class B1610TopProductionWindowsDto(
     val last_90_days: B1610TopProductionPointDto,
 )
 
-===== Fichier: com\lemarc\sofia\data\local\Entities.kt =====
-
-package com.lemarc.sofia.data.local
-
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import java.time.Instant
-
-@Entity(tableName = "production_points")
-data class ProductionPointEntity(
-    @PrimaryKey(autoGenerate = true) val localId: Int = 0,
-    val id: String,
-    val timeFrom: Instant,
-    val timeTo: Instant,
-    val quantity: Double,
-    val isTestMode: Boolean,
-)
-
-@Entity(tableName = "b1610_points")
-data class B1610PointEntity(
-    @PrimaryKey(autoGenerate = true) val localId: Int = 0,
-    val id: String,
-    val timeFrom: Instant,
-    val timeTo: Instant,
-    val quantity: Double,
-    val isTestMode: Boolean,
-)
-
-@Entity(tableName = "weather_points")
-data class WeatherPointEntity(
-    @PrimaryKey(autoGenerate = true) val localId: Int = 0,
-    val id: String,
-    val timeFrom: Instant,
-    val timeTo: Instant,
-    val quantity: Double,
-)
-
-@Entity(tableName = "remit_notices")
-data class RemitNoticeEntity(
-    @PrimaryKey val id: Int,
-    val mrid: String,
-    val revisionNumber: Int,
-    val bmuId: String,
-    val participantId: String,
-    val assetId: String,
-    val unavailabilityType: String,
-    val eventType: String,
-    val messageHeading: String,
-    val fuelType: String,
-    val normalCapacityMw: Double?,
-    val availableCapacityMw: Double?,
-    val unavailableCapacityMw: Double?,
-    val eventStatus: String,
-    val eventStartTime: Instant?,
-    val eventEndTime: Instant?,
-    val cause: String,
-    val relatedInformation: String,
-    val publishTime: Instant?,
-    val outageProfile: String,
-    val isTestMode: Boolean,
-)
-
-===== Fichier: com\lemarc\sofia\data\local\SofiaDatabase.kt =====
-
-package com.lemarc.sofia.data.local
-
-import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
-import androidx.room.TypeConverters
-import com.lemarc.sofia.data.local.dao.SofiaDao
-import java.time.Instant
-
-@Database(
-    entities = [
-        ProductionPointEntity::class,
-        B1610PointEntity::class,
-        WeatherPointEntity::class,
-        RemitNoticeEntity::class
-    ],
-    version = 1,
-    exportSchema = false
-)
-@TypeConverters(SofiaDatabase.Converters::class)
-abstract class SofiaDatabase : RoomDatabase() {
-    abstract fun sofiaDao(): SofiaDao
-
-    class Converters {
-        @TypeConverter
-        fun fromTimestamp(value: Long?): Instant? {
-            return value?.let { Instant.ofEpochMilli(it) }
-        }
-
-        @TypeConverter
-        fun dateToTimestamp(date: Instant?): Long? {
-            return date?.toEpochMilli()
-        }
-    }
-
-    companion object {
-        @Volatile
-        private var INSTANCE: SofiaDatabase? = null
-
-        fun getDatabase(context: Context): SofiaDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    SofiaDatabase::class.java,
-                    "sofia_database"
-                ).build()
-                INSTANCE = instance
-                instance
-            }
-        }
-    }
-}
-
-===== Fichier: com\lemarc\sofia\data\local\dao\SofiaDao.kt =====
+===== Fichier: java/com/lemarc/sofia/data/local/dao/SofiaDao.kt =====
 
 package com.lemarc.sofia.data.local.dao
 
@@ -509,7 +453,126 @@ interface SofiaDao {
     }
 }
 
-===== Fichier: com\lemarc\sofia\data\model\Model.kt =====
+===== Fichier: java/com/lemarc/sofia/data/local/Entities.kt =====
+
+package com.lemarc.sofia.data.local
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import java.time.Instant
+
+@Entity(tableName = "production_points")
+data class ProductionPointEntity(
+    @PrimaryKey(autoGenerate = true) val localId: Int = 0,
+    val id: String,
+    val timeFrom: Instant,
+    val timeTo: Instant,
+    val quantity: Double,
+    val isTestMode: Boolean,
+)
+
+@Entity(tableName = "b1610_points")
+data class B1610PointEntity(
+    @PrimaryKey(autoGenerate = true) val localId: Int = 0,
+    val id: String,
+    val timeFrom: Instant,
+    val timeTo: Instant,
+    val quantity: Double,
+    val isTestMode: Boolean,
+)
+
+@Entity(tableName = "weather_points")
+data class WeatherPointEntity(
+    @PrimaryKey(autoGenerate = true) val localId: Int = 0,
+    val id: String,
+    val timeFrom: Instant,
+    val timeTo: Instant,
+    val quantity: Double,
+)
+
+@Entity(tableName = "remit_notices")
+data class RemitNoticeEntity(
+    @PrimaryKey val id: Int,
+    val mrid: String,
+    val revisionNumber: Int,
+    val bmuId: String,
+    val participantId: String,
+    val assetId: String,
+    val unavailabilityType: String,
+    val eventType: String,
+    val messageHeading: String,
+    val fuelType: String,
+    val normalCapacityMw: Double?,
+    val availableCapacityMw: Double?,
+    val unavailableCapacityMw: Double?,
+    val eventStatus: String,
+    val eventStartTime: Instant?,
+    val eventEndTime: Instant?,
+    val cause: String,
+    val relatedInformation: String,
+    val publishTime: Instant?,
+    val outageProfile: String,
+    val isTestMode: Boolean,
+)
+
+===== Fichier: java/com/lemarc/sofia/data/local/SofiaDatabase.kt =====
+
+package com.lemarc.sofia.data.local
+
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
+import com.lemarc.sofia.data.local.dao.SofiaDao
+import java.time.Instant
+
+@Database(
+    entities = [
+        ProductionPointEntity::class,
+        B1610PointEntity::class,
+        WeatherPointEntity::class,
+        RemitNoticeEntity::class
+    ],
+    version = 1,
+    exportSchema = false
+)
+@TypeConverters(SofiaDatabase.Converters::class)
+abstract class SofiaDatabase : RoomDatabase() {
+    abstract fun sofiaDao(): SofiaDao
+
+    class Converters {
+        @TypeConverter
+        fun fromTimestamp(value: Long?): Instant? {
+            return value?.let { Instant.ofEpochMilli(it) }
+        }
+
+        @TypeConverter
+        fun dateToTimestamp(date: Instant?): Long? {
+            return date?.toEpochMilli()
+        }
+    }
+
+    companion object {
+        @Volatile
+        private var INSTANCE: SofiaDatabase? = null
+
+        fun getDatabase(context: Context): SofiaDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    SofiaDatabase::class.java,
+                    "sofia_database"
+                ).build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
+}
+
+===== Fichier: java/com/lemarc/sofia/data/model/Model.kt =====
 
 package com.lemarc.sofia.data.model
 
@@ -584,8 +647,7 @@ data class RemitNotice(
     val publishTime: Instant?,
     val outageProfile: String,
 )
-
-===== Fichier: com\lemarc\sofia\data\repository\SofiaB1610Repository.kt =====
+===== Fichier: java/com/lemarc/sofia/data/repository/SofiaB1610Repository.kt =====
 
 package com.lemarc.sofia.data.repository
 
@@ -740,7 +802,7 @@ private fun B1610TopProductionPointDto.toTopPoint(): TopPoint =
         maxDate = parseApiInstant(max_date),
     )
 
-===== Fichier: com\lemarc\sofia\data\repository\SofiaProductionRepository.kt =====
+===== Fichier: java/com/lemarc/sofia/data/repository/SofiaProductionRepository.kt =====
 
 package com.lemarc.sofia.data.repository
 
@@ -866,7 +928,7 @@ internal fun aggregateProduction(
 }
 
 
-===== Fichier: com\lemarc\sofia\data\repository\SofiaRemitRepository.kt =====
+===== Fichier: java/com/lemarc/sofia/data/repository/SofiaRemitRepository.kt =====
 
 package com.lemarc.sofia.data.repository
 
@@ -973,8 +1035,7 @@ fun RemitNoticeEntity.toModel(): RemitNotice =
     )
 
 private val InstantMin = java.time.Instant.EPOCH
-
-===== Fichier: com\lemarc\sofia\data\repository\SofiaWeatherRepository.kt =====
+===== Fichier: java/com/lemarc/sofia/data/repository/SofiaWeatherRepository.kt =====
 
 package com.lemarc.sofia.data.repository
 
@@ -1049,8 +1110,7 @@ internal fun List<WeatherEntryDto>.toGraphPoint(): List<GraphPoint> =
             quantity = dto.wind_speed,
         )
     }.sortedBy { it.timeFrom }
-
-===== Fichier: com\lemarc\sofia\data\settings\SettingsRepository.kt =====
+===== Fichier: java/com/lemarc/sofia/data/settings/SettingsRepository.kt =====
 
 package com.lemarc.sofia.data.settings
 
@@ -1077,159 +1137,99 @@ class SettingsRepository(
     }
 }
 
-===== Fichier: com\lemarc\sofia\ui\SofiaApp.kt =====
+===== Fichier: java/com/lemarc/sofia/MainActivity.kt =====
 
-package com.lemarc.sofia.ui
+package com.lemarc.sofia
 
-import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ShowChart
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import com.lemarc.sofia.R
-import com.lemarc.sofia.ui.graph.GraphScreen
+import android.app.Application
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lemarc.sofia.data.api.SofiaApiService
+import com.lemarc.sofia.data.local.SofiaDatabase
+import com.lemarc.sofia.data.repository.SofiaB1610Repository
+import com.lemarc.sofia.data.repository.SofiaProductionRepository
+import com.lemarc.sofia.data.repository.SofiaRemitRepository
+import com.lemarc.sofia.data.repository.SofiaWeatherRepository
+import com.lemarc.sofia.data.settings.SettingsRepository
+import com.lemarc.sofia.ui.SofiaApp
 import com.lemarc.sofia.ui.graph.GraphViewModel
-import com.lemarc.sofia.ui.navigation.Route
-import com.lemarc.sofia.ui.remit.RemitDetailScreen
-import com.lemarc.sofia.ui.remit.RemitScreen
 import com.lemarc.sofia.ui.remit.RemitViewModel
-import com.lemarc.sofia.ui.settings.SettingsScreen
 import com.lemarc.sofia.ui.settings.SettingsViewModel
-import com.lemarc.sofia.ui.sofia.SofiaScreen
 import com.lemarc.sofia.ui.sofia.SofiaViewModel
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
+import com.lemarc.sofia.ui.theme.Sofia_AndroidTheme
+import com.lemarc.sofia.widget.SofiaWidgetsUpdater
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-private enum class AppTab(@StringRes val labelRes: Int) {
-    Graph(R.string.tab_graph),
-    Remit(R.string.tab_remit),
-    Settings(R.string.tab_settings),
-    Sofia(R.string.tab_sofia),
-}
+class MainActivity : ComponentActivity() {
+    private val settingsRepository by lazy { SettingsRepository(applicationContext) }
+    private val database by lazy { SofiaDatabase.getDatabase(applicationContext) }
+    private val sofiaDao by lazy { database.sofiaDao() }
+    
+    private val apiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SofiaApiService::class.java)
+    }
 
-val timestampFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("dd-MM-yy HH:mm")
-        .withZone(ZoneId.systemDefault())
-@Composable
-fun SofiaApp(
-    graphViewModel: GraphViewModel,
-    remitViewModel: RemitViewModel,
-    settingsViewModel: SettingsViewModel,
-    sofiaViewModel: SofiaViewModel,
-) {
-    val graphState by graphViewModel.uiState.collectAsStateWithLifecycle()
-    val remitState by remitViewModel.uiState.collectAsStateWithLifecycle()
-    val settingsState by settingsViewModel.uiState.collectAsStateWithLifecycle()
-    val sofiaState by sofiaViewModel.state.collectAsStateWithLifecycle()
+    private val productionRepository by lazy { SofiaProductionRepository.create(apiService, sofiaDao) }
+    private val remitRepository by lazy { SofiaRemitRepository.create(apiService, sofiaDao) }
 
-    val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
+    private val weatherRepository by lazy { SofiaWeatherRepository.create(apiService, sofiaDao) }
+    private val b1610Repository by lazy { SofiaB1610Repository.create(apiService, sofiaDao) }
 
-    val tabs = listOf(
-        AppTab.Graph to Route.Graph,
-        AppTab.Remit to Route.Remit,
-        AppTab.Sofia to Route.Sofia,
-        AppTab.Settings to Route.Settings,
-    )
-
-    Scaffold(
-        bottomBar = {
-            NavigationBar {
-                tabs.forEach { (tab, route) ->
-                    val isSelected = currentDestination?.hierarchy?.any { it.hasRoute(route::class) } == true
-                    NavigationBarItem(
-                        selected = isSelected,
-                        onClick = {
-                            navController.navigate(route) {
-                                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        icon = {
-                            val icon = when (tab) {
-                                AppTab.Graph -> Icons.AutoMirrored.Filled.ShowChart
-                                AppTab.Remit -> Icons.Filled.Warning
-                                AppTab.Settings -> Icons.Filled.Settings
-                                AppTab.Sofia -> Icons.Filled.Home
-                            }
-                            Icon(icon, contentDescription = null)
-                        },
-                        label = { Text(stringResource(tab.labelRes)) },
-                    )
-                }
-            }
-        },
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Route.Graph,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable<Route.Graph> {
-                GraphScreen(
-                    state = graphState,
-                    onRefresh = graphViewModel::refresh,
-                    onSelectWindow = graphViewModel::selectWindow,
-                    onToggleDataset = graphViewModel::toggleDataset,
-                    onDismissError = graphViewModel::dismissError,
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        lifecycleScope.launch {
+            SofiaWidgetsUpdater.updateAll(applicationContext)
+        }
+        setContent {
+            Sofia_AndroidTheme {
+                val application = LocalContext.current.applicationContext as Application
+                val settingsViewModel: SettingsViewModel = viewModel(
+                    factory = SettingsViewModel.Factory(
+                        application = application,
+                        settingsRepository = settingsRepository,
+                    ),
                 )
-            }
-            composable<Route.Remit> {
-                RemitScreen(
-                    state = remitState,
-                    onRefresh = remitViewModel::refresh,
-                    onDismissError = remitViewModel::dismissError,
-                    onNavigateToDetail = { id -> navController.navigate(Route.RemitDetail(id)) }
+                val remitViewModel: RemitViewModel = viewModel(
+                    factory = RemitViewModel.Factory(
+                        repository = remitRepository,
+                        settingsRepository = settingsRepository,
+                    ),
                 )
-            }
-            composable<Route.RemitDetail> { backStackEntry ->
-                val route: Route.RemitDetail = backStackEntry.toRoute()
-                val notice = remitState.remits.firstOrNull { it.id == route.id }
-                if (notice != null) {
-                    RemitDetailScreen(
-                        notice = notice,
-                        onBack = { navController.popBackStack() }
-                    )
-                }
-            }
-            composable<Route.Sofia> {
-                SofiaScreen(
-                    state = sofiaState,
-                    onDismissError = sofiaViewModel::onDismissError,
+                val graphViewModel: GraphViewModel = viewModel(
+                    factory = GraphViewModel.Factory(
+                        productionRepository = productionRepository,
+                        b1610Repository = b1610Repository,
+                        weatherRepository = weatherRepository,
+                        settingsRepository = settingsRepository,
+                    ),
                 )
-            }
-            composable<Route.Settings> {
-                SettingsScreen(
-                    state = settingsState,
-                    onToggleTestMode = settingsViewModel::setTestMode,
+                val sofiaViewModel: SofiaViewModel = viewModel(
+                    factory = SofiaViewModel.Factory(),
+                )
+                SofiaApp(
+                    graphViewModel = graphViewModel,
+                    remitViewModel = remitViewModel,
+                    settingsViewModel = settingsViewModel,
+                    sofiaViewModel = sofiaViewModel,
                 )
             }
         }
     }
 }
 
-===== Fichier: com\lemarc\sofia\ui\components\Capacity Text.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/components/Capacity Text.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1251,8 +1251,7 @@ fun CapacityText(label: String, valueMw: Double?) {
         style = MaterialTheme.typography.bodySmall,
     )
 }
-
-===== Fichier: com\lemarc\sofia\ui\components\EmptyChartPlaceHolder.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/components/EmptyChartPlaceHolder.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1357,13 +1356,12 @@ fun EmptyChartPlaceholder(modifier: Modifier = Modifier) {
         }
     }
 }
-
-===== Fichier: com\lemarc\sofia\ui\components\EmptyStateCard.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/components/EmptyStateCard.kt =====
 
 package com.lemarc.sofia.ui.components
 
 
-===== Fichier: com\lemarc\sofia\ui\components\ErrorBanner.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/components/ErrorBanner.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1420,8 +1418,7 @@ fun ErrorBanner(
         }
     }
 }
-
-===== Fichier: com\lemarc\sofia\ui\components\InfoCard.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/components/InfoCard.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1448,8 +1445,7 @@ fun InfoCard(text: String) {
         )
     }
 }
-
-===== Fichier: com\lemarc\sofia\ui\components\ProductionChartContent.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/components/ProductionChartContent.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1528,7 +1524,15 @@ data class ChartSeries(
     val unit: String,
     val label: String = "",
     val color: Int // Color.rgb(76, 175, 80),
-)
+) {
+    constructor(
+        points: List<GraphPoint>,
+        allowNegative: Boolean,
+        unit: String,
+        label: Int,
+        color: Int
+    ) : this(points, allowNegative, unit, label.toString(), color)
+}
 
 private fun colorFor(color: Int) = androidx.compose.ui.graphics.Color(color)
 
@@ -1674,8 +1678,7 @@ fun ProductionChartContent(
         modelProducer = modelProducer,
     )
 }
-
-===== Fichier: com\lemarc\sofia\ui\components\ProductionChartMulti.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/components/ProductionChartMulti.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1700,8 +1703,7 @@ fun ProductionChartMulti(
 
     ProductionChartContent(leftFiltered, rightFiltered, tw)
 }
-
-===== Fichier: com\lemarc\sofia\ui\components\ProductionGaugeCard.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/components/ProductionGaugeCard.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1805,13 +1807,12 @@ fun ProductionGaugeCard(
         }
     }
 }
-
-===== Fichier: com\lemarc\sofia\ui\components\ProductionRecordCard.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/components/ProductionRecordCard.kt =====
 
 package com.lemarc.sofia.ui.components
 
 
-===== Fichier: com\lemarc\sofia\ui\components\RemitErrorBanner.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/components/RemitErrorBanner.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1869,7 +1870,7 @@ fun RemitErrorBanner(
     }
 }
 
-===== Fichier: com\lemarc\sofia\ui\components\RemitNoticeCard.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/components/RemitNoticeCard.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1939,18 +1940,17 @@ fun RemitNoticeCard(
         }
     }
 }
-
-===== Fichier: com\lemarc\sofia\ui\components\TimestampCard.kt =====
-
-package com.lemarc.sofia.ui.components
-
-
-===== Fichier: com\lemarc\sofia\ui\components\TimestampRow.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/components/TimestampCard.kt =====
 
 package com.lemarc.sofia.ui.components
 
 
-===== Fichier: com\lemarc\sofia\ui\components\TitleBanner.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/components/TimestampRow.kt =====
+
+package com.lemarc.sofia.ui.components
+
+
+===== Fichier: java/com/lemarc/sofia/ui/components/TitleBanner.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1991,8 +1991,7 @@ fun TitleBanner(title: String = stringResource(R.string.title_sofia_live_generat
         }
     }
 }
-
-===== Fichier: com\lemarc\sofia\ui\components\WarningBanner.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/components/WarningBanner.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -2023,8 +2022,7 @@ fun WarningBanner(text: String) {
         )
     }
 }
-
-===== Fichier: com\lemarc\sofia\ui\graph\GraphScreen.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/graph/GraphScreen.kt =====
 
 package com.lemarc.sofia.ui.graph
 
@@ -2099,21 +2097,21 @@ fun GraphScreen(
                     points = state.pnPoints, // toutes les données, plus de filterPoints
                     allowNegative = false,
                     unit = "MW",
-                    label = GraphDataset.PN.label,
+                    label = GraphDataset.PN.labelRes,
                     color = GraphDataset.PN.color,
                 )
                 GraphDataset.B1610 -> ChartSeries(
                     points = state.b1610PointsMwh.map { it.copy(quantity = it.quantity * 2) },
                     allowNegative = true,
                     unit = "MW",
-                    label = GraphDataset.B1610.label,
+                    label = GraphDataset.B1610.labelRes,
                     color = GraphDataset.B1610.color,
                 )
                 GraphDataset.Weather -> ChartSeries(
                     points = state.weatherPoints.map { it.copy(quantity = it.quantity / 3.6) },
                     allowNegative = false,
                     unit = "km/h",
-                    label = GraphDataset.Weather.label,
+                    label = GraphDataset.Weather.labelRes,
                     color = GraphDataset.Weather.color,
                 )
             }
@@ -2160,10 +2158,10 @@ fun GraphScreen(
                         WarningBanner(text = stringResource(R.string.test_mode_warning))
                     }
                 }
-                if (state.errorMessage != null) {
+                if (state.errorMessageRes != null) {
                     item {
                         ErrorBanner(
-                            text = state.errorMessage,
+                            text = stringResource(state.errorMessageRes),
                             onDismiss = onDismissError,
                         )
                     }
@@ -2259,7 +2257,7 @@ private fun GraphChartCard(
     }
 }
 
-===== Fichier: com\lemarc\sofia\ui\graph\GraphViewModel.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/graph/GraphViewModel.kt =====
 
 package com.lemarc.sofia.ui.graph
 
@@ -2287,10 +2285,10 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-enum class GraphDataset(val label: String, @StringRes val labelRes: Int) {
-    Weather("Weather", R.string.dataset_weather),
-    PN("Comitted", R.string.dataset_pn),
-    B1610("Actual Production", R.string.dataset_b1610),
+enum class GraphDataset(@StringRes val labelRes: Int) {
+    Weather(R.string.dataset_weather),
+    PN(R.string.dataset_pn),
+    B1610(R.string.dataset_b1610),
 }
 
 data class GraphUiState(
@@ -2305,7 +2303,7 @@ data class GraphUiState(
     // Meta
     val latestDataTimestamp: Instant? = null,
     val lastFetchTimestamp: Instant? = null,
-    val errorMessage: String? = null,
+    @StringRes val errorMessageRes: Int? = null,
     val testMode: Boolean = false,
 )
 
@@ -2393,7 +2391,7 @@ class GraphViewModel(
                 it.copy(
                     isLoading = forceLoading || !hasExistingData,
                     isRefreshing = hasExistingData,
-                    errorMessage = null,
+                    errorMessageRes  = null,
                 )
             }
 
@@ -2408,17 +2406,18 @@ class GraphViewModel(
                 _uiState.update {
                     it.copy(
                         lastFetchTimestamp = Instant.now(),
-                        errorMessage = null,
+                        errorMessageRes  = null,
                     )
                 }
             }.onFailure { throwable ->
                 if (throwable is CancellationException) return@onFailure
+                android.util.Log.w("GraphViewModel", "Refresh failed", throwable)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         isRefreshing = false,
                         lastFetchTimestamp = Instant.now(),
-                        errorMessage = throwable.message ?: "Unable to refresh data.",
+                        errorMessageRes = R.string.error_unable_to_refresh_data,
                     )
                 }
             }
@@ -2426,7 +2425,7 @@ class GraphViewModel(
     }
 
     fun dismissError() {
-        _uiState.update { it.copy(errorMessage = null) }
+        _uiState.update { it.copy(errorMessageRes  = null) }
     }
 
     class Factory(
@@ -2441,7 +2440,7 @@ class GraphViewModel(
     }
 }
 
-===== Fichier: com\lemarc\sofia\ui\navigation\Routes.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/navigation/Routes.kt =====
 
 package com.lemarc.sofia.ui.navigation
 
@@ -2464,7 +2463,7 @@ sealed interface Route {
     data object Sofia : Route
 }
 
-===== Fichier: com\lemarc\sofia\ui\remit\RemitDetailScreen.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/remit/RemitDetailScreen.kt =====
 
 package com.lemarc.sofia.ui.remit
 
@@ -2648,8 +2647,7 @@ private fun LabeledChip(text: String) {
         label = { Text(text = text, style = MaterialTheme.typography.labelSmall) },
     )
 }
-
-===== Fichier: com\lemarc\sofia\ui\remit\RemitScreen.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/remit/RemitScreen.kt =====
 
 package com.lemarc.sofia.ui.remit
 
@@ -2665,6 +2663,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -2709,10 +2708,10 @@ fun RemitScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                if (state.errorMessage != null) {
+                if (state.errorMessageRes != null) {
                     item {
                         RemitErrorBanner(
-                            text = state.errorMessage,
+                            text = stringResource(state.errorMessageRes),
                             onDismiss = onDismissError,
                         )
                     }
@@ -2730,7 +2729,13 @@ fun RemitScreen(
                     )
                 }
                 item {
-                    InfoCard(stringResource(R.string.remit_active_notices_format, state.remits.size))
+                    InfoCard(
+                        pluralStringResource(
+                            R.plurals.remit_active_notices_format,
+                            state.remits.size,
+                            state.remits.size,
+                        )
+                    )
                 }
                 if (state.remits.isEmpty()) {
                     item {
@@ -2754,14 +2759,16 @@ fun RemitScreen(
         }
     }
 }
-
-===== Fichier: com\lemarc\sofia\ui\remit\RemitViewModel.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/remit/RemitViewModel.kt =====
 
 package com.lemarc.sofia.ui.remit
 
+import android.util.Log
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.lemarc.sofia.R
 import com.lemarc.sofia.data.model.RemitNotice
 import com.lemarc.sofia.data.repository.SofiaRemitRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
@@ -2782,7 +2789,7 @@ data class RemitUiState(
     val testMode: Boolean = false,
     val remits: List<RemitNotice> = emptyList(),
     val lastFetchTimestamp: Instant? = null,
-    val errorMessage: String? = null,
+    @StringRes val errorMessageRes: Int? = null,
 )
 
 class RemitViewModel(
@@ -2834,21 +2841,22 @@ class RemitViewModel(
                 it.copy(
                     isLoading = forceLoading || !hasExistingData,
                     isRefreshing = hasExistingData,
-                    errorMessage = null,
+                    errorMessageRes = R.string.error_unable_to_refresh_remit,
                 )
             }
             runCatching {
                 repository.refreshRemits(_uiState.value.testMode)
             }.onSuccess {
-                _uiState.update { it.copy(lastFetchTimestamp = Instant.now(), errorMessage = null) }
+                _uiState.update { it.copy(lastFetchTimestamp = Instant.now(), errorMessageRes = null) }
             }.onFailure { throwable ->
                 if (throwable is CancellationException) return@onFailure
+                Log.w("RemitViewModel", "Refresh failed", throwable)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         isRefreshing = false,
                         lastFetchTimestamp = Instant.now(),
-                        errorMessage = throwable.message ?: "Unable to refresh REMIT data.",
+                        errorMessageRes = R.string.error_unable_to_refresh_remit,
                     )
                 }
             }
@@ -2856,7 +2864,7 @@ class RemitViewModel(
     }
 
     fun dismissError() {
-        _uiState.update { it.copy(errorMessage = null) }
+        _uiState.update { it.copy(errorMessageRes = null) }
     }
 
     class Factory(
@@ -2870,7 +2878,7 @@ class RemitViewModel(
     }
 }
 
-===== Fichier: com\lemarc\sofia\ui\settings\SettingsScreen.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/settings/SettingsScreen.kt =====
 
 package com.lemarc.sofia.ui.settings
 
@@ -2949,8 +2957,7 @@ fun SettingsScreen(
         }
     }
 }
-
-===== Fichier: com\lemarc\sofia\ui\settings\SettingsViewModel.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/settings/SettingsViewModel.kt =====
 
 package com.lemarc.sofia.ui.settings
 
@@ -3016,8 +3023,159 @@ class SettingsViewModel(
         }
     }
 }
+===== Fichier: java/com/lemarc/sofia/ui/SofiaApp.kt =====
 
-===== Fichier: com\lemarc\sofia\ui\sofia\SofiaScreen.kt =====
+package com.lemarc.sofia.ui
+
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ShowChart
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.lemarc.sofia.R
+import com.lemarc.sofia.ui.graph.GraphScreen
+import com.lemarc.sofia.ui.graph.GraphViewModel
+import com.lemarc.sofia.ui.navigation.Route
+import com.lemarc.sofia.ui.remit.RemitDetailScreen
+import com.lemarc.sofia.ui.remit.RemitScreen
+import com.lemarc.sofia.ui.remit.RemitViewModel
+import com.lemarc.sofia.ui.settings.SettingsScreen
+import com.lemarc.sofia.ui.settings.SettingsViewModel
+import com.lemarc.sofia.ui.sofia.SofiaScreen
+import com.lemarc.sofia.ui.sofia.SofiaViewModel
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+
+private enum class AppTab(@StringRes val labelRes: Int) {
+    Graph(R.string.tab_graph),
+    Remit(R.string.tab_remit),
+    Settings(R.string.tab_settings),
+    Sofia(R.string.tab_sofia),
+}
+
+val timestampFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("dd-MM-yy HH:mm")
+        .withZone(ZoneId.systemDefault())
+@Composable
+fun SofiaApp(
+    graphViewModel: GraphViewModel,
+    remitViewModel: RemitViewModel,
+    settingsViewModel: SettingsViewModel,
+    sofiaViewModel: SofiaViewModel,
+) {
+    val graphState by graphViewModel.uiState.collectAsStateWithLifecycle()
+    val remitState by remitViewModel.uiState.collectAsStateWithLifecycle()
+    val settingsState by settingsViewModel.uiState.collectAsStateWithLifecycle()
+    val sofiaState by sofiaViewModel.state.collectAsStateWithLifecycle()
+
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
+    val tabs = listOf(
+        AppTab.Graph to Route.Graph,
+        AppTab.Remit to Route.Remit,
+        AppTab.Sofia to Route.Sofia,
+        AppTab.Settings to Route.Settings,
+    )
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                tabs.forEach { (tab, route) ->
+                    val isSelected = currentDestination?.hierarchy?.any { it.hasRoute(route::class) } == true
+                    NavigationBarItem(
+                        selected = isSelected,
+                        onClick = {
+                            navController.navigate(route) {
+                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        icon = {
+                            val icon = when (tab) {
+                                AppTab.Graph -> Icons.AutoMirrored.Filled.ShowChart
+                                AppTab.Remit -> Icons.Filled.Warning
+                                AppTab.Settings -> Icons.Filled.Settings
+                                AppTab.Sofia -> Icons.Filled.Home
+                            }
+                            Icon(icon, contentDescription = null)
+                        },
+                        label = { Text(stringResource(tab.labelRes)) },
+                    )
+                }
+            }
+        },
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = Route.Graph,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable<Route.Graph> {
+                GraphScreen(
+                    state = graphState,
+                    onRefresh = graphViewModel::refresh,
+                    onSelectWindow = graphViewModel::selectWindow,
+                    onToggleDataset = graphViewModel::toggleDataset,
+                    onDismissError = graphViewModel::dismissError,
+                )
+            }
+            composable<Route.Remit> {
+                RemitScreen(
+                    state = remitState,
+                    onRefresh = remitViewModel::refresh,
+                    onDismissError = remitViewModel::dismissError,
+                    onNavigateToDetail = { id -> navController.navigate(Route.RemitDetail(id)) }
+                )
+            }
+            composable<Route.RemitDetail> { backStackEntry ->
+                val route: Route.RemitDetail = backStackEntry.toRoute()
+                val notice = remitState.remits.firstOrNull { it.id == route.id }
+                if (notice != null) {
+                    RemitDetailScreen(
+                        notice = notice,
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+            }
+            composable<Route.Sofia> {
+                SofiaScreen(
+                    state = sofiaState,
+                    onDismissError = sofiaViewModel::onDismissError,
+                )
+            }
+            composable<Route.Settings> {
+                SettingsScreen(
+                    state = settingsState,
+                    onToggleTestMode = settingsViewModel::setTestMode,
+                )
+            }
+        }
+    }
+}
+
+===== Fichier: java/com/lemarc/sofia/ui/sofia/SofiaScreen.kt =====
 
 package com.lemarc.sofia.ui.sofia
 
@@ -3105,7 +3263,7 @@ fun SofiaLocationCard(modifier: Modifier = Modifier) {
     }
 }
 
-===== Fichier: com\lemarc\sofia\ui\sofia\SofiaViewModel.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/sofia/SofiaViewModel.kt =====
 
 package com.lemarc.sofia.ui.sofia
 
@@ -3139,8 +3297,7 @@ class SofiaViewModel : ViewModel() {
         }
     }
 }
-
-===== Fichier: com\lemarc\sofia\ui\theme\Color.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/theme/Color.kt =====
 
 package com.lemarc.sofia.ui.theme
 
@@ -3153,7 +3310,7 @@ val SofiaYellow = Color(0xFFFFF3CD)
 val SofiaYellowText = Color(0xFF6A4F00)
 val SofiaErrorContainer = Color(0xFFFFDAD6)
 
-===== Fichier: com\lemarc\sofia\ui\theme\Theme.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/theme/Theme.kt =====
 
 package com.lemarc.sofia.ui.theme
 
@@ -3240,7 +3397,7 @@ fun Sofia_AndroidTheme(
     )
 }
 
-===== Fichier: com\lemarc\sofia\ui\theme\Type.kt =====
+===== Fichier: java/com/lemarc/sofia/ui/theme/Type.kt =====
 
 package com.lemarc.sofia.ui.theme
 
@@ -3276,8 +3433,7 @@ val Typography = Typography(
     )
     */
 )
-
-===== Fichier: com\lemarc\sofia\util\TimeUtils.kt =====
+===== Fichier: java/com/lemarc/sofia/util/TimeUtils.kt =====
 
 package com.lemarc.sofia.util
 
@@ -3297,236 +3453,7 @@ fun parseApiInstant(value: String?): Instant? {
         .getOrElse { parseApiUtc(normalized) }
 }
 
-===== Fichier: com\lemarc\sofia\widget\SofiaMediumWidgetProvider.kt =====
-
-package com.lemarc.sofia.widget
-
-import android.appwidget.AppWidgetManager
-import android.appwidget.AppWidgetProvider
-import android.content.Context
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-
-class SofiaMediumWidgetProvider : AppWidgetProvider() {
-    override fun onUpdate(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray,
-    ) {
-        refreshAsync(context)
-    }
-
-    override fun onEnabled(context: Context) {
-        refreshAsync(context)
-    }
-
-    private fun refreshAsync(context: Context) {
-        val pendingResult = goAsync()
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                SofiaWidgetsUpdater.updateAll(context)
-            } finally {
-                pendingResult.finish()
-            }
-        }
-    }
-}
-
-===== Fichier: com\lemarc\sofia\widget\SofiaSmallWidgetProvider.kt =====
-
-package com.lemarc.sofia.widget
-
-import android.appwidget.AppWidgetManager
-import android.appwidget.AppWidgetProvider
-import android.content.Context
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-
-class SofiaSmallWidgetProvider : AppWidgetProvider() {
-    override fun onUpdate(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray,
-    ) {
-        refreshAsync(context)
-    }
-
-    override fun onEnabled(context: Context) {
-        refreshAsync(context)
-    }
-
-    private fun refreshAsync(context: Context) {
-        val pendingResult = goAsync()
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                SofiaWidgetsUpdater.updateAll(context)
-            } finally {
-                pendingResult.finish()
-            }
-        }
-    }
-}
-
-===== Fichier: com\lemarc\sofia\widget\SofiaWidgetsUpdater.kt =====
-
-package com.lemarc.sofia.widget
-
-import android.app.PendingIntent
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.widget.RemoteViews
-import com.lemarc.sofia.MainActivity
-import com.lemarc.sofia.BASE_URL
-import com.lemarc.sofia.R
-import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
-import com.lemarc.sofia.data.api.SofiaApiService
-import com.lemarc.sofia.data.local.SofiaDatabase
-import com.lemarc.sofia.data.model.ProductionSnapshot
-import com.lemarc.sofia.data.repository.SofiaProductionRepository
-import com.lemarc.sofia.data.settings.SettingsRepository
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import kotlin.math.roundToInt
-import kotlinx.coroutines.flow.first
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-
-object SofiaWidgetsUpdater {
-    private val timestampFormatter: DateTimeFormatter =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'")
-            .withZone(ZoneOffset.UTC)
-
-    suspend fun updateAll(context: Context) {
-        val appContext = context.applicationContext
-        val appWidgetManager = AppWidgetManager.getInstance(appContext)
-        val smallIds = appWidgetManager.getAppWidgetIds(
-            ComponentName(appContext, SofiaSmallWidgetProvider::class.java),
-        )
-        val mediumIds = appWidgetManager.getAppWidgetIds(
-            ComponentName(appContext, SofiaMediumWidgetProvider::class.java),
-        )
-        if (smallIds.isEmpty() && mediumIds.isEmpty()) return
-
-        val testMode = SettingsRepository(appContext).testMode.first()
-        val fetchedAt = Instant.now()
-        
-        val apiService = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(SofiaApiService::class.java)
-        val sofiaDao = SofiaDatabase.getDatabase(appContext).sofiaDao()
-        val repository = SofiaProductionRepository.create(apiService, sofiaDao)
-
-        val snapshot = runCatching {
-            repository.refreshProduction(testMode)
-            repository.observeProduction(testMode).first()
-        }.getOrNull()
-
-        smallIds.forEach { appWidgetId ->
-            appWidgetManager.updateAppWidget(
-                appWidgetId,
-                buildSmallRemoteViews(
-                    context = appContext,
-                    snapshot = snapshot,
-                    testMode = testMode,
-                ),
-            )
-        }
-        mediumIds.forEach { appWidgetId ->
-            appWidgetManager.updateAppWidget(
-                appWidgetId,
-                buildMediumRemoteViews(
-                    context = appContext,
-                    snapshot = snapshot,
-                    testMode = testMode,
-                    fetchedAt = fetchedAt,
-                ),
-            )
-        }
-    }
-
-    private fun buildSmallRemoteViews(
-        context: Context,
-        snapshot: ProductionSnapshot?,
-        testMode: Boolean,
-    ): RemoteViews {
-        val safeMaxCapacity = SOFIA_MAX_CAPACITY_MW
-        val currentMw = snapshot?.currentMw ?: 0.0
-        val capacityPercent = ((currentMw / safeMaxCapacity) * 100).roundToInt().coerceIn(0, 100)
-        return RemoteViews(context.packageName, R.layout.widget_sofia_small).apply {
-            setOnClickPendingIntent(R.id.widget_small_root, openAppPendingIntent(context))
-            setProgressBar(R.id.widget_small_ring, 100, capacityPercent, false)
-            setTextViewText(R.id.widget_small_mw, context.getString(R.string.widget_mw_value, currentMw.roundToInt()))
-            setTextViewText(
-                R.id.widget_small_capacity,
-                context.getString(R.string.widget_capacity_value, capacityPercent),
-            )
-            setViewVisibility(
-                R.id.widget_small_test_badge,
-                if (testMode) android.view.View.VISIBLE else android.view.View.GONE,
-            )
-        }
-    }
-
-    private fun buildMediumRemoteViews(
-        context: Context,
-        snapshot: ProductionSnapshot?,
-        testMode: Boolean,
-        fetchedAt: Instant,
-    ): RemoteViews {
-        val safeMaxCapacity = SOFIA_MAX_CAPACITY_MW
-        val currentMw = snapshot?.currentMw ?: 0.0
-        val capacityPercent = ((currentMw / safeMaxCapacity) * 100).roundToInt().coerceIn(0, 100)
-        val lastApiUpdate = snapshot?.latestDataTimestamp?.let(timestampFormatter::format) ?: "—"
-        val refreshedAt = timestampFormatter.format(fetchedAt)
-        return RemoteViews(context.packageName, R.layout.widget_sofia_medium).apply {
-            setOnClickPendingIntent(R.id.widget_medium_root, openAppPendingIntent(context))
-            setProgressBar(R.id.widget_medium_ring, 100, capacityPercent, false)
-            setProgressBar(R.id.widget_medium_bar, 100, capacityPercent, false)
-            setTextViewText(R.id.widget_medium_mw, context.getString(R.string.widget_mw_value, currentMw.roundToInt()))
-            setTextViewText(
-                R.id.widget_medium_capacity,
-                context.getString(R.string.widget_capacity_of_max_value, capacityPercent, safeMaxCapacity.roundToInt()),
-            )
-            setTextViewText(
-                R.id.widget_medium_details,
-                context.getString(
-                    R.string.widget_details_value,
-                    if (testMode) context.getString(R.string.widget_mode_test) else context.getString(R.string.widget_mode_live),
-                    lastApiUpdate,
-                ),
-            )
-            setTextViewText(
-                R.id.widget_medium_last_update,
-                context.getString(R.string.widget_last_refresh_value, refreshedAt),
-            )
-            setViewVisibility(
-                R.id.widget_medium_test_badge,
-                if (testMode) android.view.View.VISIBLE else android.view.View.GONE,
-            )
-        }
-    }
-
-    private fun openAppPendingIntent(context: Context): PendingIntent {
-        val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        }
-        return PendingIntent.getActivity(
-            context,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-        )
-    }
-}
-
-===== Fichier: com\lemarc\sofia\widget\modern\SofiaGraphConfig.kt =====
+===== Fichier: java/com/lemarc/sofia/widget/modern/SofiaGraphConfig.kt =====
 
 package com.lemarc.sofia.widget.modern
 
@@ -3740,8 +3667,7 @@ private fun ConfigScreen(
         }
     }
 }
-
-===== Fichier: com\lemarc\sofia\widget\modern\SofiaGraphGlanceWidget.kt =====
+===== Fichier: java/com/lemarc/sofia/widget/modern/SofiaGraphGlanceWidget.kt =====
 
 package com.lemarc.sofia.widget.modern
 
@@ -3889,8 +3815,7 @@ private fun GraphContent(window: TimeWindow, ui: GraphUi?) {
 class SofiaGraphGlanceReceiver : ModernWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = SofiaGraphGlanceWidget()
 }
-
-===== Fichier: com\lemarc\sofia\widget\modern\SofiaLiveGlanceWidget.kt =====
+===== Fichier: java/com/lemarc/sofia/widget/modern/SofiaLiveGlanceWidget.kt =====
 
 package com.lemarc.sofia.widget.modern
 
@@ -4020,8 +3945,7 @@ private fun WideLayout(data: LiveData, gauge: Bitmap) {
 class SofiaLiveGlanceReceiver : ModernWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = SofiaLiveGlanceWidget()
 }
-
-===== Fichier: com\lemarc\sofia\widget\modern\SofiaUnitsGlanceWidget.kt =====
+===== Fichier: java/com/lemarc/sofia/widget/modern/SofiaUnitsGlanceWidget.kt =====
 
 package com.lemarc.sofia.widget.modern
 
@@ -4151,8 +4075,7 @@ private fun UnitTile(unit: UnitStatus, modifier: GlanceModifier, compact: Boolea
 class SofiaUnitsGlanceReceiver : ModernWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = SofiaUnitsGlanceWidget()
 }
-
-===== Fichier: com\lemarc\sofia\widget\modern\SofiaWidgetCharts.kt =====
+===== Fichier: java/com/lemarc/sofia/widget/modern/SofiaWidgetCharts.kt =====
 
 package com.lemarc.sofia.widget.modern
 
@@ -4333,8 +4256,7 @@ object SofiaWidgetCharts {
         return bitmap
     }
 }
-
-===== Fichier: com\lemarc\sofia\widget\modern\SofiaWidgetData.kt =====
+===== Fichier: java/com/lemarc/sofia/widget/modern/SofiaWidgetData.kt =====
 
 package com.lemarc.sofia.widget.modern
 
@@ -4536,8 +4458,7 @@ object SofiaModernWidgets {
         SofiaGraphGlanceWidget().updateAll(context)
     }
 }
-
-===== Fichier: com\lemarc\sofia\widget\modern\SofiaWidgetRefreshWorker.kt =====
+===== Fichier: java/com/lemarc/sofia/widget/modern/SofiaWidgetRefreshWorker.kt =====
 
 package com.lemarc.sofia.widget.modern
 
@@ -4611,8 +4532,7 @@ abstract class ModernWidgetReceiver : GlanceAppWidgetReceiver() {
         SofiaWidgetRefreshWorker.schedule(context) // se « répare » après un redémarrage / force-stop
     }
 }
-
-===== Fichier: com\lemarc\sofia\widget\modern\SofiaWidgetSnapshots.kt =====
+===== Fichier: java/com/lemarc/sofia/widget/modern/SofiaWidgetSnapshots.kt =====
 
 package com.lemarc.sofia.widget.modern
 
@@ -4728,8 +4648,7 @@ object SofiaWidgetSnapshots {
         )
     }
 }
-
-===== Fichier: com\lemarc\sofia\widget\modern\SofiaWidgetUi.kt =====
+===== Fichier: java/com/lemarc/sofia/widget/modern/SofiaWidgetUi.kt =====
 
 package com.lemarc.sofia.widget.modern
 
@@ -4828,3 +4747,1012 @@ fun Dot(color: Color, sizeDp: Int = 8) {
             .cornerRadius((sizeDp / 2).dp),
     ) {}
 }
+===== Fichier: java/com/lemarc/sofia/widget/SofiaMediumWidgetProvider.kt =====
+
+package com.lemarc.sofia.widget
+
+import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProvider
+import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+class SofiaMediumWidgetProvider : AppWidgetProvider() {
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray,
+    ) {
+        refreshAsync(context)
+    }
+
+    override fun onEnabled(context: Context) {
+        refreshAsync(context)
+    }
+
+    private fun refreshAsync(context: Context) {
+        val pendingResult = goAsync()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                SofiaWidgetsUpdater.updateAll(context)
+            } finally {
+                pendingResult.finish()
+            }
+        }
+    }
+}
+
+===== Fichier: java/com/lemarc/sofia/widget/SofiaSmallWidgetProvider.kt =====
+
+package com.lemarc.sofia.widget
+
+import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProvider
+import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+class SofiaSmallWidgetProvider : AppWidgetProvider() {
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray,
+    ) {
+        refreshAsync(context)
+    }
+
+    override fun onEnabled(context: Context) {
+        refreshAsync(context)
+    }
+
+    private fun refreshAsync(context: Context) {
+        val pendingResult = goAsync()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                SofiaWidgetsUpdater.updateAll(context)
+            } finally {
+                pendingResult.finish()
+            }
+        }
+    }
+}
+
+===== Fichier: java/com/lemarc/sofia/widget/SofiaWidgetsUpdater.kt =====
+
+package com.lemarc.sofia.widget
+
+import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.widget.RemoteViews
+import com.lemarc.sofia.MainActivity
+import com.lemarc.sofia.BASE_URL
+import com.lemarc.sofia.R
+import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
+import com.lemarc.sofia.data.api.SofiaApiService
+import com.lemarc.sofia.data.local.SofiaDatabase
+import com.lemarc.sofia.data.model.ProductionSnapshot
+import com.lemarc.sofia.data.repository.SofiaProductionRepository
+import com.lemarc.sofia.data.settings.SettingsRepository
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import kotlin.math.roundToInt
+import kotlinx.coroutines.flow.first
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+object SofiaWidgetsUpdater {
+    private val timestampFormatter: DateTimeFormatter =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'")
+            .withZone(ZoneOffset.UTC)
+
+    suspend fun updateAll(context: Context) {
+        val appContext = context.applicationContext
+        val appWidgetManager = AppWidgetManager.getInstance(appContext)
+        val smallIds = appWidgetManager.getAppWidgetIds(
+            ComponentName(appContext, SofiaSmallWidgetProvider::class.java),
+        )
+        val mediumIds = appWidgetManager.getAppWidgetIds(
+            ComponentName(appContext, SofiaMediumWidgetProvider::class.java),
+        )
+        if (smallIds.isEmpty() && mediumIds.isEmpty()) return
+
+        val testMode = SettingsRepository(appContext).testMode.first()
+        val fetchedAt = Instant.now()
+        
+        val apiService = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SofiaApiService::class.java)
+        val sofiaDao = SofiaDatabase.getDatabase(appContext).sofiaDao()
+        val repository = SofiaProductionRepository.create(apiService, sofiaDao)
+
+        val snapshot = runCatching {
+            repository.refreshProduction(testMode)
+            repository.observeProduction(testMode).first()
+        }.getOrNull()
+
+        smallIds.forEach { appWidgetId ->
+            appWidgetManager.updateAppWidget(
+                appWidgetId,
+                buildSmallRemoteViews(
+                    context = appContext,
+                    snapshot = snapshot,
+                    testMode = testMode,
+                ),
+            )
+        }
+        mediumIds.forEach { appWidgetId ->
+            appWidgetManager.updateAppWidget(
+                appWidgetId,
+                buildMediumRemoteViews(
+                    context = appContext,
+                    snapshot = snapshot,
+                    testMode = testMode,
+                    fetchedAt = fetchedAt,
+                ),
+            )
+        }
+    }
+
+    private fun buildSmallRemoteViews(
+        context: Context,
+        snapshot: ProductionSnapshot?,
+        testMode: Boolean,
+    ): RemoteViews {
+        val safeMaxCapacity = SOFIA_MAX_CAPACITY_MW
+        val currentMw = snapshot?.currentMw ?: 0.0
+        val capacityPercent = ((currentMw / safeMaxCapacity) * 100).roundToInt().coerceIn(0, 100)
+        return RemoteViews(context.packageName, R.layout.widget_sofia_small).apply {
+            setOnClickPendingIntent(R.id.widget_small_root, openAppPendingIntent(context))
+            setProgressBar(R.id.widget_small_ring, 100, capacityPercent, false)
+            setTextViewText(R.id.widget_small_mw, context.getString(R.string.widget_mw_value, currentMw.roundToInt()))
+            setTextViewText(
+                R.id.widget_small_capacity,
+                context.getString(R.string.widget_capacity_value, capacityPercent),
+            )
+            setViewVisibility(
+                R.id.widget_small_test_badge,
+                if (testMode) android.view.View.VISIBLE else android.view.View.GONE,
+            )
+        }
+    }
+
+    private fun buildMediumRemoteViews(
+        context: Context,
+        snapshot: ProductionSnapshot?,
+        testMode: Boolean,
+        fetchedAt: Instant,
+    ): RemoteViews {
+        val safeMaxCapacity = SOFIA_MAX_CAPACITY_MW
+        val currentMw = snapshot?.currentMw ?: 0.0
+        val capacityPercent = ((currentMw / safeMaxCapacity) * 100).roundToInt().coerceIn(0, 100)
+        val lastApiUpdate = snapshot?.latestDataTimestamp?.let(timestampFormatter::format) ?: "—"
+        val refreshedAt = timestampFormatter.format(fetchedAt)
+        return RemoteViews(context.packageName, R.layout.widget_sofia_medium).apply {
+            setOnClickPendingIntent(R.id.widget_medium_root, openAppPendingIntent(context))
+            setProgressBar(R.id.widget_medium_ring, 100, capacityPercent, false)
+            setProgressBar(R.id.widget_medium_bar, 100, capacityPercent, false)
+            setTextViewText(R.id.widget_medium_mw, context.getString(R.string.widget_mw_value, currentMw.roundToInt()))
+            setTextViewText(
+                R.id.widget_medium_capacity,
+                context.getString(R.string.widget_capacity_of_max_value, capacityPercent, safeMaxCapacity.roundToInt()),
+            )
+            setTextViewText(
+                R.id.widget_medium_details,
+                context.getString(
+                    R.string.widget_details_value,
+                    if (testMode) context.getString(R.string.widget_mode_test) else context.getString(R.string.widget_mode_live),
+                    lastApiUpdate,
+                ),
+            )
+            setTextViewText(
+                R.id.widget_medium_last_update,
+                context.getString(R.string.widget_last_refresh_value, refreshedAt),
+            )
+            setViewVisibility(
+                R.id.widget_medium_test_badge,
+                if (testMode) android.view.View.VISIBLE else android.view.View.GONE,
+            )
+        }
+    }
+
+    private fun openAppPendingIntent(context: Context): PendingIntent {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        return PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+    }
+}
+
+===== Fichier: res/drawable/ic_launcher_background.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<vector
+    android:height="108dp"
+    android:width="108dp"
+    android:viewportHeight="108"
+    android:viewportWidth="108"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#3DDC84"
+          android:pathData="M0,0h108v108h-108z"/>
+    <path android:fillColor="#00000000" android:pathData="M9,0L9,108"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M19,0L19,108"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M29,0L29,108"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M39,0L39,108"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M49,0L49,108"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M59,0L59,108"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M69,0L69,108"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M79,0L79,108"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M89,0L89,108"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M99,0L99,108"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M0,9L108,9"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M0,19L108,19"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M0,29L108,29"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M0,39L108,39"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M0,49L108,49"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M0,59L108,59"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M0,69L108,69"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M0,79L108,79"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M0,89L108,89"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M0,99L108,99"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M19,29L89,29"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M19,39L89,39"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M19,49L89,49"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M19,59L89,59"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M19,69L89,69"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M19,79L89,79"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M29,19L29,89"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M39,19L39,89"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M49,19L49,89"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M59,19L59,89"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M69,19L69,89"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+    <path android:fillColor="#00000000" android:pathData="M79,19L79,89"
+          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
+</vector>
+
+===== Fichier: res/drawable/ic_launcher_foreground.xml =====
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:pathData="M31,63.928c0,0 6.4,-11 12.1,-13.1c7.2,-2.6 26,-1.4 26,-1.4l38.1,38.1L107,108.928l-32,-1L31,63.928z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="85.84757"
+                android:endY="92.4963"
+                android:startX="42.9492"
+                android:startY="49.59793"
+                android:type="linear">
+                <item
+                    android:color="#44000000"
+                    android:offset="0.0" />
+                <item
+                    android:color="#00000000"
+                    android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="nonZero"
+        android:pathData="M65.3,45.828l3.8,-6.6c0.2,-0.4 0.1,-0.9 -0.3,-1.1c-0.4,-0.2 -0.9,-0.1 -1.1,0.3l-3.9,6.7c-6.3,-2.8 -13.4,-2.8 -19.7,0l-3.9,-6.7c-0.2,-0.4 -0.7,-0.5 -1.1,-0.3C38.8,38.328 38.7,38.828 38.9,39.228l3.8,6.6C36.2,49.428 31.7,56.028 31,63.928h46C76.3,56.028 71.8,49.428 65.3,45.828zM43.4,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2c-0.3,-0.7 -0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C45.3,56.528 44.5,57.328 43.4,57.328L43.4,57.328zM64.6,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2s-0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C66.5,56.528 65.6,57.328 64.6,57.328L64.6,57.328z"
+        android:strokeWidth="1"
+        android:strokeColor="#00000000" />
+</vector>
+===== Fichier: res/drawable/widget_background.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:radius="16dp" />
+    <solid android:color="#1B1F2A" />
+</shape>
+
+===== Fichier: res/drawable/widget_progress_bar_drawable.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape>
+            <corners android:radius="999dp" />
+            <solid android:color="#3A3F4C" />
+        </shape>
+    </item>
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape>
+                <corners android:radius="999dp" />
+                <solid android:color="#4FC3F7" />
+            </shape>
+        </clip>
+    </item>
+</layer-list>
+
+===== Fichier: res/drawable/widget_ring_background.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="ring"
+    android:innerRadiusRatio="2.5"
+    android:thicknessRatio="10"
+    android:useLevel="false">
+    <solid android:color="#3A3F4C" />
+</shape>
+===== Fichier: res/drawable/widget_ring_progress_drawable.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<rotate
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromDegrees="270"
+    android:toDegrees="270">
+    <shape
+        android:shape="ring"
+        android:innerRadiusRatio="2.5"
+        android:thicknessRatio="10"
+        android:useLevel="true">
+        <gradient
+            android:type="sweep"
+            android:startColor="#4FC3F7"
+            android:endColor="#4FC3F7"
+            android:useLevel="false" />
+    </shape>
+</rotate>
+===== Fichier: res/drawable/widget_test_badge_background.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:radius="999dp" />
+    <solid android:color="#D32F2F" />
+</shape>
+
+===== Fichier: res/layout/widget_sofia_medium.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_medium_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ProgressBar
+            android:id="@+id/widget_medium_ring"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:layout_marginTop="4dp"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="0"
+            android:background="@drawable/widget_ring_background"
+            android:progressDrawable="@drawable/widget_ring_progress_drawable" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/widget_medium_mw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/widget_medium_capacity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                android:textColor="#CFD8DC" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/widget_medium_test_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/widget_test_badge_background"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:text="@string/widget_test_badge"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/widget_medium_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="10dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/widget_progress_bar_drawable" />
+
+    <TextView
+        android:id="@+id/widget_medium_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+        android:textColor="#CFD8DC" />
+
+    <TextView
+        android:id="@+id/widget_medium_last_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+        android:textColor="#ECEFF1"
+        android:textStyle="bold" />
+</LinearLayout>
+
+===== Fichier: res/layout/widget_sofia_small.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_small_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/widget_small_test_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@drawable/widget_test_badge_background"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="2dp"
+        android:text="@string/widget_test_badge"
+        android:textColor="@android:color/white"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/widget_small_ring"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:layout_marginTop="4dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="0"
+        android:background="@drawable/widget_ring_background"
+        android:progressDrawable="@drawable/widget_ring_progress_drawable" />
+
+    <TextView
+        android:id="@+id/widget_small_mw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/widget_small_capacity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+        android:textColor="#CFD8DC" />
+</LinearLayout>
+
+===== Fichier: res/mipmap-anydpi/ic_launcher_round.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background"/>
+    <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+    <monochrome android:drawable="@mipmap/ic_launcher_foreground"/>
+</adaptive-icon>
+===== Fichier: res/mipmap-anydpi/ic_launcher.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background"/>
+    <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+    <monochrome android:drawable="@mipmap/ic_launcher_foreground"/>
+</adaptive-icon>
+===== Fichier: res/values-fr/strings.xml =====
+
+<resources>
+    <!-- App & General -->
+    <string name="app_name">Parc éolien Sofia</string>
+    <string name="action_back">Retour</string>
+    <string name="dismiss_error">Fermer l\'erreur</string>
+
+    <!-- Navigation Tabs -->
+    <string name="tab_graph">Graphique</string>
+    <string name="tab_remit">Alertes</string>
+    <string name="tab_sofia">Sofia</string>
+    <string name="tab_settings">Réglages</string>
+
+    <!-- Time Windows (chips) -->
+    <string name="time_window_6h">6h</string>
+    <string name="time_window_24h">24h</string>
+    <string name="time_window_48h">48h</string>
+    <string name="time_window_7d">7j</string>
+    <string name="time_window_1m">1 mois</string>
+    <string name="time_window_3m">3 mois</string>
+    <string name="time_window_all">Tout</string>
+
+    <string name="time_window_long_6h">6 heures</string>
+    <string name="time_window_long_24h">24 heures</string>
+    <string name="time_window_long_48h">48 heures</string>
+    <string name="time_window_long_7d">7 jours</string>
+    <string name="time_window_long_1m">1 mois</string>
+    <string name="time_window_long_3m">3 mois</string>
+    <string name="time_window_long_all">Tout l\'historique</string>
+
+    <string name="time_window_short_6h">6 H</string>
+    <string name="time_window_short_24h">24 H</string>
+    <string name="time_window_short_48h">48 H</string>
+    <string name="time_window_short_7d">7 J</string>
+    <string name="time_window_short_1m">1 MOIS</string>
+    <string name="time_window_short_3m">3 MOIS</string>
+    <string name="time_window_short_all">TOUT</string>
+
+    <!-- Units -->
+    <string name="unit_mw">MW</string>
+    <string name="unit_kmh">km/h</string>
+    <string name="mw_value_format">%1$d MW</string>
+    <string name="capacity_format">%1$s : %2$s MW</string>
+    <string name="gauge_capacity_format">%1$d %% de %2$d MW</string>
+
+    <!-- Graph Screen -->
+    <string name="title_graph">Graphique</string>
+    <string name="title_sofia_live_generation">Production Sofia en direct</string>
+    <string name="test_mode_warning">MODE TEST — T_HEYM11 uniquement</string>
+    <string name="chart_title">Courbe</string>
+    <string name="dataset_weather">Météo</string>
+    <string name="dataset_pn">Engagée</string>
+    <string name="dataset_b1610">Production réelle</string>
+    <string name="error_unable_to_refresh_data">Impossible d\'actualiser les données.</string>
+
+    <!-- Chart Placeholder & Empty States -->
+    <string name="chart_empty_title">Aucune donnée</string>
+    <string name="chart_empty_message">Rien à afficher sur cette période</string>
+    <string name="empty_production_title">Aucune donnée de production pour le moment.</string>
+    <string name="empty_production_message">Tirez pour actualiser et réessayez lorsque l\'API renverra des données.</string>
+
+    <!-- REMIT Screen & Details -->
+    <string name="remit_test_mode_info">MODE TEST — T_HEYM11 uniquement.</string>
+    <string name="remit_notices_title">Avis</string>
+    <plurals name="remit_active_notices_format">
+        <item quantity="one">%1$d avis actif</item>
+        <item quantity="many">%1$d avis actifs</item>
+        <item quantity="other">%1$d avis actifs</item>
+    </plurals>
+    <string name="remit_no_active_notices">Aucun avis REMIT actif.</string>
+    <string name="remit_last_update_format">Mis à jour : %1$s</string>
+    <string name="remit_cause_format">Cause : %1$s</string>
+    <string name="remit_capacity_unavailable">Indisponible</string>
+    <string name="remit_capacity_available">Disponible</string>
+    <string name="remit_capacity_normal">Normale</string>
+    <string name="remit_published_format">Publié : %1$s</string>
+    <string name="remit_end_format">Fin : %1$s</string>
+    <string name="error_unable_to_refresh_remit">Impossible d\'actualiser les données REMIT.</string>
+
+    <string name="remit_detail_capacities">Capacités</string>
+    <string name="remit_detail_normal">Normale</string>
+    <string name="remit_detail_available">Disponible</string>
+    <string name="remit_detail_dates">Dates</string>
+    <string name="remit_detail_start">Début</string>
+    <string name="remit_detail_end">Fin</string>
+    <string name="remit_detail_published">Publié</string>
+    <string name="remit_detail_asset_section">Actif</string>
+    <string name="remit_detail_bmu">BMU</string>
+    <string name="remit_detail_participant">Participant</string>
+    <string name="remit_detail_asset">Actif</string>
+    <string name="remit_detail_revision">Révision</string>
+    <string name="remit_detail_mrid">MRID</string>
+    <string name="remit_detail_cause">Cause</string>
+    <string name="remit_detail_related_info">Informations complémentaires</string>
+    <string name="remit_detail_outage_profile">Profil d\'indisponibilité</string>
+
+    <!-- Sofia Screen -->
+    <string name="title_sofia">Sofia</string>
+    <string name="sofia_about_title">Parc éolien offshore Sofia</string>
+    <string name="sofia_about_description">Parc éolien offshore de 1,4 GW situé sur le Dogger Bank, en mer du Nord centrale, à environ 195 km au large des côtes du nord-est de l\'Angleterre. Il comprend 100 turbines Siemens Gamesa SG 14-222 DD (14 MW chacune) réparties sur un site de 593 km². Détenu à 100 % par RWE, sa mise en service complète est prévue fin 2026.</string>
+    <string name="sofia_location_image_desc">Position du parc éolien Sofia, Dogger Bank</string>
+    <string name="sofia_location_caption">Dogger Bank · 195 km au large des côtes du nord-est anglais</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_test_mode_title">Mode test</string>
+    <string name="settings_test_mode_description">Utilise T_HEYM11 à la place de l\'agrégat Sofia en direct. Ce réglage est conservé localement.</string>
+    <string name="settings_disclaimer_title">Avertissement</string>
+    <string name="settings_disclaimer_description">Cette application est un projet privé, sans lien avec aucune entreprise.</string>
+
+    <!-- Widgets (old / RemoteViews) -->
+    <string name="widget_test_badge">TEST</string>
+    <string name="widget_mw_value">%1$d MW</string>
+    <string name="widget_capacity_value">Capacité %1$d %%</string>
+    <string name="widget_capacity_of_max_value">Capacité %1$d %% sur %2$d MW</string>
+    <string name="widget_last_refresh_value">Dernière mise à jour : %1$s</string>
+    <string name="widget_mode_test">TEST</string>
+    <string name="widget_mode_live">DIRECT</string>
+    <string name="widget_details_value">Mode : %1$s • API : %2$s</string>
+    <string name="widget_small_description">Petit widget de production Sofia</string>
+    <string name="widget_medium_description">Widget moyen de production Sofia</string>
+    <string name="widget_live_label">Sofia · Production</string>
+    <string name="widget_units_label">Sofia · Disponibilité par unité</string>
+    <string name="widget_graph_label">Sofia · Graphique</string>
+    <string name="widget_live_description">Production en direct avec jauge</string>
+    <string name="widget_units_description">Disponibilité REMIT de chaque unité</string>
+    <string name="widget_graph_description">Production engagée vs réelle sur la période choisie</string>
+
+    <!-- Modern Widgets (Glance & Config) -->
+    <string name="widget_config_time_window_title">Fenêtre de temps</string>
+    <string name="widget_config_time_window_subtitle">Période affichée par le widget graphique.</string>
+    <string name="widget_config_actual_included">La production réelle sera affichée avec la production engagée.</string>
+    <string name="widget_config_actual_excluded">En dessous de 7 jours, seule la production engagée est affichée (pas de données réelles).</string>
+    <string name="widget_config_adding">Ajout en cours…</string>
+    <string name="widget_config_validate">Valider</string>
+
+    <string name="widget_graph_title_offline_format">%1$s · HORS-LIGNE</string>
+    <string name="widget_graph_title_online_format">PRODUCTION · %1$s</string>
+    <string name="widget_graph_title_test_suffix">" · TEST"</string>
+    <string name="widget_graph_committed">Engagé</string>
+    <string name="widget_graph_actual">Réel</string>
+    <string name="widget_graph_loading">Chargement…</string>
+    <string name="widget_graph_no_data">Pas de données</string>
+    <string name="widget_graph_content_description">Production sur %1$s</string>
+
+    <string name="widget_live_mw">MW</string>
+    <string name="widget_live_test">TEST</string>
+    <string name="widget_live_sofia_offshore">SOFIA OFFSHORE</string>
+    <string name="widget_live_installed_capacity_format">sur %1$d MW installés</string>
+    <string name="widget_live_actual_format">Réel %1$d MW</string>
+    <string name="widget_live_actual_empty">Réel —</string>
+    <string name="widget_prefix_offline">"Hors-ligne · "</string>
+    <string name="widget_prefix_updated">"Mis à jour "</string>
+
+    <string name="widget_units_header">DISPONIBILITÉ PAR UNITÉ</string>
+</resources>
+===== Fichier: res/values/ic_launcher_background.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#FFFFFF</color>
+</resources>
+===== Fichier: res/values/strings.xml =====
+
+<resources>
+    <!-- App & General -->
+    <string name="app_name">Sofia Wind Farm</string>
+    <string name="action_back">Back</string>
+    <string name="dismiss_error">Dismiss error</string>
+
+    <!-- Navigation Tabs -->
+    <string name="tab_graph">Graph</string>
+    <string name="tab_remit">Alerts</string>
+    <string name="tab_sofia">Sofia</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Time Windows (chips) -->
+    <string name="time_window_6h">6h</string>
+    <string name="time_window_24h">24h</string>
+    <string name="time_window_48h">48h</string>
+    <string name="time_window_7d">7d</string>
+    <string name="time_window_1m">1m</string>
+    <string name="time_window_3m">3m</string>
+    <string name="time_window_all">All</string>
+
+    <string name="time_window_long_6h">6 hours</string>
+    <string name="time_window_long_24h">24 hours</string>
+    <string name="time_window_long_48h">48 hours</string>
+    <string name="time_window_long_7d">7 days</string>
+    <string name="time_window_long_1m">1 month</string>
+    <string name="time_window_long_3m">3 months</string>
+    <string name="time_window_long_all">Full history</string>
+
+    <string name="time_window_short_6h">6 H</string>
+    <string name="time_window_short_24h">24 H</string>
+    <string name="time_window_short_48h">48 H</string>
+    <string name="time_window_short_7d">7 D</string>
+    <string name="time_window_short_1m">1 MONTH</string>
+    <string name="time_window_short_3m">3 MONTHS</string>
+    <string name="time_window_short_all">ALL</string>
+
+    <!-- Units -->
+    <string name="unit_mw">MW</string>
+    <string name="unit_kmh">km/h</string>
+    <string name="mw_value_format">%1$d MW</string>
+    <string name="capacity_format">%1$s: %2$s MW</string>
+    <string name="gauge_capacity_format">%1$d%% of %2$d MW</string>
+
+    <!-- Graph Screen -->
+    <string name="title_graph">Graph</string>
+    <string name="title_sofia_live_generation">Sofia Live Generation</string>
+    <string name="test_mode_warning">TEST MODE — displaying T_HEYM11 only</string>
+    <string name="chart_title">Chart</string>
+    <string name="dataset_weather">Weather</string>
+    <string name="dataset_pn">Committed</string>
+    <string name="dataset_b1610">Actual production</string>
+    <string name="error_unable_to_refresh_data">Unable to refresh data.</string>
+
+    <!-- Chart Placeholder & Empty States -->
+    <string name="chart_empty_title">No data</string>
+    <string name="chart_empty_message">Nothing to display for this period</string>
+    <string name="empty_production_title">No production data available yet.</string>
+    <string name="empty_production_message">Pull to refresh and try again once the API returns data.</string>
+
+    <!-- REMIT Screen & Details -->
+    <string name="remit_test_mode_info">TEST MODE — T_HEYM11 only.</string>
+    <string name="remit_notices_title">Notices</string>
+    <plurals name="remit_active_notices_format">
+        <item quantity="one">%1$d active notice</item>
+        <item quantity="other">%1$d active notices</item>
+    </plurals>
+    <string name="remit_no_active_notices">No active REMIT notices.</string>
+    <string name="remit_last_update_format">Updated: %1$s</string>
+    <string name="remit_cause_format">Cause: %1$s</string>
+    <string name="remit_capacity_unavailable">Unavailable</string>
+    <string name="remit_capacity_available">Available</string>
+    <string name="remit_capacity_normal">Normal</string>
+    <string name="remit_published_format">Published: %1$s</string>
+    <string name="remit_end_format">End: %1$s</string>
+    <string name="error_unable_to_refresh_remit">Unable to refresh REMIT data.</string>
+
+    <string name="remit_detail_capacities">Capacities</string>
+    <string name="remit_detail_normal">Normal</string>
+    <string name="remit_detail_available">Available</string>
+    <string name="remit_detail_dates">Dates</string>
+    <string name="remit_detail_start">Start</string>
+    <string name="remit_detail_end">End</string>
+    <string name="remit_detail_published">Published</string>
+    <string name="remit_detail_asset_section">Asset</string>
+    <string name="remit_detail_bmu">BMU</string>
+    <string name="remit_detail_participant">Participant</string>
+    <string name="remit_detail_asset">Asset</string>
+    <string name="remit_detail_revision">Revision</string>
+    <string name="remit_detail_mrid">MRID</string>
+    <string name="remit_detail_cause">Cause</string>
+    <string name="remit_detail_related_info">Additional information</string>
+    <string name="remit_detail_outage_profile">Outage profile</string>
+
+    <!-- Sofia Screen -->
+    <string name="title_sofia">Sofia</string>
+    <string name="sofia_about_title">Sofia Offshore Wind Farm</string>
+    <string name="sofia_about_description">1.4 GW offshore wind farm located on Dogger Bank in the central North Sea, about 195 km off the northeast coast of England. It comprises 100 Siemens Gamesa SG 14-222 DD turbines (14 MW each) spread over a 593 km² site. 100% owned by RWE, with full commissioning expected by the end of 2026.</string>
+    <string name="sofia_location_image_desc">Location of the Sofia wind farm, Dogger Bank</string>
+    <string name="sofia_location_caption">Dogger Bank · 195 km off the northeast English coast</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_test_mode_title">Test mode</string>
+    <string name="settings_test_mode_description">Use T_HEYM11 instead of the live Sofia aggregate. This setting is persisted locally.</string>
+    <string name="settings_disclaimer_title">Disclaimer</string>
+    <string name="settings_disclaimer_description">This app is a private project not linked with any companies</string>
+
+    <!-- Widgets (old / RemoteViews) -->
+    <string name="widget_test_badge">TEST</string>
+    <string name="widget_mw_value">%1$d MW</string>
+    <string name="widget_capacity_value">Capacity %1$d%%</string>
+    <string name="widget_capacity_of_max_value">Capacity %1$d%% of %2$d MW</string>
+    <string name="widget_last_refresh_value">Last update: %1$s</string>
+    <string name="widget_mode_test">TEST</string>
+    <string name="widget_mode_live">LIVE</string>
+    <string name="widget_details_value">Mode: %1$s • API: %2$s</string>
+    <string name="widget_small_description">Small Sofia production widget</string>
+    <string name="widget_medium_description">Medium Sofia production widget</string>
+    <string name="widget_live_label">Sofia · Production</string>
+    <string name="widget_units_label">Sofia · Availability by unit</string>
+    <string name="widget_graph_label">Sofia · Graph</string>
+    <string name="widget_live_description">Live production with gauge</string>
+    <string name="widget_units_description">REMIT availability of each unit</string>
+    <string name="widget_graph_description">Committed vs actual production over a chosen period</string>
+
+    <!-- Modern Widgets (Glance & Config) -->
+    <string name="widget_config_time_window_title">Time window</string>
+    <string name="widget_config_time_window_subtitle">Period shown by the graph widget.</string>
+    <string name="widget_config_actual_included">Actual production will be shown alongside committed production.</string>
+    <string name="widget_config_actual_excluded">Below 7 days, only committed production is shown (no actual data).</string>
+    <string name="widget_config_adding">Adding…</string>
+    <string name="widget_config_validate">Confirm</string>
+
+    <string name="widget_graph_title_offline_format">%1$s · OFFLINE</string>
+    <string name="widget_graph_title_online_format">PRODUCTION · %1$s</string>
+    <string name="widget_graph_title_test_suffix">" · TEST"</string>
+    <string name="widget_graph_committed">Committed</string>
+    <string name="widget_graph_actual">Actual</string>
+    <string name="widget_graph_loading">Loading…</string>
+    <string name="widget_graph_no_data">No data</string>
+    <string name="widget_graph_content_description">Production over %1$s</string>
+
+    <string name="widget_live_mw">MW</string>
+    <string name="widget_live_test">TEST</string>
+    <string name="widget_live_sofia_offshore">SOFIA OFFSHORE</string>
+    <string name="widget_live_installed_capacity_format">of %1$d MW installed</string>
+    <string name="widget_live_actual_format">Actual %1$d MW</string>
+    <string name="widget_live_actual_empty">Actual —</string>
+    <string name="widget_prefix_offline">"Offline · "</string>
+    <string name="widget_prefix_updated">"Updated "</string>
+
+    <string name="widget_units_header">AVAILABILITY BY UNIT</string>
+</resources>
+===== Fichier: res/values/themes.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Sofia_Android" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
+===== Fichier: res/xml/backup_rules.xml =====
+
+<?xml version="1.0" encoding="utf-8"?><!--
+   Sample backup rules file; uncomment and customize as necessary.
+   See https://developer.android.com/guide/topics/data/autobackup
+   for details.
+   Note: This file is ignored for devices older than API 31
+   See https://developer.android.com/about/versions/12/backup-restore
+-->
+<full-backup-content>
+    <!--
+   <include domain="sharedpref" path="."/>
+   <exclude domain="sharedpref" path="device.xml"/>
+-->
+</full-backup-content>
+===== Fichier: res/xml/data_extraction_rules.xml =====
+
+<?xml version="1.0" encoding="utf-8"?><!--
+   Sample data extraction rules file; uncomment and customize as necessary.
+   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
+   for details.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <!-- TODO: Use <include> and <exclude> to control what is backed up.
+        <include .../>
+        <exclude .../>
+        -->
+    </cloud-backup>
+    <!--
+    <device-transfer>
+        <include .../>
+        <exclude .../>
+    </device-transfer>
+    -->
+</data-extraction-rules>
+===== Fichier: res/xml/locales_config.xml =====
+
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="en"/>
+    <locale android:name="fr"/>
+</locale-config>
+===== Fichier: res/xml/sofia_graph_glance_info.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="com.lemarc.sofia.widget.modern.SofiaGraphConfigActivity"
+    android:description="@string/widget_graph_description"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:minWidth="250dp"
+    android:minHeight="110dp"
+    android:minResizeWidth="180dp"
+    android:minResizeHeight="110dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="2"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="1800000"
+    android:widgetCategory="home_screen"
+    android:widgetFeatures="reconfigurable" />
+===== Fichier: res/xml/sofia_live_glance_info.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/widget_live_description"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:minWidth="110dp"
+    android:minHeight="110dp"
+    android:minResizeWidth="110dp"
+    android:minResizeHeight="110dp"
+    android:targetCellWidth="2"
+    android:targetCellHeight="2"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="1800000"
+    android:widgetCategory="home_screen" />
+===== Fichier: res/xml/sofia_medium_widget_info.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/widget_medium_description"
+    android:initialLayout="@layout/widget_sofia_medium"
+    android:minHeight="120dp"
+    android:minWidth="240dp"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="1800000"
+    android:widgetCategory="home_screen" />
+
+===== Fichier: res/xml/sofia_small_widget_info.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/widget_small_description"
+    android:initialLayout="@layout/widget_sofia_small"
+    android:minHeight="110dp"
+    android:minWidth="110dp"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="1800000"
+    android:widgetCategory="home_screen" />
+
+===== Fichier: res/xml/sofia_units_glance_info.xml =====
+
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/widget_units_description"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:minWidth="250dp"
+    android:minHeight="110dp"
+    android:minResizeWidth="110dp"
+    android:minResizeHeight="110dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="2"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="1800000"
+    android:widgetCategory="home_screen" />

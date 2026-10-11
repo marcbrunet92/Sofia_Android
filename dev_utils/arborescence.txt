@@ -1,77 +1,131 @@
-﻿C:\Users\marcb\StudioProjects\Sofia_Android\app\src\main\java
-└── com
-    └── lemarc
-        └── sofia
-            ├── Constants.kt
-            ├── data
-            │   ├── api
-            │   │   └── SofiaApiService.kt
-            │   ├── local
-            │   │   ├── dao
-            │   │   │   └── SofiaDao.kt
-            │   │   ├── Entities.kt
-            │   │   └── SofiaDatabase.kt
-            │   ├── model
-            │   │   └── Model.kt
-            │   ├── repository
-            │   │   ├── SofiaB1610Repository.kt
-            │   │   ├── SofiaProductionRepository.kt
-            │   │   ├── SofiaRemitRepository.kt
-            │   │   └── SofiaWeatherRepository.kt
-            │   └── settings
-            │       └── SettingsRepository.kt
-            ├── MainActivity.kt
-            ├── ui
-            │   ├── components
-            │   │   ├── Capacity Text.kt
-            │   │   ├── EmptyChartPlaceHolder.kt
-            │   │   ├── EmptyStateCard.kt
-            │   │   ├── ErrorBanner.kt
-            │   │   ├── InfoCard.kt
-            │   │   ├── ProductionChartContent.kt
-            │   │   ├── ProductionChartMulti.kt
-            │   │   ├── ProductionGaugeCard.kt
-            │   │   ├── ProductionRecordCard.kt
-            │   │   ├── RemitErrorBanner.kt
-            │   │   ├── RemitNoticeCard.kt
-            │   │   ├── TimestampCard.kt
-            │   │   ├── TimestampRow.kt
-            │   │   ├── TitleBanner.kt
-            │   │   └── WarningBanner.kt
-            │   ├── graph
-            │   │   ├── GraphScreen.kt
-            │   │   └── GraphViewModel.kt
-            │   ├── navigation
-            │   │   └── Routes.kt
-            │   ├── remit
-            │   │   ├── RemitDetailScreen.kt
-            │   │   ├── RemitScreen.kt
-            │   │   └── RemitViewModel.kt
-            │   ├── settings
-            │   │   ├── SettingsScreen.kt
-            │   │   └── SettingsViewModel.kt
-            │   ├── sofia
-            │   │   ├── SofiaScreen.kt
-            │   │   └── SofiaViewModel.kt
-            │   ├── SofiaApp.kt
-            │   └── theme
-            │       ├── Color.kt
-            │       ├── Theme.kt
-            │       └── Type.kt
-            ├── util
-            │   └── TimeUtils.kt
-            └── widget
-                ├── modern
-                │   ├── SofiaGraphConfig.kt
-                │   ├── SofiaGraphGlanceWidget.kt
-                │   ├── SofiaLiveGlanceWidget.kt
-                │   ├── SofiaUnitsGlanceWidget.kt
-                │   ├── SofiaWidgetCharts.kt
-                │   ├── SofiaWidgetData.kt
-                │   ├── SofiaWidgetRefreshWorker.kt
-                │   ├── SofiaWidgetSnapshots.kt
-                │   └── SofiaWidgetUi.kt
-                ├── SofiaMediumWidgetProvider.kt
-                ├── SofiaSmallWidgetProvider.kt
-                └── SofiaWidgetsUpdater.kt
-
+/home/Marc/tmp/Sofia_Android/app/src/main
+├── AndroidManifest.xml
+├── ic_launcher-playstore.png
+├── java
+│   └── com
+│       └── lemarc
+│           └── sofia
+│               ├── Constants.kt
+│               ├── data
+│               │   ├── api
+│               │   │   └── SofiaApiService.kt
+│               │   ├── local
+│               │   │   ├── dao
+│               │   │   │   └── SofiaDao.kt
+│               │   │   ├── Entities.kt
+│               │   │   └── SofiaDatabase.kt
+│               │   ├── model
+│               │   │   └── Model.kt
+│               │   ├── repository
+│               │   │   ├── SofiaB1610Repository.kt
+│               │   │   ├── SofiaProductionRepository.kt
+│               │   │   ├── SofiaRemitRepository.kt
+│               │   │   └── SofiaWeatherRepository.kt
+│               │   └── settings
+│               │       └── SettingsRepository.kt
+│               ├── MainActivity.kt
+│               ├── ui
+│               │   ├── components
+│               │   │   ├── Capacity Text.kt
+│               │   │   ├── EmptyChartPlaceHolder.kt
+│               │   │   ├── EmptyStateCard.kt
+│               │   │   ├── ErrorBanner.kt
+│               │   │   ├── InfoCard.kt
+│               │   │   ├── ProductionChartContent.kt
+│               │   │   ├── ProductionChartMulti.kt
+│               │   │   ├── ProductionGaugeCard.kt
+│               │   │   ├── ProductionRecordCard.kt
+│               │   │   ├── RemitErrorBanner.kt
+│               │   │   ├── RemitNoticeCard.kt
+│               │   │   ├── TimestampCard.kt
+│               │   │   ├── TimestampRow.kt
+│               │   │   ├── TitleBanner.kt
+│               │   │   └── WarningBanner.kt
+│               │   ├── graph
+│               │   │   ├── GraphScreen.kt
+│               │   │   └── GraphViewModel.kt
+│               │   ├── navigation
+│               │   │   └── Routes.kt
+│               │   ├── remit
+│               │   │   ├── RemitDetailScreen.kt
+│               │   │   ├── RemitScreen.kt
+│               │   │   └── RemitViewModel.kt
+│               │   ├── settings
+│               │   │   ├── SettingsScreen.kt
+│               │   │   └── SettingsViewModel.kt
+│               │   ├── sofia
+│               │   │   ├── SofiaScreen.kt
+│               │   │   └── SofiaViewModel.kt
+│               │   ├── SofiaApp.kt
+│               │   └── theme
+│               │       ├── Color.kt
+│               │       ├── Theme.kt
+│               │       └── Type.kt
+│               ├── util
+│               │   └── TimeUtils.kt
+│               └── widget
+│                   ├── modern
+│                   │   ├── SofiaGraphConfig.kt
+│                   │   ├── SofiaGraphGlanceWidget.kt
+│                   │   ├── SofiaLiveGlanceWidget.kt
+│                   │   ├── SofiaUnitsGlanceWidget.kt
+│                   │   ├── SofiaWidgetCharts.kt
+│                   │   ├── SofiaWidgetData.kt
+│                   │   ├── SofiaWidgetRefreshWorker.kt
+│                   │   ├── SofiaWidgetSnapshots.kt
+│                   │   └── SofiaWidgetUi.kt
+│                   ├── SofiaMediumWidgetProvider.kt
+│                   ├── SofiaSmallWidgetProvider.kt
+│                   └── SofiaWidgetsUpdater.kt
+└── res
+    ├── drawable
+    │   ├── ic_launcher_background.xml
+    │   ├── ic_launcher_foreground.xml
+    │   ├── logo_sofia_rwe.png
+    │   ├── sofia_maps.png
+    │   ├── widget_background.xml
+    │   ├── widget_progress_bar_drawable.xml
+    │   ├── widget_ring_background.xml
+    │   ├── widget_ring_progress_drawable.xml
+    │   └── widget_test_badge_background.xml
+    ├── layout
+    │   ├── widget_sofia_medium.xml
+    │   └── widget_sofia_small.xml
+    ├── mipmap-anydpi
+    │   ├── ic_launcher_round.xml
+    │   └── ic_launcher.xml
+    ├── mipmap-hdpi
+    │   ├── ic_launcher_foreground.webp
+    │   ├── ic_launcher_round.webp
+    │   └── ic_launcher.webp
+    ├── mipmap-mdpi
+    │   ├── ic_launcher_foreground.webp
+    │   ├── ic_launcher_round.webp
+    │   └── ic_launcher.webp
+    ├── mipmap-xhdpi
+    │   ├── ic_launcher_foreground.webp
+    │   ├── ic_launcher_round.webp
+    │   └── ic_launcher.webp
+    ├── mipmap-xxhdpi
+    │   ├── ic_launcher_foreground.webp
+    │   ├── ic_launcher_round.webp
+    │   └── ic_launcher.webp
+    ├── mipmap-xxxhdpi
+    │   ├── ic_launcher_foreground.webp
+    │   ├── ic_launcher_round.webp
+    │   └── ic_launcher.webp
+    ├── values
+    │   ├── ic_launcher_background.xml
+    │   ├── strings.xml
+    │   └── themes.xml
+    ├── values-fr
+    │   └── strings.xml
+    └── xml
+        ├── backup_rules.xml
+        ├── data_extraction_rules.xml
+        ├── locales_config.xml
+        ├── sofia_graph_glance_info.xml
+        ├── sofia_live_glance_info.xml
+        ├── sofia_medium_widget_info.xml
+        ├── sofia_small_widget_info.xml
+        └── sofia_units_glance_info.xml
