@@ -20,8 +20,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 import com.lemarc.sofia.ui.theme.SofiaBlue
 import com.lemarc.sofia.ui.theme.SofiaCyan
 import com.lemarc.sofia.ui.theme.SofiaIndigo
@@ -80,13 +82,17 @@ fun ProductionGaugeCard(
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "${animatedMw.roundToInt()} MW",
+                    text = stringResource(R.string.mw_value_format, animatedMw.roundToInt()),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "${(animatedProgress * 100).roundToInt()}% of ${safeMaxCapacity.roundToInt()} MW",
+                    text = stringResource(
+                        R.string.gauge_capacity_format,
+                        (animatedProgress * 100).roundToInt(),
+                        safeMaxCapacity.roundToInt(),
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

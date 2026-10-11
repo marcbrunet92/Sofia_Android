@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
+import androidx.glance.LocalContext
 import androidx.glance.LocalSize
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.LinearProgressIndicator
@@ -23,6 +24,7 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.width
+import com.lemarc.sofia.R
 import kotlin.math.roundToInt
 
 private val CompactSize = DpSize(110.dp, 110.dp)
@@ -44,9 +46,10 @@ class SofiaUnitsGlanceWidget : GlanceAppWidget() {
 
 @Composable
 private fun WideLayout(data: UnitsData) {
+    val context = LocalContext.current
     Column(modifier = GlanceModifier.fillMaxSize().padding(12.dp)) {
         Row(modifier = GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            WText("DISPONIBILITÉ PAR UNITÉ", 10, WidgetPalette.Muted, bold = true)
+            WText(context.getString(R.string.widget_units_header), 10, WidgetPalette.Muted, bold = true)
             Spacer(modifier = GlanceModifier.defaultWeight())
             val total = if (data.totalNormal > 0) {
                 "${data.totalAvailable.roundToInt()} / ${data.totalNormal.roundToInt()} MW"
@@ -64,7 +67,7 @@ private fun WideLayout(data: UnitsData) {
         }
         Spacer(modifier = GlanceModifier.height(6.dp))
         WText(
-            text = (if (data.fromCache) "Hors-ligne · " else "Mis à jour ") + formatClock(data.fetchedAt),
+            text = (if (data.fromCache) context.getString(R.string.widget_prefix_offline) else context.getString(R.string.widget_prefix_updated)) + formatClock(data.fetchedAt),
             size = 9,
             color = WidgetPalette.Muted,
         )
@@ -88,6 +91,7 @@ private fun CompactLayout(data: UnitsData) {
 
 @Composable
 private fun UnitTile(unit: UnitStatus, modifier: GlanceModifier, compact: Boolean) {
+    val context = LocalContext.current
     val color = unit.statusColor()
     val mw = unit.availableMw?.roundToInt()?.toString() ?: "—"
     Column(
@@ -104,10 +108,10 @@ private fun UnitTile(unit: UnitStatus, modifier: GlanceModifier, compact: Boolea
             WText(if (compact) unit.shortLabel else unit.label, if (compact) 10 else 9, WidgetPalette.Muted, bold = true)
         }
         if (compact) {
-            WText("$mw MW", 13, color, bold = true)
+            WText("$mw ${context.getString(R.string.unit_mw)}", 13, color, bold = true)
         } else {
             WText(mw, 18, color, bold = true)
-            WText("MW", 9, WidgetPalette.Muted)
+            WText(context.getString(R.string.unit_mw), 9, WidgetPalette.Muted)
             Spacer(modifier = GlanceModifier.height(4.dp))
             LinearProgressIndicator(
                 progress = unit.fraction,

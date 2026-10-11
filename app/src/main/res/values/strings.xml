@@ -1,5 +1,108 @@
 <resources>
+    <!-- App & General -->
     <string name="app_name">Sofia Wind Farm</string>
+    <string name="action_back">Retour</string>
+    <string name="dismiss_error">Dismiss error</string>
+
+    <!-- Navigation Tabs -->
+    <string name="tab_graph">Graph</string>
+    <string name="tab_remit">Alert</string>
+    <string name="tab_sofia">Sofia</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Time Windows -->
+    <string name="time_window_6h">6h</string>
+    <string name="time_window_24h">24h</string>
+    <string name="time_window_48h">48h</string>
+    <string name="time_window_7d">7d</string>
+    <string name="time_window_1m">1m</string>
+    <string name="time_window_3m">3m</string>
+    <string name="time_window_all">All</string>
+
+    <string name="time_window_long_6h">6 heures</string>
+    <string name="time_window_long_24h">24 heures</string>
+    <string name="time_window_long_48h">48 heures</string>
+    <string name="time_window_long_7d">7 jours</string>
+    <string name="time_window_long_1m">1 mois</string>
+    <string name="time_window_long_3m">3 mois</string>
+    <string name="time_window_long_all">Tout l\'historique</string>
+
+    <string name="time_window_short_6h">6 H</string>
+    <string name="time_window_short_24h">24 H</string>
+    <string name="time_window_short_48h">48 H</string>
+    <string name="time_window_short_7d">7 J</string>
+    <string name="time_window_short_1m">1 MOIS</string>
+    <string name="time_window_short_3m">3 MOIS</string>
+    <string name="time_window_short_all">TOUT</string>
+
+    <!-- Units -->
+    <string name="unit_mw">MW</string>
+    <string name="unit_kmh">km/h</string>
+    <string name="mw_value_format">%1$d MW</string>
+    <string name="capacity_format">%1$s: %2$s MW</string>
+    <string name="gauge_capacity_format">%1$d%% of %2$d MW</string>
+
+    <!-- Graph Screen -->
+    <string name="title_graph">Graph</string>
+    <string name="title_sofia_live_generation">Sofia Live Generation</string>
+    <string name="test_mode_warning">TEST MODE — displaying T_HEYM11 only</string>
+    <string name="chart_title">Chart</string>
+    <string name="dataset_weather">Weather</string>
+    <string name="dataset_pn">Comitted</string>
+    <string name="dataset_b1610">Actual Production</string>
+    <string name="error_unable_to_refresh_data">Unable to refresh data.</string>
+
+    <!-- Chart Placeholder & Empty States -->
+    <string name="chart_empty_title">Aucune donnée</string>
+    <string name="chart_empty_message">Rien à afficher sur cette période</string>
+    <string name="empty_production_title">No production data available yet.</string>
+    <string name="empty_production_message">Pull to refresh and try again once the API returns data.</string>
+
+    <!-- REMIT Screen & Details -->
+    <string name="remit_test_mode_info">TEST MODE — T_HEYM11 uniquement.</string>
+    <string name="remit_notices_title">Notices</string>
+    <string name="remit_active_notices_format">%1$d avis actif(s)</string>
+    <string name="remit_no_active_notices">Aucun avis REMIT actif.</string>
+    <string name="remit_last_update_format">Mis à jour : %1$s</string>
+    <string name="remit_cause_format">Cause: %1$s</string>
+    <string name="remit_capacity_unavailable">Unavailable</string>
+    <string name="remit_capacity_available">Available</string>
+    <string name="remit_capacity_normal">Normal</string>
+    <string name="remit_published_format">Published: %1$s</string>
+    <string name="remit_end_format">End: %1$s</string>
+    <string name="error_unable_to_refresh_remit">Unable to refresh REMIT data.</string>
+
+    <string name="remit_detail_capacities">Capacités</string>
+    <string name="remit_detail_normal">Normale</string>
+    <string name="remit_detail_available">Disponible</string>
+    <string name="remit_detail_dates">Dates</string>
+    <string name="remit_detail_start">Début</string>
+    <string name="remit_detail_end">Fin</string>
+    <string name="remit_detail_published">Publié</string>
+    <string name="remit_detail_asset_section">Actif</string>
+    <string name="remit_detail_bmu">BMU</string>
+    <string name="remit_detail_participant">Participant</string>
+    <string name="remit_detail_asset">Asset</string>
+    <string name="remit_detail_revision">Révision</string>
+    <string name="remit_detail_mrid">MRID</string>
+    <string name="remit_detail_cause">Cause</string>
+    <string name="remit_detail_related_info">Informations complémentaires</string>
+    <string name="remit_detail_outage_profile">Profil d\'indisponibilité</string>
+
+    <!-- Sofia Screen -->
+    <string name="title_sofia">Sofia</string>
+    <string name="sofia_about_title">Sofia Offshore Wind Farm</string>
+    <string name="sofia_about_description">Parc éolien offshore de 1,4 GW situé sur le Dogger Bank, en mer du Nord centrale, à environ 195 km au large des côtes du nord-est de l\'Angleterre. Il comprend 100 turbines Siemens Gamesa SG 14-222 DD (14 MW chacune) réparties sur un site de 593 km². Détenu à 100 % par RWE, sa mise en service complète est prévue fin 2026.</string>
+    <string name="sofia_location_image_desc">Position du parc éolien Sofia, Dogger Bank</string>
+    <string name="sofia_location_caption">Dogger Bank · 195 km au large des côtes du nord-est anglais</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_test_mode_title">Test mode</string>
+    <string name="settings_test_mode_description">Use T_HEYM11 instead of the live Sofia aggregate. This setting is persisted locally.</string>
+    <string name="settings_disclaimer_title">Disclaimer</string>
+    <string name="settings_disclaimer_description">This app is a private project not linked with any companies</string>
+
+    <!-- Widgets (Old / RemoteViews) -->
     <string name="widget_test_badge">TEST</string>
     <string name="widget_mw_value">%1$d MW</string>
     <string name="widget_capacity_value">Capacity %1$d%%</string>
@@ -16,4 +119,32 @@
     <string name="widget_live_description">Production en direct avec jauge</string>
     <string name="widget_units_description">Disponibilité REMIT de chaque unité</string>
     <string name="widget_graph_description">Production engagée vs réelle sur 24 h</string>
+
+    <!-- Modern Widgets (Glance & Config) -->
+    <string name="widget_config_time_window_title">Fenêtre de temps</string>
+    <string name="widget_config_time_window_subtitle">Période affichée par le widget graphique.</string>
+    <string name="widget_config_actual_included">La production réelle sera affichée avec la production engagée.</string>
+    <string name="widget_config_actual_excluded">En dessous de 7 jours, seule la production engagée est affichée (pas de données réelles).</string>
+    <string name="widget_config_adding">Ajout en cours…</string>
+    <string name="widget_config_validate">Valider</string>
+
+    <string name="widget_graph_title_offline_format">%1$s · HORS-LIGNE</string>
+    <string name="widget_graph_title_online_format">PRODUCTION · %1$s</string>
+    <string name="widget_graph_title_test_suffix"> · TEST</string>
+    <string name="widget_graph_committed">Engagé</string>
+    <string name="widget_graph_actual">Réel</string>
+    <string name="widget_graph_loading">Chargement…</string>
+    <string name="widget_graph_no_data">Pas de données</string>
+    <string name="widget_graph_content_description">Production sur %1$s</string>
+
+    <string name="widget_live_mw">MW</string>
+    <string name="widget_live_test">TEST</string>
+    <string name="widget_live_sofia_offshore">SOFIA OFFSHORE</string>
+    <string name="widget_live_installed_capacity_format">sur %1$d MW installés</string>
+    <string name="widget_live_actual_format">Réel %1$d MW</string>
+    <string name="widget_live_actual_empty">Réel —</string>
+    <string name="widget_prefix_offline">Hors-ligne · </string>
+    <string name="widget_prefix_updated">Mis à jour </string>
+
+    <string name="widget_units_header">DISPONIBILITÉ PAR UNITÉ</string>
 </resources>

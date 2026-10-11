@@ -28,7 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.ui.components.ChartSeries
 import com.lemarc.sofia.ui.components.ErrorBanner
@@ -124,10 +126,10 @@ fun GraphScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                item { TitleBanner(title = "Graph") }
+                item { TitleBanner(title = stringResource(R.string.title_graph)) }
                 if (state.testMode) {
                     item {
-                        WarningBanner(text = "TEST MODE — displaying T_HEYM11 only")
+                        WarningBanner(text = stringResource(R.string.test_mode_warning))
                     }
                 }
                 if (state.errorMessage != null) {
@@ -177,7 +179,7 @@ private fun DatasetSelector(
             FilterChip(
                 selected = option in selected,
                 onClick = { onSelect(option) },
-                label = { Text(option.label) },
+                label = { Text(stringResource(option.labelRes)) },
                 leadingIcon = {
                     Box(
                         modifier = Modifier
@@ -209,7 +211,7 @@ private fun GraphChartCard(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
-                text = "Chart",
+                text = stringResource(R.string.chart_title),
                 style = MaterialTheme.typography.titleMedium,
             )
             LazyRow(
@@ -220,7 +222,7 @@ private fun GraphChartCard(
                     FilterChip(
                         selected = window == selectedWindow,
                         onClick = { onSelectWindow(window) },
-                        label = { Text(window.label) },
+                        label = { Text(stringResource(window.labelRes)) },
                     )
                 }
             }

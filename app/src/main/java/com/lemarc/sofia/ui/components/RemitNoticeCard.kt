@@ -11,8 +11,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 import com.lemarc.sofia.data.model.RemitNotice
 import com.lemarc.sofia.ui.remit.formatTimestamp
 
@@ -45,20 +47,20 @@ fun RemitNoticeCard(
             )
             if (notice.cause.isNotBlank()) {
                 Text(
-                    text = "Cause: ${notice.cause}",
+                    text = stringResource(R.string.remit_cause_format, notice.cause),
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
             HorizontalDivider()
-            CapacityText("Unavailable", notice.unavailableCapacityMw)
-            CapacityText("Available", notice.availableCapacityMw)
-            CapacityText("Normal", notice.normalCapacityMw)
+            CapacityText(stringResource(R.string.remit_capacity_unavailable), notice.unavailableCapacityMw)
+            CapacityText(stringResource(R.string.remit_capacity_available), notice.availableCapacityMw)
+            CapacityText(stringResource(R.string.remit_capacity_normal), notice.normalCapacityMw)
             Text(
-                text = "Published: ${formatTimestamp(notice.publishTime)}",
+                text = stringResource(R.string.remit_published_format, formatTimestamp(notice.publishTime)),
                 style = MaterialTheme.typography.bodySmall,
             )
             Text(
-                text = "End: ${formatTimestamp(notice.eventEndTime)}",
+                text = stringResource(R.string.remit_end_format, formatTimestamp(notice.eventEndTime)),
                 style = MaterialTheme.typography.bodySmall,
             )
         }

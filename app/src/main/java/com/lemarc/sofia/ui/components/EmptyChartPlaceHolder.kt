@@ -22,7 +22,9 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 
 @Composable
 fun EmptyChartPlaceholder(modifier: Modifier = Modifier) {
@@ -86,12 +88,12 @@ fun EmptyChartPlaceholder(modifier: Modifier = Modifier) {
                     .padding(horizontal = 20.dp, vertical = 12.dp),
             ) {
                 Text(
-                    text = "Aucune donnée",
+                    text = stringResource(R.string.chart_empty_title),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
-                    text = "Rien à afficher sur cette période",
+                    text = stringResource(R.string.chart_empty_message),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.R
 import com.lemarc.sofia.ui.components.ErrorBanner
@@ -33,7 +34,7 @@ fun SofiaScreen(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        item { TitleBanner(title = "Sofia") }
+        item { TitleBanner(title = stringResource(R.string.title_sofia)) }
 
         if (state.errorMessage != null) {
             item {
@@ -52,17 +53,12 @@ fun SofiaDescriptionCard(modifier: Modifier = Modifier) {
     ElevatedCard(modifier = modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Sofia Offshore Wind Farm",
+                text = stringResource(R.string.sofia_about_title),
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = "Parc éolien offshore de 1,4 GW situé sur le Dogger Bank, " +
-                        "en mer du Nord centrale, à environ 195 km au large des côtes " +
-                        "du nord-est de l'Angleterre. Il comprend 100 turbines Siemens " +
-                        "Gamesa SG 14-222 DD (14 MW chacune) réparties sur un site de " +
-                        "593 km². Détenu à 100 % par RWE, sa mise en service complète " +
-                        "est prévue fin 2026.",
+                text = stringResource(R.string.sofia_about_description),
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
@@ -75,12 +71,12 @@ fun SofiaLocationCard(modifier: Modifier = Modifier) {
         Column {
             Image(
                 painter = painterResource(id = R.drawable.sofia_maps),
-                contentDescription = "Position du parc éolien Sofia, Dogger Bank",
+                contentDescription = stringResource(R.string.sofia_location_image_desc),
                 modifier = Modifier.fillMaxWidth().height(200.dp),
                 contentScale = ContentScale.Crop,
             )
             Text(
-                text = "Dogger Bank · 195 km au large des côtes du nord-est anglais",
+                text = stringResource(R.string.sofia_location_caption),
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier.padding(12.dp),
             )

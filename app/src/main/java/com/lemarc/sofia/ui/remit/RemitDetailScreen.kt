@@ -24,8 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 import com.lemarc.sofia.data.model.RemitNotice
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,7 +44,7 @@ fun RemitDetailScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Retour",
+                            contentDescription = stringResource(R.string.action_back),
                         )
                     }
                 },
@@ -75,31 +77,37 @@ fun RemitDetailScreen(
             HorizontalDivider()
 
             // ── Capacités ─────────────────────────────────────────────────────
-            SectionTitle("Capacités")
-            DetailRow("Normale",     notice.normalCapacityMw?.let     { "${it.toInt()} MW" } ?: "—")
-            DetailRow("Disponible",  notice.availableCapacityMw?.let  { "${it.toInt()} MW" } ?: "—")
+            SectionTitle(stringResource(R.string.remit_detail_capacities))
+            DetailRow(
+                stringResource(R.string.remit_detail_normal),
+                notice.normalCapacityMw?.let { stringResource(R.string.mw_value_format, it.toInt()) } ?: "—",
+            )
+            DetailRow(
+                stringResource(R.string.remit_detail_available),
+                notice.availableCapacityMw?.let { stringResource(R.string.mw_value_format, it.toInt()) } ?: "—",
+            )
             HorizontalDivider()
 
             // ── Dates ─────────────────────────────────────────────────────────
-            SectionTitle("Dates")
-            DetailRow("Début",   formatTimestamp(notice.eventStartTime))
-            DetailRow("Fin",     formatTimestamp(notice.eventEndTime))
-            DetailRow("Publié",  formatTimestamp(notice.publishTime))
+            SectionTitle(stringResource(R.string.remit_detail_dates))
+            DetailRow(stringResource(R.string.remit_detail_start), formatTimestamp(notice.eventStartTime))
+            DetailRow(stringResource(R.string.remit_detail_end), formatTimestamp(notice.eventEndTime))
+            DetailRow(stringResource(R.string.remit_detail_published), formatTimestamp(notice.publishTime))
 
             HorizontalDivider()
 
             // ── Actif ─────────────────────────────────────────────────────────
-            SectionTitle("Actif")
-            DetailRow("BMU",         notice.bmuId)
-            DetailRow("Participant", notice.participantId)
-            DetailRow("Asset",       notice.assetId)
-            DetailRow("Révision",    notice.revisionNumber.toString())
-            DetailRow("MRID",        notice.mrid)
+            SectionTitle(stringResource(R.string.remit_detail_asset_section))
+            DetailRow(stringResource(R.string.remit_detail_bmu), notice.bmuId)
+            DetailRow(stringResource(R.string.remit_detail_participant), notice.participantId)
+            DetailRow(stringResource(R.string.remit_detail_asset), notice.assetId)
+            DetailRow(stringResource(R.string.remit_detail_revision), notice.revisionNumber.toString())
+            DetailRow(stringResource(R.string.remit_detail_mrid), notice.mrid)
 
             // ── Cause ─────────────────────────────────────────────────────────
             if (notice.cause.isNotBlank()) {
                 HorizontalDivider()
-                SectionTitle("Cause")
+                SectionTitle(stringResource(R.string.remit_detail_cause))
                 Text(
                     text = notice.cause,
                     style = MaterialTheme.typography.bodyMedium,
@@ -110,7 +118,7 @@ fun RemitDetailScreen(
             // ── Informations complémentaires ──────────────────────────────────
             if (notice.relatedInformation.isNotBlank()) {
                 HorizontalDivider()
-                SectionTitle("Informations complémentaires")
+                SectionTitle(stringResource(R.string.remit_detail_related_info))
                 Text(
                     text = notice.relatedInformation,
                     style = MaterialTheme.typography.bodyMedium,
@@ -121,7 +129,7 @@ fun RemitDetailScreen(
             // ── Profil d'indisponibilité ──────────────────────────────────────
             if (notice.outageProfile.isNotBlank()) {
                 HorizontalDivider()
-                SectionTitle("Profil d'indisponibilité")
+                SectionTitle(stringResource(R.string.remit_detail_outage_profile))
                 Text(
                     text = notice.outageProfile,
                     style = MaterialTheme.typography.bodySmall,

@@ -9,6 +9,7 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.LocalContext
 import androidx.glance.LocalSize
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
@@ -25,6 +26,7 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
 import androidx.glance.text.TextAlign
+import com.lemarc.sofia.R
 import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
 import kotlin.math.roundToInt
 
@@ -56,6 +58,7 @@ private fun LiveData.percent(): Int =
 
 @Composable
 private fun CompactLayout(data: LiveData, gauge: Bitmap) {
+    val context = LocalContext.current
     Box(
         modifier = GlanceModifier.fillMaxSize().padding(8.dp),
         contentAlignment = Alignment.Center,
@@ -68,14 +71,15 @@ private fun CompactLayout(data: LiveData, gauge: Bitmap) {
         )
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             WText("${data.currentMw.roundToInt()}", 22, bold = true, align = TextAlign.Center)
-            WText("MW", 11, WidgetPalette.Muted, align = TextAlign.Center)
-            if (data.testMode) WText("TEST", 9, WidgetPalette.Bad, bold = true)
+            WText(context.getString(R.string.widget_live_mw), 11, WidgetPalette.Muted, align = TextAlign.Center)
+            if (data.testMode) WText(context.getString(R.string.widget_live_test), 9, WidgetPalette.Bad, bold = true)
         }
     }
 }
 
 @Composable
 private fun WideLayout(data: LiveData, gauge: Bitmap) {
+    val context = LocalContext.current
     Row(
         modifier = GlanceModifier.fillMaxSize().padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -92,26 +96,26 @@ private fun WideLayout(data: LiveData, gauge: Bitmap) {
         Spacer(modifier = GlanceModifier.width(14.dp))
         Column(modifier = GlanceModifier.defaultWeight()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                WText("SOFIA OFFSHORE", 10, WidgetPalette.Muted, bold = true)
+                WText(context.getString(R.string.widget_live_sofia_offshore), 10, WidgetPalette.Muted, bold = true)
                 if (data.testMode) {
                     Spacer(modifier = GlanceModifier.width(6.dp))
-                    WText("TEST", 10, WidgetPalette.Bad, bold = true)
+                    WText(context.getString(R.string.widget_live_test), 10, WidgetPalette.Bad, bold = true)
                 }
             }
-            WText("${data.currentMw.roundToInt()} MW", 28, bold = true)
-            WText("sur ${SOFIA_MAX_CAPACITY_MW.roundToInt()} MW installés", 11, WidgetPalette.Muted)
+            WText(context.getString(R.string.widget_mw_value, data.currentMw.roundToInt()), 28, bold = true)
+            WText(context.getString(R.string.widget_live_installed_capacity_format, SOFIA_MAX_CAPACITY_MW.roundToInt()), 11, WidgetPalette.Muted)
             Spacer(modifier = GlanceModifier.height(6.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Dot(WidgetPalette.Actual)
                 Spacer(modifier = GlanceModifier.width(6.dp))
                 WText(
-                    text = data.actualMw?.let { "Réel ${it.roundToInt()} MW" } ?: "Réel —",
+                    text = data.actualMw?.let { context.getString(R.string.widget_live_actual_format, it.roundToInt()) } ?: context.getString(R.string.widget_live_actual_empty),
                     size = 11,
                 )
             }
             Spacer(modifier = GlanceModifier.height(2.dp))
             WText(
-                text = (if (data.fromCache) "Hors-ligne · " else "Mis à jour ") + formatClock(data.to),
+                text = (if (data.fromCache) context.getString(R.string.widget_prefix_offline) else context.getString(R.string.widget_prefix_updated)) + formatClock(data.to),
                 size = 10,
                 color = WidgetPalette.Muted,
             )

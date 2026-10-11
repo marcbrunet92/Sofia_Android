@@ -12,8 +12,10 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 import com.lemarc.sofia.ui.components.InfoCard
 import com.lemarc.sofia.ui.components.RemitErrorBanner
 import com.lemarc.sofia.ui.components.RemitNoticeCard
@@ -64,22 +66,22 @@ fun RemitScreen(
                 }
                 if (state.testMode) {
                     item {
-                        InfoCard("TEST MODE — T_HEYM11 uniquement.")
+                        InfoCard(stringResource(R.string.remit_test_mode_info))
                     }
                 }
                 item {
                     Text(
-                        text = "Notices",
+                        text = stringResource(R.string.remit_notices_title),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                     )
                 }
                 item {
-                    InfoCard("${state.remits.size} avis actif(s)")
+                    InfoCard(stringResource(R.string.remit_active_notices_format, state.remits.size))
                 }
                 if (state.remits.isEmpty()) {
                     item {
-                        InfoCard("Aucun avis REMIT actif.")
+                        InfoCard(stringResource(R.string.remit_no_active_notices))
                     }
                 } else {
                     items(
@@ -93,7 +95,7 @@ fun RemitScreen(
                     }
                 }
                 item {
-                    InfoCard("Mis à jour : ${formatTimestamp(state.lastFetchTimestamp)}")
+                    InfoCard(stringResource(R.string.remit_last_update_format, formatTimestamp(state.lastFetchTimestamp)))
                 }
             }
         }

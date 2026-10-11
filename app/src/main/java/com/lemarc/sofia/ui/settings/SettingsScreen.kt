@@ -14,7 +14,9 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 
 @Composable
 fun SettingsScreen(
@@ -39,9 +41,9 @@ fun SettingsScreen(
                 shape = RoundedCornerShape(24.dp)
             ) {
                 ListItem(
-                    headlineContent = { Text("Test mode") },
+                    headlineContent = { Text(stringResource(R.string.settings_test_mode_title)) },
                     supportingContent = {
-                        Text("Use T_HEYM11 instead of the live Sofia aggregate. This setting is persisted locally.")
+                        Text(stringResource(R.string.settings_test_mode_description))
                     },
                     trailingContent = {
                         Switch(
@@ -64,9 +66,9 @@ fun SettingsScreen(
                 shape = RoundedCornerShape(24.dp)
             ) {
                 ListItem(
-                    headlineContent = { Text("Disclaimer") },
+                    headlineContent = { Text(stringResource(R.string.settings_disclaimer_title)) },
                     supportingContent = {
-                        Text("This app is a private project not linked with any companies")
+                        Text(stringResource(R.string.settings_disclaimer_description))
                     },
                 )
             }

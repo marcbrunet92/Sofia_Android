@@ -1,5 +1,6 @@
 package com.lemarc.sofia.ui
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ShowChart
@@ -14,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -22,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.lemarc.sofia.R
 import com.lemarc.sofia.ui.graph.GraphScreen
 import com.lemarc.sofia.ui.graph.GraphViewModel
 import com.lemarc.sofia.ui.navigation.Route
@@ -35,11 +38,11 @@ import com.lemarc.sofia.ui.sofia.SofiaViewModel
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-private enum class AppTab(val label: String) {
-    Graph("Graph"),
-    Remit("Alert"),
-    Settings("Settings"),
-    Sofia("Sofia"),
+private enum class AppTab(@StringRes val labelRes: Int) {
+    Graph(R.string.tab_graph),
+    Remit(R.string.tab_remit),
+    Settings(R.string.tab_settings),
+    Sofia(R.string.tab_sofia),
 }
 
 val timestampFormatter: DateTimeFormatter =
@@ -91,7 +94,7 @@ fun SofiaApp(
                             }
                             Icon(icon, contentDescription = null)
                         },
-                        label = { Text(tab.label) },
+                        label = { Text(stringResource(tab.labelRes)) },
                     )
                 }
             }

@@ -1,8 +1,10 @@
 package com.lemarc.sofia.ui.graph
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.lemarc.sofia.R
 import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.data.repository.SofiaB1610Repository
@@ -22,7 +24,11 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-enum class GraphDataset(val label: String) { Weather("Weather"), PN("Comitted"), B1610("Actual Production") }
+enum class GraphDataset(val label: String, @StringRes val labelRes: Int) {
+    Weather("Weather", R.string.dataset_weather),
+    PN("Comitted", R.string.dataset_pn),
+    B1610("Actual Production", R.string.dataset_b1610),
+}
 
 data class GraphUiState(
     val isLoading: Boolean = true,

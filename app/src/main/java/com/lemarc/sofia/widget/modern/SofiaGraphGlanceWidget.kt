@@ -12,6 +12,7 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.LocalContext
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
@@ -28,6 +29,7 @@ import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.state.PreferencesGlanceStateDefinition
+import com.lemarc.sofia.R
 import com.lemarc.sofia.TimeWindow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -97,13 +99,14 @@ private suspend fun buildGraphUi(context: Context, window: TimeWindow): GraphUi 
 
 @Composable
 private fun GraphContent(window: TimeWindow, ui: GraphUi?) {
+    val context = LocalContext.current
     val showActual = window.showsActual()
     val chart = ui?.chart
     val title = (if (ui?.data?.fromCache == true) {
-        "${window.shortTitle()} · HORS-LIGNE"
+        context.getString(R.string.widget_graph_title_offline_format, window.shortTitle(context))
     } else {
-        "PRODUCTION · ${window.shortTitle()}"
-    }) + if (ui?.data?.testMode == true) " · TEST" else ""
+        context.getString(R.string.widget_graph_title_online_format, window.shortTitle(context))
+    }) + if (ui?.data?.testMode == true) context.getString(R.string.widget_graph_title_test_suffix) else ""
 
     Column(modifier = GlanceModifier.fillMaxSize().padding(horizontal = 12.dp, vertical = 10.dp)) {
         Row(modifier = GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -111,25 +114,25 @@ private fun GraphContent(window: TimeWindow, ui: GraphUi?) {
             Spacer(modifier = GlanceModifier.defaultWeight())
             Dot(WidgetPalette.Committed)
             Spacer(modifier = GlanceModifier.width(4.dp))
-            WText("Engagé", 10)
+            WText(context.getString(R.string.widget_graph_committed), 10)
             if (showActual) {
                 Spacer(modifier = GlanceModifier.width(10.dp))
                 Dot(WidgetPalette.Actual)
                 Spacer(modifier = GlanceModifier.width(4.dp))
-                WText("Réel", 10)
+                WText(context.getString(R.string.widget_graph_actual), 10)
             }
         }
         Spacer(modifier = GlanceModifier.height(6.dp))
         when {
             ui == null -> Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                WText("Chargement…", 12, WidgetPalette.Muted)
+                WText(context.getString(R.string.widget_graph_loading), 12, WidgetPalette.Muted)
             }
             chart == null -> Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                WText("Pas de données", 12, WidgetPalette.Muted)
+                WText(context.getString(R.string.widget_graph_no_data), 12, WidgetPalette.Muted)
             }
             else -> Image(
                 provider = ImageProvider(chart),
-                contentDescription = "Production sur ${window.longLabel()}",
+                contentDescription = context.getString(R.string.widget_graph_content_description, window.longLabel(context)),
                 modifier = GlanceModifier.fillMaxWidth().defaultWeight(),
                 contentScale = ContentScale.Fit,
             )

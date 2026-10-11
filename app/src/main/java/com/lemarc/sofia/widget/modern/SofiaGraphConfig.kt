@@ -1,11 +1,13 @@
 package com.lemarc.sofia.widget.modern
 
 import android.appwidget.AppWidgetManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,6 +39,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.lifecycle.lifecycleScope
+import com.lemarc.sofia.R
 import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.ui.theme.Sofia_AndroidTheme
 import java.time.Duration
@@ -49,25 +53,31 @@ fun TimeWindow.showsActual(): Boolean {
     return d == null || d >= ActualMinWindow
 }
 
-fun TimeWindow.longLabel(): String = when (this) {
-    TimeWindow.HOURS_6 -> "6 heures"
-    TimeWindow.HOURS_24 -> "24 heures"
-    TimeWindow.HOURS_48 -> "48 heures"
-    TimeWindow.DAYS_7 -> "7 jours"
-    TimeWindow.MONTH_1 -> "1 mois"
-    TimeWindow.MONTH_3 -> "3 mois"
-    TimeWindow.ALL -> "Tout l'historique"
+@StringRes
+fun TimeWindow.longLabelRes(): Int = when (this) {
+    TimeWindow.HOURS_6 -> R.string.time_window_long_6h
+    TimeWindow.HOURS_24 -> R.string.time_window_long_24h
+    TimeWindow.HOURS_48 -> R.string.time_window_long_48h
+    TimeWindow.DAYS_7 -> R.string.time_window_long_7d
+    TimeWindow.MONTH_1 -> R.string.time_window_long_1m
+    TimeWindow.MONTH_3 -> R.string.time_window_long_3m
+    TimeWindow.ALL -> R.string.time_window_long_all
 }
 
-fun TimeWindow.shortTitle(): String = when (this) {
-    TimeWindow.HOURS_6 -> "6 H"
-    TimeWindow.HOURS_24 -> "24 H"
-    TimeWindow.HOURS_48 -> "48 H"
-    TimeWindow.DAYS_7 -> "7 J"
-    TimeWindow.MONTH_1 -> "1 MOIS"
-    TimeWindow.MONTH_3 -> "3 MOIS"
-    TimeWindow.ALL -> "TOUT"
+@StringRes
+fun TimeWindow.shortTitleRes(): Int = when (this) {
+    TimeWindow.HOURS_6 -> R.string.time_window_short_6h
+    TimeWindow.HOURS_24 -> R.string.time_window_short_24h
+    TimeWindow.HOURS_48 -> R.string.time_window_short_48h
+    TimeWindow.DAYS_7 -> R.string.time_window_short_7d
+    TimeWindow.MONTH_1 -> R.string.time_window_short_1m
+    TimeWindow.MONTH_3 -> R.string.time_window_short_3m
+    TimeWindow.ALL -> R.string.time_window_short_all
 }
+
+fun TimeWindow.longLabel(context: Context): String = context.getString(longLabelRes())
+
+fun TimeWindow.shortTitle(context: Context): String = context.getString(shortTitleRes())
 
 /** Fenêtre choisie, stockée dans l'état Glance de chaque instance de widget. */
 object GraphWidgetPrefs {
@@ -150,12 +160,12 @@ private fun ConfigScreen(
                 .verticalScroll(rememberScrollState()),
         ) {
             Text(
-                text = "Fenêtre de temps",
+                text = stringResource(R.string.widget_config_time_window_title),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
             )
             Text(
-                text = "Période affichée par le widget graphique.",
+                text = stringResource(R.string.widget_config_time_window_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp, bottom = 16.dp),
@@ -175,15 +185,15 @@ private fun ConfigScreen(
                 ) {
                     RadioButton(selected = window == selected, onClick = null)
                     Spacer(Modifier.width(12.dp))
-                    Text(window.longLabel(), style = MaterialTheme.typography.bodyLarge)
+                    Text(stringResource(window.longLabelRes()), style = MaterialTheme.typography.bodyLarge)
                 }
             }
 
             Text(
                 text = if (selected.showsActual()) {
-                    "La production réelle sera affichée avec la production engagée."
+                    stringResource(R.string.widget_config_actual_included)
                 } else {
-                    "En dessous de 7 jours, seule la production engagée est affichée (pas de données réelles)."
+                    stringResource(R.string.widget_config_actual_excluded)
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -195,7 +205,7 @@ private fun ConfigScreen(
                 enabled = !busy,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(if (busy) "Ajout en cours…" else "Valider")
+                Text(if (busy) stringResource(R.string.widget_config_adding) else stringResource(R.string.widget_config_validate))
             }
         }
     }
