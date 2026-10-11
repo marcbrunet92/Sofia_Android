@@ -12,6 +12,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -56,10 +57,10 @@ fun RemitScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                if (state.errorMessage != null) {
+                if (state.errorMessageRes != null) {
                     item {
                         RemitErrorBanner(
-                            text = state.errorMessage,
+                            text = stringResource(state.errorMessageRes),
                             onDismiss = onDismissError,
                         )
                     }
@@ -77,7 +78,13 @@ fun RemitScreen(
                     )
                 }
                 item {
-                    InfoCard(stringResource(R.string.remit_active_notices_format, state.remits.size))
+                    InfoCard(
+                        pluralStringResource(
+                            R.plurals.remit_active_notices_format,
+                            state.remits.size,
+                            state.remits.size,
+                        )
+                    )
                 }
                 if (state.remits.isEmpty()) {
                     item {

@@ -1,8 +1,11 @@
 package com.lemarc.sofia.ui.remit
 
+import android.util.Log
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.lemarc.sofia.R
 import com.lemarc.sofia.data.model.RemitNotice
 import com.lemarc.sofia.data.repository.SofiaRemitRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
@@ -23,7 +26,7 @@ data class RemitUiState(
     val testMode: Boolean = false,
     val remits: List<RemitNotice> = emptyList(),
     val lastFetchTimestamp: Instant? = null,
-    val errorMessage: String? = null,
+    @StringRes val errorMessageRes: Int? = null,
 )
 
 class RemitViewModel(
@@ -75,21 +78,22 @@ class RemitViewModel(
                 it.copy(
                     isLoading = forceLoading || !hasExistingData,
                     isRefreshing = hasExistingData,
-                    errorMessage = null,
+                    errorMessageRes = R.string.error_unable_to_refresh_remit,
                 )
             }
             runCatching {
                 repository.refreshRemits(_uiState.value.testMode)
             }.onSuccess {
-                _uiState.update { it.copy(lastFetchTimestamp = Instant.now(), errorMessage = null) }
+                _uiState.update { it.copy(lastFetchTimestamp = Instant.now(), errorMessageRes = null) }
             }.onFailure { throwable ->
                 if (throwable is CancellationException) return@onFailure
+                Log.w("RemitViewModel", "Refresh failed", throwable)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         isRefreshing = false,
                         lastFetchTimestamp = Instant.now(),
-                        errorMessage = throwable.message ?: "Unable to refresh REMIT data.",
+                        errorMessageRes = R.string.error_unable_to_refresh_remit,
                     )
                 }
             }
@@ -97,7 +101,7 @@ class RemitViewModel(
     }
 
     fun dismissError() {
-        _uiState.update { it.copy(errorMessage = null) }
+        _uiState.update { it.copy(errorMessageRes = null) }
     }
 
     class Factory(

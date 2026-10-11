@@ -1,62 +1,86 @@
+C:\Users\marcb\StudioProjects\Sofia_Android\app\src\main\java
+└── com
+    └── lemarc
+        └── sofia
+            ├── Constants.kt
+            ├── data
+            │   ├── api
+            │   │   └── SofiaApiService.kt
+            │   ├── local
+            │   │   ├── dao
+            │   │   │   └── SofiaDao.kt
+            │   │   ├── Entities.kt
+            │   │   └── SofiaDatabase.kt
+            │   ├── model
+            │   │   └── Model.kt
+            │   ├── repository
+            │   │   ├── SofiaB1610Repository.kt
+            │   │   ├── SofiaProductionRepository.kt
+            │   │   ├── SofiaRemitRepository.kt
+            │   │   └── SofiaWeatherRepository.kt
+            │   └── settings
+            │       └── SettingsRepository.kt
+            ├── MainActivity.kt
+            ├── ui
+            │   ├── components
+            │   │   ├── Capacity Text.kt
+            │   │   ├── EmptyChartPlaceHolder.kt
+            │   │   ├── EmptyStateCard.kt
+            │   │   ├── ErrorBanner.kt
+            │   │   ├── InfoCard.kt
+            │   │   ├── ProductionChartContent.kt
+            │   │   ├── ProductionChartMulti.kt
+            │   │   ├── ProductionGaugeCard.kt
+            │   │   ├── ProductionRecordCard.kt
+            │   │   ├── RemitErrorBanner.kt
+            │   │   ├── RemitNoticeCard.kt
+            │   │   ├── TimestampCard.kt
+            │   │   ├── TimestampRow.kt
+            │   │   ├── TitleBanner.kt
+            │   │   └── WarningBanner.kt
+            │   ├── graph
+            │   │   ├── GraphScreen.kt
+            │   │   └── GraphViewModel.kt
+            │   ├── navigation
+            │   │   └── Routes.kt
+            │   ├── remit
+            │   │   ├── RemitDetailScreen.kt
+            │   │   ├── RemitScreen.kt
+            │   │   └── RemitViewModel.kt
+            │   ├── settings
+            │   │   ├── SettingsScreen.kt
+            │   │   └── SettingsViewModel.kt
+            │   ├── sofia
+            │   │   ├── SofiaScreen.kt
+            │   │   └── SofiaViewModel.kt
+            │   ├── SofiaApp.kt
+            │   └── theme
+            │       ├── Color.kt
+            │       ├── Theme.kt
+            │       └── Type.kt
+            ├── util
+            │   └── TimeUtils.kt
+            └── widget
+                ├── modern
+                │   ├── SofiaGraphConfig.kt
+                │   ├── SofiaGraphGlanceWidget.kt
+                │   ├── SofiaLiveGlanceWidget.kt
+                │   ├── SofiaUnitsGlanceWidget.kt
+                │   ├── SofiaWidgetCharts.kt
+                │   ├── SofiaWidgetData.kt
+                │   ├── SofiaWidgetRefreshWorker.kt
+                │   ├── SofiaWidgetSnapshots.kt
+                │   └── SofiaWidgetUi.kt
+                ├── SofiaMediumWidgetProvider.kt
+                ├── SofiaSmallWidgetProvider.kt
+                └── SofiaWidgetsUpdater.kt
 
-===== Fichier: AndroidManifest.xml =====
 
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <application
-        android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.Sofia_Android"
-        tools:targetApi="31">
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Sofia_Android">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <receiver
-            android:name=".widget.SofiaSmallWidgetProvider"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/sofia_small_widget_info" />
-        </receiver>
-        <receiver
-            android:name=".widget.SofiaMediumWidgetProvider"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/sofia_medium_widget_info" />
-        </receiver>
-    </application>
-
-</manifest>
-
-===== Fichier: java/com/lemarc/sofia/Constants.kt =====
+===== Fichier: com\lemarc\sofia\Constants.kt =====
 
 package com.lemarc.sofia
 
+import androidx.annotation.StringRes
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import java.time.Duration
 import java.time.Instant
@@ -67,18 +91,114 @@ const val SOFIA_MAX_CAPACITY_MW = 1400.0
 val SOFIA_BMUS = listOf("T_SOFOW-11", "T_SOFOW-12", "T_SOFOW-21", "T_SOFOW-22")
 val HISTORY_START: Instant = Instant.parse("2026-04-01T00:00:00Z")
 
-enum class TimeWindow(val label: String, val duration: Duration?) {
-    HOURS_6("6h", Duration.ofHours(6)),
-    HOURS_24("24h", Duration.ofHours(24)),
-    HOURS_48("48h", Duration.ofHours(48)),
-    DAYS_7("7d", Duration.ofDays(7)),
-    MONTH_1("1m", Duration.ofDays(30)),
-    MONTH_3("3m", Duration.ofDays(90)),
-    ALL("All", null),
+enum class TimeWindow(
+    val label: String,
+    val duration: Duration?,
+    @StringRes val labelRes: Int = R.string.time_window_all,
+) {
+    HOURS_6("6h", Duration.ofHours(6), R.string.time_window_6h),
+    HOURS_24("24h", Duration.ofHours(24), R.string.time_window_24h),
+    HOURS_48("48h", Duration.ofHours(48), R.string.time_window_48h),
+    DAYS_7("7d", Duration.ofDays(7), R.string.time_window_7d),
+    MONTH_1("1m", Duration.ofDays(30), R.string.time_window_1m),
+    MONTH_3("3m", Duration.ofDays(90), R.string.time_window_3m),
+    ALL("All", null, R.string.time_window_all),
 }
 val TEST_MODE_KEY = booleanPreferencesKey("test_mode")
 
-===== Fichier: java/com/lemarc/sofia/data/api/SofiaApiService.kt =====
+===== Fichier: com\lemarc\sofia\MainActivity.kt =====
+
+package com.lemarc.sofia
+
+import android.app.Application
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lemarc.sofia.data.api.SofiaApiService
+import com.lemarc.sofia.data.local.SofiaDatabase
+import com.lemarc.sofia.data.repository.SofiaB1610Repository
+import com.lemarc.sofia.data.repository.SofiaProductionRepository
+import com.lemarc.sofia.data.repository.SofiaRemitRepository
+import com.lemarc.sofia.data.repository.SofiaWeatherRepository
+import com.lemarc.sofia.data.settings.SettingsRepository
+import com.lemarc.sofia.ui.SofiaApp
+import com.lemarc.sofia.ui.graph.GraphViewModel
+import com.lemarc.sofia.ui.remit.RemitViewModel
+import com.lemarc.sofia.ui.settings.SettingsViewModel
+import com.lemarc.sofia.ui.sofia.SofiaViewModel
+import com.lemarc.sofia.ui.theme.Sofia_AndroidTheme
+import com.lemarc.sofia.widget.SofiaWidgetsUpdater
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+class MainActivity : ComponentActivity() {
+    private val settingsRepository by lazy { SettingsRepository(applicationContext) }
+    private val database by lazy { SofiaDatabase.getDatabase(applicationContext) }
+    private val sofiaDao by lazy { database.sofiaDao() }
+    
+    private val apiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SofiaApiService::class.java)
+    }
+
+    private val productionRepository by lazy { SofiaProductionRepository.create(apiService, sofiaDao) }
+    private val remitRepository by lazy { SofiaRemitRepository.create(apiService, sofiaDao) }
+
+    private val weatherRepository by lazy { SofiaWeatherRepository.create(apiService, sofiaDao) }
+    private val b1610Repository by lazy { SofiaB1610Repository.create(apiService, sofiaDao) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        lifecycleScope.launch {
+            SofiaWidgetsUpdater.updateAll(applicationContext)
+        }
+        setContent {
+            Sofia_AndroidTheme {
+                val application = LocalContext.current.applicationContext as Application
+                val settingsViewModel: SettingsViewModel = viewModel(
+                    factory = SettingsViewModel.Factory(
+                        application = application,
+                        settingsRepository = settingsRepository,
+                    ),
+                )
+                val remitViewModel: RemitViewModel = viewModel(
+                    factory = RemitViewModel.Factory(
+                        repository = remitRepository,
+                        settingsRepository = settingsRepository,
+                    ),
+                )
+                val graphViewModel: GraphViewModel = viewModel(
+                    factory = GraphViewModel.Factory(
+                        productionRepository = productionRepository,
+                        b1610Repository = b1610Repository,
+                        weatherRepository = weatherRepository,
+                        settingsRepository = settingsRepository,
+                    ),
+                )
+                val sofiaViewModel: SofiaViewModel = viewModel(
+                    factory = SofiaViewModel.Factory(),
+                )
+                SofiaApp(
+                    graphViewModel = graphViewModel,
+                    remitViewModel = remitViewModel,
+                    settingsViewModel = settingsViewModel,
+                    sofiaViewModel = sofiaViewModel,
+                )
+            }
+        }
+    }
+}
+
+===== Fichier: com\lemarc\sofia\data\api\SofiaApiService.kt =====
 
 package com.lemarc.sofia.data.api
 
@@ -93,9 +213,6 @@ interface SofiaApiService {
         @Query("time_from") timeFrom: String,
         @Query("time_to") timeTo: String,
     ): List<PnEntryDto>
-
-    @GET("pn/top-production")
-    suspend fun getTopProduction(): PnTopProductionWindowsDto
 
     @GET("remit")
     suspend fun getRemits(
@@ -194,7 +311,126 @@ data class B1610TopProductionWindowsDto(
     val last_90_days: B1610TopProductionPointDto,
 )
 
-===== Fichier: java/com/lemarc/sofia/data/local/dao/SofiaDao.kt =====
+===== Fichier: com\lemarc\sofia\data\local\Entities.kt =====
+
+package com.lemarc.sofia.data.local
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import java.time.Instant
+
+@Entity(tableName = "production_points")
+data class ProductionPointEntity(
+    @PrimaryKey(autoGenerate = true) val localId: Int = 0,
+    val id: String,
+    val timeFrom: Instant,
+    val timeTo: Instant,
+    val quantity: Double,
+    val isTestMode: Boolean,
+)
+
+@Entity(tableName = "b1610_points")
+data class B1610PointEntity(
+    @PrimaryKey(autoGenerate = true) val localId: Int = 0,
+    val id: String,
+    val timeFrom: Instant,
+    val timeTo: Instant,
+    val quantity: Double,
+    val isTestMode: Boolean,
+)
+
+@Entity(tableName = "weather_points")
+data class WeatherPointEntity(
+    @PrimaryKey(autoGenerate = true) val localId: Int = 0,
+    val id: String,
+    val timeFrom: Instant,
+    val timeTo: Instant,
+    val quantity: Double,
+)
+
+@Entity(tableName = "remit_notices")
+data class RemitNoticeEntity(
+    @PrimaryKey val id: Int,
+    val mrid: String,
+    val revisionNumber: Int,
+    val bmuId: String,
+    val participantId: String,
+    val assetId: String,
+    val unavailabilityType: String,
+    val eventType: String,
+    val messageHeading: String,
+    val fuelType: String,
+    val normalCapacityMw: Double?,
+    val availableCapacityMw: Double?,
+    val unavailableCapacityMw: Double?,
+    val eventStatus: String,
+    val eventStartTime: Instant?,
+    val eventEndTime: Instant?,
+    val cause: String,
+    val relatedInformation: String,
+    val publishTime: Instant?,
+    val outageProfile: String,
+    val isTestMode: Boolean,
+)
+
+===== Fichier: com\lemarc\sofia\data\local\SofiaDatabase.kt =====
+
+package com.lemarc.sofia.data.local
+
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
+import com.lemarc.sofia.data.local.dao.SofiaDao
+import java.time.Instant
+
+@Database(
+    entities = [
+        ProductionPointEntity::class,
+        B1610PointEntity::class,
+        WeatherPointEntity::class,
+        RemitNoticeEntity::class
+    ],
+    version = 1,
+    exportSchema = false
+)
+@TypeConverters(SofiaDatabase.Converters::class)
+abstract class SofiaDatabase : RoomDatabase() {
+    abstract fun sofiaDao(): SofiaDao
+
+    class Converters {
+        @TypeConverter
+        fun fromTimestamp(value: Long?): Instant? {
+            return value?.let { Instant.ofEpochMilli(it) }
+        }
+
+        @TypeConverter
+        fun dateToTimestamp(date: Instant?): Long? {
+            return date?.toEpochMilli()
+        }
+    }
+
+    companion object {
+        @Volatile
+        private var INSTANCE: SofiaDatabase? = null
+
+        fun getDatabase(context: Context): SofiaDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    SofiaDatabase::class.java,
+                    "sofia_database"
+                ).build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
+}
+
+===== Fichier: com\lemarc\sofia\data\local\dao\SofiaDao.kt =====
 
 package com.lemarc.sofia.data.local.dao
 
@@ -273,126 +509,7 @@ interface SofiaDao {
     }
 }
 
-===== Fichier: java/com/lemarc/sofia/data/local/Entities.kt =====
-
-package com.lemarc.sofia.data.local
-
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import java.time.Instant
-
-@Entity(tableName = "production_points")
-data class ProductionPointEntity(
-    @PrimaryKey(autoGenerate = true) val localId: Int = 0,
-    val id: String,
-    val timeFrom: Instant,
-    val timeTo: Instant,
-    val quantity: Double,
-    val isTestMode: Boolean,
-)
-
-@Entity(tableName = "b1610_points")
-data class B1610PointEntity(
-    @PrimaryKey(autoGenerate = true) val localId: Int = 0,
-    val id: String,
-    val timeFrom: Instant,
-    val timeTo: Instant,
-    val quantity: Double,
-    val isTestMode: Boolean,
-)
-
-@Entity(tableName = "weather_points")
-data class WeatherPointEntity(
-    @PrimaryKey(autoGenerate = true) val localId: Int = 0,
-    val id: String,
-    val timeFrom: Instant,
-    val timeTo: Instant,
-    val quantity: Double,
-)
-
-@Entity(tableName = "remit_notices")
-data class RemitNoticeEntity(
-    @PrimaryKey val id: Int,
-    val mrid: String,
-    val revisionNumber: Int,
-    val bmuId: String,
-    val participantId: String,
-    val assetId: String,
-    val unavailabilityType: String,
-    val eventType: String,
-    val messageHeading: String,
-    val fuelType: String,
-    val normalCapacityMw: Double?,
-    val availableCapacityMw: Double?,
-    val unavailableCapacityMw: Double?,
-    val eventStatus: String,
-    val eventStartTime: Instant?,
-    val eventEndTime: Instant?,
-    val cause: String,
-    val relatedInformation: String,
-    val publishTime: Instant?,
-    val outageProfile: String,
-    val isTestMode: Boolean,
-)
-
-===== Fichier: java/com/lemarc/sofia/data/local/SofiaDatabase.kt =====
-
-package com.lemarc.sofia.data.local
-
-import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
-import androidx.room.TypeConverters
-import com.lemarc.sofia.data.local.dao.SofiaDao
-import java.time.Instant
-
-@Database(
-    entities = [
-        ProductionPointEntity::class,
-        B1610PointEntity::class,
-        WeatherPointEntity::class,
-        RemitNoticeEntity::class
-    ],
-    version = 1,
-    exportSchema = false
-)
-@TypeConverters(SofiaDatabase.Converters::class)
-abstract class SofiaDatabase : RoomDatabase() {
-    abstract fun sofiaDao(): SofiaDao
-
-    class Converters {
-        @TypeConverter
-        fun fromTimestamp(value: Long?): Instant? {
-            return value?.let { Instant.ofEpochMilli(it) }
-        }
-
-        @TypeConverter
-        fun dateToTimestamp(date: Instant?): Long? {
-            return date?.toEpochMilli()
-        }
-    }
-
-    companion object {
-        @Volatile
-        private var INSTANCE: SofiaDatabase? = null
-
-        fun getDatabase(context: Context): SofiaDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    SofiaDatabase::class.java,
-                    "sofia_database"
-                ).build()
-                INSTANCE = instance
-                instance
-            }
-        }
-    }
-}
-
-===== Fichier: java/com/lemarc/sofia/data/model/Model.kt =====
+===== Fichier: com\lemarc\sofia\data\model\Model.kt =====
 
 package com.lemarc.sofia.data.model
 
@@ -467,11 +584,11 @@ data class RemitNotice(
     val publishTime: Instant?,
     val outageProfile: String,
 )
-===== Fichier: java/com/lemarc/sofia/data/repository/SofiaB1610Repository.kt =====
+
+===== Fichier: com\lemarc\sofia\data\repository\SofiaB1610Repository.kt =====
 
 package com.lemarc.sofia.data.repository
 
-import com.lemarc.sofia.BASE_URL
 import com.lemarc.sofia.HISTORY_START
 import com.lemarc.sofia.SOFIA_BMUS
 import com.lemarc.sofia.TEST_BMU
@@ -495,8 +612,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.time.Duration
 
 class SofiaB1610Repository(
@@ -516,7 +631,7 @@ class SofiaB1610Repository(
 
     suspend fun refreshB1610(testMode: Boolean) = withContext(Dispatchers.IO) {
         val requestedBmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
-        val (entries, topB1610) = coroutineScope {
+        val (entries, _) = coroutineScope {
             val b1610Deferred = async {
                 requestedBmus.map { bmuId ->
                     async {
@@ -625,11 +740,10 @@ private fun B1610TopProductionPointDto.toTopPoint(): TopPoint =
         maxDate = parseApiInstant(max_date),
     )
 
-===== Fichier: java/com/lemarc/sofia/data/repository/SofiaProductionRepository.kt =====
+===== Fichier: com\lemarc\sofia\data\repository\SofiaProductionRepository.kt =====
 
 package com.lemarc.sofia.data.repository
 
-import com.lemarc.sofia.BASE_URL
 import com.lemarc.sofia.HISTORY_START
 import com.lemarc.sofia.SOFIA_BMUS
 import com.lemarc.sofia.TEST_BMU
@@ -637,24 +751,18 @@ import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.data.model.TopPoint
 import com.lemarc.sofia.data.model.TopWindows
 import com.lemarc.sofia.data.api.PnEntryDto
-import com.lemarc.sofia.data.api.PnTopProductionPointDto
-import com.lemarc.sofia.data.api.PnTopProductionWindowsDto
 import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.data.local.ProductionPointEntity
 import com.lemarc.sofia.data.local.dao.SofiaDao
 import com.lemarc.sofia.data.model.ProductionSnapshot
-import com.lemarc.sofia.util.parseApiInstant
 import com.lemarc.sofia.util.parseApiUtc
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SofiaProductionRepository(
     private val apiService: SofiaApiService,
@@ -757,25 +865,11 @@ internal fun aggregateProduction(
         .sortedBy { it.timeFrom }
 }
 
-private fun PnTopProductionWindowsDto.toTopWindows(): TopWindows =
-    TopWindows(
-        allTime = all_time.toTopPoint(),
-        last7Days = last_7_days.toTopPoint(),
-        last30Days = last_30_days.toTopPoint(),
-        last90Days = last_90_days.toTopPoint(),
-    )
 
-private fun PnTopProductionPointDto.toTopPoint(): TopPoint =
-    TopPoint(
-        maxQuantity = max_mw,
-        maxDate = parseApiInstant(max_date),
-    )
-
-===== Fichier: java/com/lemarc/sofia/data/repository/SofiaRemitRepository.kt =====
+===== Fichier: com\lemarc\sofia\data\repository\SofiaRemitRepository.kt =====
 
 package com.lemarc.sofia.data.repository
 
-import com.lemarc.sofia.BASE_URL
 import com.lemarc.sofia.SOFIA_BMUS
 import com.lemarc.sofia.TEST_BMU
 import com.lemarc.sofia.data.api.RemitEntryDto
@@ -784,16 +878,12 @@ import com.lemarc.sofia.data.local.RemitNoticeEntity
 import com.lemarc.sofia.data.local.dao.SofiaDao
 import com.lemarc.sofia.data.model.RemitNotice
 import com.lemarc.sofia.util.parseApiInstant
-import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SofiaRemitRepository(
     private val apiService: SofiaApiService,
@@ -882,36 +972,12 @@ fun RemitNoticeEntity.toModel(): RemitNotice =
         outageProfile = outageProfile
     )
 
-private fun toNotice(dto: RemitEntryDto): RemitNotice =
-    RemitNotice(
-        id = dto.id,
-        mrid = dto.mrid,
-        revisionNumber = dto.revision_number,
-        bmuId = dto.bmu_id,
-        participantId = dto.participant_id,
-        assetId = dto.asset_id,
-        unavailabilityType = dto.unavailability_type,
-        eventType = dto.event_type,
-        messageHeading = dto.message_heading,
-        fuelType = dto.fuel_type,
-        normalCapacityMw = dto.normal_capacity_mw,
-        availableCapacityMw = dto.available_capacity_mw,
-        unavailableCapacityMw = dto.unavailable_capacity_mw,
-        eventStatus = dto.event_status,
-        eventStartTime = parseApiInstant(dto.event_start_time),
-        eventEndTime = parseApiInstant(dto.event_end_time),
-        cause = dto.cause,
-        relatedInformation = dto.related_information,
-        publishTime = parseApiInstant(dto.publish_time),
-        outageProfile = dto.outage_profile,
-    )
-
 private val InstantMin = java.time.Instant.EPOCH
-===== Fichier: java/com/lemarc/sofia/data/repository/SofiaWeatherRepository.kt =====
+
+===== Fichier: com\lemarc\sofia\data\repository\SofiaWeatherRepository.kt =====
 
 package com.lemarc.sofia.data.repository
 
-import com.lemarc.sofia.BASE_URL
 import com.lemarc.sofia.HISTORY_START
 import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.data.api.WeatherEntryDto
@@ -925,8 +991,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SofiaWeatherRepository(
     private val apiService: SofiaApiService,
@@ -985,7 +1049,8 @@ internal fun List<WeatherEntryDto>.toGraphPoint(): List<GraphPoint> =
             quantity = dto.wind_speed,
         )
     }.sortedBy { it.timeFrom }
-===== Fichier: java/com/lemarc/sofia/data/settings/SettingsRepository.kt =====
+
+===== Fichier: com\lemarc\sofia\data\settings\SettingsRepository.kt =====
 
 package com.lemarc.sofia.data.settings
 
@@ -1012,157 +1077,195 @@ class SettingsRepository(
     }
 }
 
-===== Fichier: java/com/lemarc/sofia/MainActivity.kt =====
+===== Fichier: com\lemarc\sofia\ui\SofiaApp.kt =====
 
-package com.lemarc.sofia
+package com.lemarc.sofia.ui
 
-import android.app.Application
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lemarc.sofia.data.api.SofiaApiService
-import com.lemarc.sofia.data.local.SofiaDatabase
-import com.lemarc.sofia.data.repository.SofiaB1610Repository
-import com.lemarc.sofia.data.repository.SofiaProductionRepository
-import com.lemarc.sofia.data.repository.SofiaRemitRepository
-import com.lemarc.sofia.data.repository.SofiaWeatherRepository
-import com.lemarc.sofia.data.settings.SettingsRepository
-import com.lemarc.sofia.ui.SofiaApp
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ShowChart
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.lemarc.sofia.R
+import com.lemarc.sofia.ui.graph.GraphScreen
 import com.lemarc.sofia.ui.graph.GraphViewModel
+import com.lemarc.sofia.ui.navigation.Route
+import com.lemarc.sofia.ui.remit.RemitDetailScreen
+import com.lemarc.sofia.ui.remit.RemitScreen
 import com.lemarc.sofia.ui.remit.RemitViewModel
+import com.lemarc.sofia.ui.settings.SettingsScreen
 import com.lemarc.sofia.ui.settings.SettingsViewModel
+import com.lemarc.sofia.ui.sofia.SofiaScreen
 import com.lemarc.sofia.ui.sofia.SofiaViewModel
-import com.lemarc.sofia.ui.theme.Sofia_AndroidTheme
-import com.lemarc.sofia.widget.SofiaWidgetsUpdater
-import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
-class MainActivity : ComponentActivity() {
-    private val settingsRepository by lazy { SettingsRepository(applicationContext) }
-    private val database by lazy { SofiaDatabase.getDatabase(applicationContext) }
-    private val sofiaDao by lazy { database.sofiaDao() }
-    
-    private val apiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(SofiaApiService::class.java)
-    }
+private enum class AppTab(@StringRes val labelRes: Int) {
+    Graph(R.string.tab_graph),
+    Remit(R.string.tab_remit),
+    Settings(R.string.tab_settings),
+    Sofia(R.string.tab_sofia),
+}
 
-    private val productionRepository by lazy { SofiaProductionRepository.create(apiService, sofiaDao) }
-    private val remitRepository by lazy { SofiaRemitRepository.create(apiService, sofiaDao) }
+val timestampFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("dd-MM-yy HH:mm")
+        .withZone(ZoneId.systemDefault())
+@Composable
+fun SofiaApp(
+    graphViewModel: GraphViewModel,
+    remitViewModel: RemitViewModel,
+    settingsViewModel: SettingsViewModel,
+    sofiaViewModel: SofiaViewModel,
+) {
+    val graphState by graphViewModel.uiState.collectAsStateWithLifecycle()
+    val remitState by remitViewModel.uiState.collectAsStateWithLifecycle()
+    val settingsState by settingsViewModel.uiState.collectAsStateWithLifecycle()
+    val sofiaState by sofiaViewModel.state.collectAsStateWithLifecycle()
 
-    private val weatherRepository by lazy { SofiaWeatherRepository.create(apiService, sofiaDao) }
-    private val b1610Repository by lazy { SofiaB1610Repository.create(apiService, sofiaDao) }
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        lifecycleScope.launch {
-            SofiaWidgetsUpdater.updateAll(applicationContext)
-        }
-        setContent {
-            Sofia_AndroidTheme {
-                val application = LocalContext.current.applicationContext as Application
-                val settingsViewModel: SettingsViewModel = viewModel(
-                    factory = SettingsViewModel.Factory(
-                        application = application,
-                        settingsRepository = settingsRepository,
-                    ),
+    val tabs = listOf(
+        AppTab.Graph to Route.Graph,
+        AppTab.Remit to Route.Remit,
+        AppTab.Sofia to Route.Sofia,
+        AppTab.Settings to Route.Settings,
+    )
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                tabs.forEach { (tab, route) ->
+                    val isSelected = currentDestination?.hierarchy?.any { it.hasRoute(route::class) } == true
+                    NavigationBarItem(
+                        selected = isSelected,
+                        onClick = {
+                            navController.navigate(route) {
+                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        icon = {
+                            val icon = when (tab) {
+                                AppTab.Graph -> Icons.AutoMirrored.Filled.ShowChart
+                                AppTab.Remit -> Icons.Filled.Warning
+                                AppTab.Settings -> Icons.Filled.Settings
+                                AppTab.Sofia -> Icons.Filled.Home
+                            }
+                            Icon(icon, contentDescription = null)
+                        },
+                        label = { Text(stringResource(tab.labelRes)) },
+                    )
+                }
+            }
+        },
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = Route.Graph,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable<Route.Graph> {
+                GraphScreen(
+                    state = graphState,
+                    onRefresh = graphViewModel::refresh,
+                    onSelectWindow = graphViewModel::selectWindow,
+                    onToggleDataset = graphViewModel::toggleDataset,
+                    onDismissError = graphViewModel::dismissError,
                 )
-                val remitViewModel: RemitViewModel = viewModel(
-                    factory = RemitViewModel.Factory(
-                        repository = remitRepository,
-                        settingsRepository = settingsRepository,
-                    ),
+            }
+            composable<Route.Remit> {
+                RemitScreen(
+                    state = remitState,
+                    onRefresh = remitViewModel::refresh,
+                    onDismissError = remitViewModel::dismissError,
+                    onNavigateToDetail = { id -> navController.navigate(Route.RemitDetail(id)) }
                 )
-                val graphViewModel: GraphViewModel = viewModel(
-                    factory = GraphViewModel.Factory(
-                        productionRepository = productionRepository,
-                        b1610Repository = b1610Repository,
-                        weatherRepository = weatherRepository,
-                        settingsRepository = settingsRepository,
-                    ),
+            }
+            composable<Route.RemitDetail> { backStackEntry ->
+                val route: Route.RemitDetail = backStackEntry.toRoute()
+                val notice = remitState.remits.firstOrNull { it.id == route.id }
+                if (notice != null) {
+                    RemitDetailScreen(
+                        notice = notice,
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+            }
+            composable<Route.Sofia> {
+                SofiaScreen(
+                    state = sofiaState,
+                    onDismissError = sofiaViewModel::onDismissError,
                 )
-                val sofiaViewModel: SofiaViewModel = viewModel(
-                    factory = SofiaViewModel.Factory(),
-                )
-                SofiaApp(
-                    graphViewModel = graphViewModel,
-                    remitViewModel = remitViewModel,
-                    settingsViewModel = settingsViewModel,
-                    sofiaViewModel = sofiaViewModel,
+            }
+            composable<Route.Settings> {
+                SettingsScreen(
+                    state = settingsState,
+                    onToggleTestMode = settingsViewModel::setTestMode,
                 )
             }
         }
     }
 }
 
-===== Fichier: java/com/lemarc/sofia/ui/components/Capacity Text.kt =====
+===== Fichier: com\lemarc\sofia\ui\components\Capacity Text.kt =====
 
 package com.lemarc.sofia.ui.components
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.lemarc.sofia.R
 import kotlin.math.roundToInt
 
 @Composable
 fun CapacityText(label: String, valueMw: Double?) {
     Text(
-        text = "$label: ${valueMw?.roundToInt()?.toString() ?: "—"} MW",
+        text = stringResource(
+            R.string.capacity_format,
+            label,
+            valueMw?.roundToInt()?.toString() ?: "—",
+        ),
         style = MaterialTheme.typography.bodySmall,
     )
 }
-===== Fichier: java/com/lemarc/sofia/ui/components/DefinitionCard.kt =====
+
+===== Fichier: com\lemarc\sofia\ui\components\EmptyChartPlaceHolder.kt =====
 
 package com.lemarc.sofia.ui.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-
-@Composable
-fun DefinitionCard(title: String, text: String) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        ),
-        shape = RoundedCornerShape(24.dp)
-    ) {
-        ListItem(
-            headlineContent = { Text(title) },
-            supportingContent = {
-                Text(text)
-            }
-        )
-    }
-}
-===== Fichier: java/com/lemarc/sofia/ui/components/EmptyStateCard.kt =====
-
-package com.lemarc.sofia.ui.components
-
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -1170,41 +1273,97 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.lemarc.sofia.R
 
 @Composable
-fun EmptyStateCard() {
+fun EmptyChartPlaceholder(modifier: Modifier = Modifier) {
+    val lineColor = MaterialTheme.colorScheme.outlineVariant
+    val containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(280.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = containerColor),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
         ) {
-            Text(text = "🌬️", fontSize = 48.sp)
-            Text(
-                text = "No production data available yet.",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center,
-            )
-            Text(
-                text = "Pull to refresh and try again once the API returns data.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-            )
+            // Faux graphique en filigrane
+            Canvas(modifier = Modifier.fillMaxSize().padding(24.dp)) {
+                val dash = PathEffect.dashPathEffect(floatArrayOf(14f, 14f))
+
+                // Grille horizontale
+                repeat(4) { i ->
+                    val y = size.height * (i + 1) / 5f
+                    drawLine(
+                        color = lineColor.copy(alpha = 0.4f),
+                        start = Offset(0f, y),
+                        end = Offset(size.width, y),
+                        strokeWidth = 1.dp.toPx(),
+                        pathEffect = dash,
+                    )
+                }
+
+                // Courbe fantôme
+                val path = Path().apply {
+                    moveTo(0f, size.height * 0.7f)
+                    cubicTo(
+                        size.width * 0.25f, size.height * 0.3f,
+                        size.width * 0.45f, size.height * 0.9f,
+                        size.width * 0.65f, size.height * 0.5f,
+                    )
+                    cubicTo(
+                        size.width * 0.8f, size.height * 0.25f,
+                        size.width * 0.9f, size.height * 0.4f,
+                        size.width, size.height * 0.2f,
+                    )
+                }
+                drawPath(
+                    path = path,
+                    color = lineColor,
+                    style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round, pathEffect = dash),
+                )
+            }
+
+            // Message
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier
+                    .background(containerColor.copy(alpha = 0.9f), RoundedCornerShape(12.dp))
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.chart_empty_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    text = stringResource(R.string.chart_empty_message),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }
-===== Fichier: java/com/lemarc/sofia/ui/components/ErrorBanner.kt =====
+
+===== Fichier: com\lemarc\sofia\ui\components\EmptyStateCard.kt =====
+
+package com.lemarc.sofia.ui.components
+
+
+===== Fichier: com\lemarc\sofia\ui\components\ErrorBanner.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1222,8 +1381,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 import com.lemarc.sofia.ui.theme.SofiaErrorContainer
 
 @Composable
@@ -1252,14 +1413,15 @@ fun ErrorBanner(
             IconButton(onClick = onDismiss) {
                 Icon(
                     imageVector = Icons.Filled.Close,
-                    contentDescription = "Dismiss error",
+                    contentDescription = stringResource(R.string.dismiss_error),
                     tint = MaterialTheme.colorScheme.error,
                 )
             }
         }
     }
 }
-===== Fichier: java/com/lemarc/sofia/ui/components/InfoCard.kt =====
+
+===== Fichier: com\lemarc\sofia\ui\components\InfoCard.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1286,7 +1448,8 @@ fun InfoCard(text: String) {
         )
     }
 }
-===== Fichier: java/com/lemarc/sofia/ui/components/ProductionChartMulti.kt =====
+
+===== Fichier: com\lemarc\sofia\ui\components\ProductionChartContent.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1296,7 +1459,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -1326,17 +1495,31 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-private fun timeFormatterFor(tw: TimeWindow): DateTimeFormatter {
-    val d = tw.duration
-    val pattern = when {
-        d == null -> "dd/MM/yy"                       // "All"
-        d <= Duration.ofHours(12) -> "HH:mm"
-        d <= Duration.ofDays(3) -> "EEE HH:mm"
-        d <= Duration.ofDays(90) -> "dd/MM"
-        else -> "MM/yy"
+/**
+ * Format de l'axe X choisi d'après la durée RÉELLEMENT visible (et non d'après le chip sélectionné),
+ * donc il suit aussi les pincements de zoom.
+ */
+private enum class AxisTimeFormat(val pattern: String) {
+    HOURS("HH:mm"),         // ≤ 12 h
+    DAY_HOURS("EEE HH:mm"), // ≤ 3 j ET dans les 3 derniers jours de données
+    DATES("dd/MM"),         // ≤ 1 an
+    MONTHS("MM/yy");        // > 1 an
+
+    companion object {
+        private val RECENT_MS = Duration.ofDays(3).toMillis()
+
+        fun forVisibleRange(spanMs: Double, startMs: Double, dataEndMs: Double): AxisTimeFormat {
+            // Petite tolérance : le calcul de la fenêtre visible est approximatif (en pixels)
+            val tolerance = spanMs * 0.05
+            val isRecent = startMs >= dataEndMs - RECENT_MS - tolerance
+            return when {
+                spanMs <= Duration.ofHours(12).toMillis() -> HOURS
+                spanMs <= RECENT_MS && isRecent -> DAY_HOURS
+                spanMs <= Duration.ofDays(365).toMillis() -> DATES
+                else -> MONTHS
+            }
+        }
     }
-    return DateTimeFormatter.ofPattern(pattern, Locale.getDefault())
-        .withZone(ZoneId.systemDefault())
 }
 
 data class ChartSeries(
@@ -1346,21 +1529,30 @@ data class ChartSeries(
     val label: String = "",
     val color: Int // Color.rgb(76, 175, 80),
 )
+
 private fun colorFor(color: Int) = androidx.compose.ui.graphics.Color(color)
+
 // x = timestamp en millisecondes epoch, pour que chaque quantity reste liée à son propre instant
 private fun xOf(point: GraphPoint): Double = point.timeFrom.toEpochMilli().toDouble()
 
+private fun zoomFor(tw: TimeWindow): Zoom =
+    tw.duration?.let { Zoom.x(it.toMillis().toDouble()) } ?: Zoom.Content // "All" : tout voir
+
 @Composable
-fun ProductionChartMulti(
+fun ProductionChartContent(
     left: List<ChartSeries>,
-    right: List<ChartSeries> = emptyList(),
+    right: List<ChartSeries>,
     tw: TimeWindow,
 ) {
     val modelProducer = remember { CartesianChartModelProducer() }
-    val scrollState = rememberVicoScrollState()
-    val zoomState = rememberVicoZoomState(zoomEnabled = true)
 
-    // Toutes les données vont dans le modèle — plus de filtrage par fenêtre temporelle
+    // Zoom/scroll INITIAUX = fenêtre sélectionnée : Vico les applique dès que le premier modèle arrive.
+    // Avant, l'effet sur `tw` s'exécutait alors que le modèle était encore vide (retour sur l'onglet,
+    // item recréé par la LazyColumn...), donc le graphique restait sur « All » alors que le chip disait autre chose.
+    val scrollState = rememberVicoScrollState(initialScroll = Scroll.Absolute.End)
+    val zoomState = rememberVicoZoomState(zoomEnabled = true, initialZoom = zoomFor(tw))
+
+    // Toutes les données vont dans le modèle — pas de filtrage par fenêtre temporelle
     LaunchedEffect(left, right) {
         modelProducer.runTransaction {
             if (left.isNotEmpty()) {
@@ -1380,15 +1572,46 @@ fun ProductionChartMulti(
         }
     }
 
-    // `tw` ne change que le niveau de zoom + la position de scroll, jamais les données
+    // `tw` ne change que le niveau de zoom + la position de scroll, jamais les données.
+    // La 1re exécution est ignorée : l'état initial ci-dessus s'en charge déjà.
+    var skipFirstWindow by remember { mutableStateOf(true) }
     LaunchedEffect(tw) {
-        val duration = tw.duration
-        if (duration != null) {
-            scrollState.animateScroll(Scroll.Absolute.End)
-            zoomState.animateZoom(Zoom.x(duration.toMillis().toDouble()))
-            scrollState.animateScroll(Scroll.Absolute.End)
-        } else {
-            zoomState.animateZoom(Zoom.Content) // "All" : tout voir
+        if (skipFirstWindow) {
+            skipFirstWindow = false
+            return@LaunchedEffect
+        }
+        scrollState.animateScroll(Scroll.Absolute.End)
+        zoomState.animateZoom(zoomFor(tw))
+        scrollState.animateScroll(Scroll.Absolute.End)
+    }
+
+    // ── Fenêtre visible estimée ──────────────────────────────────────────────
+    // contenu total (px) = viewport + maxValue ; la fenêtre visible couvre [value, value + viewport]
+    val dataRange = remember(left, right) {
+        val filled = (left + right).filter { it.points.isNotEmpty() }
+        if (filled.isEmpty()) 0.0 to 0.0
+        else filled.minOf { xOf(it.points.first()) } to filled.maxOf { xOf(it.points.last()) }
+    }
+    var viewportPx by remember { mutableFloatStateOf(0f) }
+    val visibleFormat by remember(dataRange) {
+        derivedStateOf {
+            val (dataStartMs, dataEndMs) = dataRange
+            val totalSpanMs = dataEndMs - dataStartMs
+            val viewport = viewportPx
+            if (viewport <= 0f || totalSpanMs <= 0.0) {
+                AxisTimeFormat.forVisibleRange(totalSpanMs, dataStartMs, dataEndMs)
+            } else {
+                val maxScroll = scrollState.maxValue.coerceAtLeast(0f)
+                val contentPx = viewport + maxScroll
+                val spanMs = totalSpanMs * viewport / contentPx
+                val startMs = dataStartMs + totalSpanMs * scrollState.value.coerceIn(0f, maxScroll) / contentPx
+                AxisTimeFormat.forVisibleRange(spanMs, startMs, dataEndMs)
+            }
+        }
+    }
+    val formatters = remember {
+        AxisTimeFormat.entries.associateWith {
+            DateTimeFormatter.ofPattern(it.pattern, Locale.getDefault()).withZone(ZoneId.systemDefault())
         }
     }
 
@@ -1415,10 +1638,12 @@ fun ProductionChartMulti(
     val leftUnit = left.firstOrNull()?.unit.orEmpty()
     val rightUnit = right.firstOrNull()?.unit.orEmpty()
     val axisTitleStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 11.sp)
-    val timeFormatter = remember(tw) { timeFormatterFor(tw) }
 
     CartesianChartHost(
-        modifier = Modifier.fillMaxWidth().height(280.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(280.dp)
+            .onSizeChanged { viewportPx = it.width.toFloat() },
         scrollState = scrollState,
         zoomState = zoomState,
         chart = rememberCartesianChart(
@@ -1439,8 +1664,9 @@ fun ProductionChartMulti(
                 )
             } else null,
             bottomAxis = HorizontalAxis.rememberBottom(
+                // Lu à chaque dessin : le format suit le zoom courant (pincement ou chip)
                 valueFormatter = { _, value, _ ->
-                    timeFormatter.format(Instant.ofEpochMilli(value.toLong()))
+                    formatters.getValue(visibleFormat).format(Instant.ofEpochMilli(value.toLong()))
                 },
                 labelRotationDegrees = -20f,
             ),
@@ -1448,7 +1674,34 @@ fun ProductionChartMulti(
         modelProducer = modelProducer,
     )
 }
-===== Fichier: java/com/lemarc/sofia/ui/components/ProductionGaugeCard.kt =====
+
+===== Fichier: com\lemarc\sofia\ui\components\ProductionChartMulti.kt =====
+
+package com.lemarc.sofia.ui.components
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import com.lemarc.sofia.TimeWindow
+
+@Composable
+fun ProductionChartMulti(
+    left: List<ChartSeries>,
+    right: List<ChartSeries> = emptyList(),
+    tw: TimeWindow,
+) {
+    // Vico plante sur une série vide : on les écarte en amont
+    val leftFiltered = remember(left) { left.filter { it.points.isNotEmpty() } }
+    val rightFiltered = remember(right) { right.filter { it.points.isNotEmpty() } }
+
+    if (leftFiltered.isEmpty() && rightFiltered.isEmpty()) {
+        EmptyChartPlaceholder()
+        return
+    }
+
+    ProductionChartContent(leftFiltered, rightFiltered, tw)
+}
+
+===== Fichier: com\lemarc\sofia\ui\components\ProductionGaugeCard.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1472,8 +1725,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 import com.lemarc.sofia.ui.theme.SofiaBlue
 import com.lemarc.sofia.ui.theme.SofiaCyan
 import com.lemarc.sofia.ui.theme.SofiaIndigo
@@ -1532,13 +1787,17 @@ fun ProductionGaugeCard(
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "${animatedMw.roundToInt()} MW",
+                    text = stringResource(R.string.mw_value_format, animatedMw.roundToInt()),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "${(animatedProgress * 100).roundToInt()}% of ${safeMaxCapacity.roundToInt()} MW",
+                    text = stringResource(
+                        R.string.gauge_capacity_format,
+                        (animatedProgress * 100).roundToInt(),
+                        safeMaxCapacity.roundToInt(),
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -1546,76 +1805,13 @@ fun ProductionGaugeCard(
         }
     }
 }
-===== Fichier: java/com/lemarc/sofia/ui/components/ProductionRecordCard.kt =====
+
+===== Fichier: com\lemarc\sofia\ui\components\ProductionRecordCard.kt =====
 
 package com.lemarc.sofia.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import com.lemarc.sofia.data.model.TopPoint
-import com.lemarc.sofia.data.model.TopWindows
-import com.lemarc.sofia.ui.timestampFormatter
 
-@Composable
-fun ProductionRecordCard(records: TopWindows, unit: String = "MW") {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Text(
-                text = "Production records",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-            )
-            RecordRow(label = "All-time", point = records.allTime, unit = unit)
-            RecordRow(label = "Last 7 days", point = records.last7Days, unit = unit)
-            RecordRow(label = "Last 30 days", point = records.last30Days, unit = unit)
-            RecordRow(label = "Last 90 days", point = records.last90Days, unit = unit)
-        }
-    }
-}
-
-@Composable
-private fun RecordRow(
-    label: String,
-    point: TopPoint,
-    unit: String = "MW",
-) {
-    val dateValue = point.maxDate?.let(timestampFormatter::format) ?: "—"
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Medium,
-        )
-        Text(
-            text = "${point.maxQuantity} $unit • $dateValue",
-            style = MaterialTheme.typography.bodySmall,
-        )
-    }
-}
-
-===== Fichier: java/com/lemarc/sofia/ui/components/RemitErrorBanner.kt =====
+===== Fichier: com\lemarc\sofia\ui\components\RemitErrorBanner.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1633,8 +1829,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 import com.lemarc.sofia.ui.theme.SofiaErrorContainer
 
 @Composable
@@ -1663,7 +1861,7 @@ fun RemitErrorBanner(
             IconButton(onClick = onDismiss) {
                 Icon(
                     imageVector = Icons.Filled.Close,
-                    contentDescription = "Dismiss error",
+                    contentDescription = stringResource(R.string.dismiss_error),
                     tint = MaterialTheme.colorScheme.error,
                 )
             }
@@ -1671,7 +1869,7 @@ fun RemitErrorBanner(
     }
 }
 
-===== Fichier: java/com/lemarc/sofia/ui/components/RemitNoticeCard.kt =====
+===== Fichier: com\lemarc\sofia\ui\components\RemitNoticeCard.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1686,8 +1884,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 import com.lemarc.sofia.data.model.RemitNotice
 import com.lemarc.sofia.ui.remit.formatTimestamp
 
@@ -1720,110 +1920,41 @@ fun RemitNoticeCard(
             )
             if (notice.cause.isNotBlank()) {
                 Text(
-                    text = "Cause: ${notice.cause}",
+                    text = stringResource(R.string.remit_cause_format, notice.cause),
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
             HorizontalDivider()
-            CapacityText("Unavailable", notice.unavailableCapacityMw)
-            CapacityText("Available", notice.availableCapacityMw)
-            CapacityText("Normal", notice.normalCapacityMw)
+            CapacityText(stringResource(R.string.remit_capacity_unavailable), notice.unavailableCapacityMw)
+            CapacityText(stringResource(R.string.remit_capacity_available), notice.availableCapacityMw)
+            CapacityText(stringResource(R.string.remit_capacity_normal), notice.normalCapacityMw)
             Text(
-                text = "Published: ${formatTimestamp(notice.publishTime)}",
+                text = stringResource(R.string.remit_published_format, formatTimestamp(notice.publishTime)),
                 style = MaterialTheme.typography.bodySmall,
             )
             Text(
-                text = "End: ${formatTimestamp(notice.eventEndTime)}",
+                text = stringResource(R.string.remit_end_format, formatTimestamp(notice.eventEndTime)),
                 style = MaterialTheme.typography.bodySmall,
             )
         }
     }
 }
-===== Fichier: java/com/lemarc/sofia/ui/components/TimestampCard.kt =====
+
+===== Fichier: com\lemarc\sofia\ui\components\TimestampCard.kt =====
 
 package com.lemarc.sofia.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import java.time.Instant
 
-@Composable
-fun TimestampCard(
-    latestDataTimestamp: Instant?,
-    lastFetchTimestamp: Instant?,
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text(
-                text = "Timestamps",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-            )
-            TimestampRow(label = "Latest API data", value = latestDataTimestamp)
-            HorizontalDivider()
-            TimestampRow(label = "Last refresh", value = lastFetchTimestamp)
-        }
-    }
-}
-===== Fichier: java/com/lemarc/sofia/ui/components/TimestampRow.kt =====
+===== Fichier: com\lemarc\sofia\ui\components\TimestampRow.kt =====
 
 package com.lemarc.sofia.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import com.lemarc.sofia.ui.timestampFormatter
-import java.time.Instant
 
-@Composable
-fun TimestampRow(label: String, value: Instant?) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(text = label, style = MaterialTheme.typography.bodyMedium)
-        Text(
-            text = value?.let(timestampFormatter::format) ?: "—",
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Medium,
-            textAlign = TextAlign.End,
-        )
-    }
-}
-===== Fichier: java/com/lemarc/sofia/ui/components/TitleBanner.kt =====
+===== Fichier: com\lemarc\sofia\ui\components\TitleBanner.kt =====
 
 package com.lemarc.sofia.ui.components
 
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -1832,12 +1963,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 
 @Composable
-fun TitleBanner(title: String = "Sofia Live Generation") {
+fun TitleBanner(title: String = stringResource(R.string.title_sofia_live_generation)) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -1859,7 +1991,8 @@ fun TitleBanner(title: String = "Sofia Live Generation") {
         }
     }
 }
-===== Fichier: java/com/lemarc/sofia/ui/components/WarningBanner.kt =====
+
+===== Fichier: com\lemarc\sofia\ui\components\WarningBanner.kt =====
 
 package com.lemarc.sofia.ui.components
 
@@ -1890,32 +2023,30 @@ fun WarningBanner(text: String) {
         )
     }
 }
-===== Fichier: java/com/lemarc/sofia/ui/graph/GraphScreen.kt =====
+
+===== Fichier: com\lemarc\sofia\ui\graph\GraphScreen.kt =====
 
 package com.lemarc.sofia.ui.graph
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color as ComposeColor
 import android.graphics.Color
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -1924,7 +2055,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.ui.components.ChartSeries
 import com.lemarc.sofia.ui.components.ErrorBanner
@@ -1932,6 +2066,7 @@ import com.lemarc.sofia.ui.components.ProductionChartMulti
 import com.lemarc.sofia.ui.components.ProductionGaugeCard
 import com.lemarc.sofia.ui.components.TitleBanner
 import com.lemarc.sofia.ui.components.WarningBanner
+import androidx.compose.ui.graphics.Color as ComposeColor
 
 private val GraphDataset.color: Int
     get() = when (this) {
@@ -1940,7 +2075,6 @@ private val GraphDataset.color: Int
         GraphDataset.Weather -> Color.rgb(76, 175, 80)
     }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GraphScreen(
     state: GraphUiState,
@@ -2020,10 +2154,10 @@ fun GraphScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                item { TitleBanner(title = "Graph") }
+                item { TitleBanner(title = stringResource(R.string.title_graph)) }
                 if (state.testMode) {
                     item {
-                        WarningBanner(text = "TEST MODE — displaying T_HEYM11 only")
+                        WarningBanner(text = stringResource(R.string.test_mode_warning))
                     }
                 }
                 if (state.errorMessage != null) {
@@ -2073,7 +2207,7 @@ private fun DatasetSelector(
             FilterChip(
                 selected = option in selected,
                 onClick = { onSelect(option) },
-                label = { Text(option.label) },
+                label = { Text(stringResource(option.labelRes)) },
                 leadingIcon = {
                     Box(
                         modifier = Modifier
@@ -2105,7 +2239,7 @@ private fun GraphChartCard(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
-                text = "Chart",
+                text = stringResource(R.string.chart_title),
                 style = MaterialTheme.typography.titleMedium,
             )
             LazyRow(
@@ -2116,7 +2250,7 @@ private fun GraphChartCard(
                     FilterChip(
                         selected = window == selectedWindow,
                         onClick = { onSelectWindow(window) },
-                        label = { Text(window.label) },
+                        label = { Text(stringResource(window.labelRes)) },
                     )
                 }
             }
@@ -2125,13 +2259,15 @@ private fun GraphChartCard(
     }
 }
 
-===== Fichier: java/com/lemarc/sofia/ui/graph/GraphViewModel.kt =====
+===== Fichier: com\lemarc\sofia\ui\graph\GraphViewModel.kt =====
 
 package com.lemarc.sofia.ui.graph
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.lemarc.sofia.R
 import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.data.repository.SofiaB1610Repository
@@ -2151,7 +2287,11 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-enum class GraphDataset(val label: String) { Weather("Weather"), PN("Comitted"), B1610("Actual Production") }
+enum class GraphDataset(val label: String, @StringRes val labelRes: Int) {
+    Weather("Weather", R.string.dataset_weather),
+    PN("Comitted", R.string.dataset_pn),
+    B1610("Actual Production", R.string.dataset_b1610),
+}
 
 data class GraphUiState(
     val isLoading: Boolean = true,
@@ -2301,7 +2441,7 @@ class GraphViewModel(
     }
 }
 
-===== Fichier: java/com/lemarc/sofia/ui/navigation/Routes.kt =====
+===== Fichier: com\lemarc\sofia\ui\navigation\Routes.kt =====
 
 package com.lemarc.sofia.ui.navigation
 
@@ -2324,13 +2464,12 @@ sealed interface Route {
     data object Sofia : Route
 }
 
-===== Fichier: java/com/lemarc/sofia/ui/remit/RemitDetailScreen.kt =====
+===== Fichier: com\lemarc\sofia\ui\remit\RemitDetailScreen.kt =====
 
 package com.lemarc.sofia.ui.remit
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -2353,11 +2492,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 import com.lemarc.sofia.data.model.RemitNotice
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RemitDetailScreen(
     notice: RemitNotice,
@@ -2371,7 +2512,7 @@ fun RemitDetailScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Retour",
+                            contentDescription = stringResource(R.string.action_back),
                         )
                     }
                 },
@@ -2404,31 +2545,37 @@ fun RemitDetailScreen(
             HorizontalDivider()
 
             // ── Capacités ─────────────────────────────────────────────────────
-            SectionTitle("Capacités")
-            DetailRow("Normale",     notice.normalCapacityMw?.let     { "${it.toInt()} MW" } ?: "—")
-            DetailRow("Disponible",  notice.availableCapacityMw?.let  { "${it.toInt()} MW" } ?: "—")
+            SectionTitle(stringResource(R.string.remit_detail_capacities))
+            DetailRow(
+                stringResource(R.string.remit_detail_normal),
+                notice.normalCapacityMw?.let { stringResource(R.string.mw_value_format, it.toInt()) } ?: "—",
+            )
+            DetailRow(
+                stringResource(R.string.remit_detail_available),
+                notice.availableCapacityMw?.let { stringResource(R.string.mw_value_format, it.toInt()) } ?: "—",
+            )
             HorizontalDivider()
 
             // ── Dates ─────────────────────────────────────────────────────────
-            SectionTitle("Dates")
-            DetailRow("Début",   formatTimestamp(notice.eventStartTime))
-            DetailRow("Fin",     formatTimestamp(notice.eventEndTime))
-            DetailRow("Publié",  formatTimestamp(notice.publishTime))
+            SectionTitle(stringResource(R.string.remit_detail_dates))
+            DetailRow(stringResource(R.string.remit_detail_start), formatTimestamp(notice.eventStartTime))
+            DetailRow(stringResource(R.string.remit_detail_end), formatTimestamp(notice.eventEndTime))
+            DetailRow(stringResource(R.string.remit_detail_published), formatTimestamp(notice.publishTime))
 
             HorizontalDivider()
 
             // ── Actif ─────────────────────────────────────────────────────────
-            SectionTitle("Actif")
-            DetailRow("BMU",         notice.bmuId)
-            DetailRow("Participant", notice.participantId)
-            DetailRow("Asset",       notice.assetId)
-            DetailRow("Révision",    notice.revisionNumber.toString())
-            DetailRow("MRID",        notice.mrid)
+            SectionTitle(stringResource(R.string.remit_detail_asset_section))
+            DetailRow(stringResource(R.string.remit_detail_bmu), notice.bmuId)
+            DetailRow(stringResource(R.string.remit_detail_participant), notice.participantId)
+            DetailRow(stringResource(R.string.remit_detail_asset), notice.assetId)
+            DetailRow(stringResource(R.string.remit_detail_revision), notice.revisionNumber.toString())
+            DetailRow(stringResource(R.string.remit_detail_mrid), notice.mrid)
 
             // ── Cause ─────────────────────────────────────────────────────────
             if (notice.cause.isNotBlank()) {
                 HorizontalDivider()
-                SectionTitle("Cause")
+                SectionTitle(stringResource(R.string.remit_detail_cause))
                 Text(
                     text = notice.cause,
                     style = MaterialTheme.typography.bodyMedium,
@@ -2439,7 +2586,7 @@ fun RemitDetailScreen(
             // ── Informations complémentaires ──────────────────────────────────
             if (notice.relatedInformation.isNotBlank()) {
                 HorizontalDivider()
-                SectionTitle("Informations complémentaires")
+                SectionTitle(stringResource(R.string.remit_detail_related_info))
                 Text(
                     text = notice.relatedInformation,
                     style = MaterialTheme.typography.bodyMedium,
@@ -2450,7 +2597,7 @@ fun RemitDetailScreen(
             // ── Profil d'indisponibilité ──────────────────────────────────────
             if (notice.outageProfile.isNotBlank()) {
                 HorizontalDivider()
-                SectionTitle("Profil d'indisponibilité")
+                SectionTitle(stringResource(R.string.remit_detail_outage_profile))
                 Text(
                     text = notice.outageProfile,
                     style = MaterialTheme.typography.bodySmall,
@@ -2501,7 +2648,8 @@ private fun LabeledChip(text: String) {
         label = { Text(text = text, style = MaterialTheme.typography.labelSmall) },
     )
 }
-===== Fichier: java/com/lemarc/sofia/ui/remit/RemitScreen.kt =====
+
+===== Fichier: com\lemarc\sofia\ui\remit\RemitScreen.kt =====
 
 package com.lemarc.sofia.ui.remit
 
@@ -2511,15 +2659,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 import com.lemarc.sofia.ui.components.InfoCard
 import com.lemarc.sofia.ui.components.RemitErrorBanner
 import com.lemarc.sofia.ui.components.RemitNoticeCard
@@ -2534,7 +2683,6 @@ private val remitTimestampFormatter: DateTimeFormatter =
 fun formatTimestamp(timestamp: Instant?): String =
     timestamp?.let(remitTimestampFormatter::format) ?: "—"
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RemitScreen(
     state: RemitUiState,
@@ -2571,22 +2719,22 @@ fun RemitScreen(
                 }
                 if (state.testMode) {
                     item {
-                        InfoCard("TEST MODE — T_HEYM11 uniquement.")
+                        InfoCard(stringResource(R.string.remit_test_mode_info))
                     }
                 }
                 item {
                     Text(
-                        text = "Notices",
+                        text = stringResource(R.string.remit_notices_title),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                     )
                 }
                 item {
-                    InfoCard("${state.remits.size} avis actif(s)")
+                    InfoCard(stringResource(R.string.remit_active_notices_format, state.remits.size))
                 }
                 if (state.remits.isEmpty()) {
                     item {
-                        InfoCard("Aucun avis REMIT actif.")
+                        InfoCard(stringResource(R.string.remit_no_active_notices))
                     }
                 } else {
                     items(
@@ -2600,13 +2748,14 @@ fun RemitScreen(
                     }
                 }
                 item {
-                    InfoCard("Mis à jour : ${formatTimestamp(state.lastFetchTimestamp)}")
+                    InfoCard(stringResource(R.string.remit_last_update_format, formatTimestamp(state.lastFetchTimestamp)))
                 }
             }
         }
     }
 }
-===== Fichier: java/com/lemarc/sofia/ui/remit/RemitViewModel.kt =====
+
+===== Fichier: com\lemarc\sofia\ui\remit\RemitViewModel.kt =====
 
 package com.lemarc.sofia.ui.remit
 
@@ -2721,7 +2870,7 @@ class RemitViewModel(
     }
 }
 
-===== Fichier: java/com/lemarc/sofia/ui/settings/SettingsScreen.kt =====
+===== Fichier: com\lemarc\sofia\ui\settings\SettingsScreen.kt =====
 
 package com.lemarc.sofia.ui.settings
 
@@ -2739,7 +2888,9 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.lemarc.sofia.R
 
 @Composable
 fun SettingsScreen(
@@ -2764,9 +2915,9 @@ fun SettingsScreen(
                 shape = RoundedCornerShape(24.dp)
             ) {
                 ListItem(
-                    headlineContent = { Text("Test mode") },
+                    headlineContent = { Text(stringResource(R.string.settings_test_mode_title)) },
                     supportingContent = {
-                        Text("Use T_HEYM11 instead of the live Sofia aggregate. This setting is persisted locally.")
+                        Text(stringResource(R.string.settings_test_mode_description))
                     },
                     trailingContent = {
                         Switch(
@@ -2789,16 +2940,17 @@ fun SettingsScreen(
                 shape = RoundedCornerShape(24.dp)
             ) {
                 ListItem(
-                    headlineContent = { Text("Disclaimer") },
+                    headlineContent = { Text(stringResource(R.string.settings_disclaimer_title)) },
                     supportingContent = {
-                        Text("This app is a private project not linked with any companies")
+                        Text(stringResource(R.string.settings_disclaimer_description))
                     },
                 )
             }
         }
     }
 }
-===== Fichier: java/com/lemarc/sofia/ui/settings/SettingsViewModel.kt =====
+
+===== Fichier: com\lemarc\sofia\ui\settings\SettingsViewModel.kt =====
 
 package com.lemarc.sofia.ui.settings
 
@@ -2837,6 +2989,9 @@ class SettingsViewModel(
                 SofiaWidgetsUpdater.updateAll(
                     getApplication<Application>().applicationContext
                 )
+                com.lemarc.sofia.widget.modern.SofiaModernWidgets.updateAll(
+                    getApplication<Application>().applicationContext
+                )
             }
         }
     }
@@ -2861,156 +3016,8 @@ class SettingsViewModel(
         }
     }
 }
-===== Fichier: java/com/lemarc/sofia/ui/SofiaApp.kt =====
 
-package com.lemarc.sofia.ui
-
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ShowChart
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import com.lemarc.sofia.ui.graph.GraphScreen
-import com.lemarc.sofia.ui.graph.GraphViewModel
-import com.lemarc.sofia.ui.navigation.Route
-import com.lemarc.sofia.ui.remit.RemitDetailScreen
-import com.lemarc.sofia.ui.remit.RemitScreen
-import com.lemarc.sofia.ui.remit.RemitViewModel
-import com.lemarc.sofia.ui.settings.SettingsScreen
-import com.lemarc.sofia.ui.settings.SettingsViewModel
-import com.lemarc.sofia.ui.sofia.SofiaScreen
-import com.lemarc.sofia.ui.sofia.SofiaViewModel
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-
-private enum class AppTab(val label: String) {
-    Graph("Graph"),
-    Remit("Alert"),
-    Settings("Settings"),
-    Sofia("Sofia"),
-}
-
-val timestampFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("dd-MM-yy HH:mm")
-        .withZone(ZoneId.systemDefault())
-@Composable
-fun SofiaApp(
-    graphViewModel: GraphViewModel,
-    remitViewModel: RemitViewModel,
-    settingsViewModel: SettingsViewModel,
-    sofiaViewModel: SofiaViewModel,
-) {
-    val graphState by graphViewModel.uiState.collectAsStateWithLifecycle()
-    val remitState by remitViewModel.uiState.collectAsStateWithLifecycle()
-    val settingsState by settingsViewModel.uiState.collectAsStateWithLifecycle()
-    val sofiaState by sofiaViewModel.state.collectAsStateWithLifecycle()
-
-    val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
-
-    val tabs = listOf(
-        AppTab.Graph to Route.Graph,
-        AppTab.Remit to Route.Remit,
-        AppTab.Sofia to Route.Sofia,
-        AppTab.Settings to Route.Settings,
-    )
-
-    Scaffold(
-        bottomBar = {
-            NavigationBar {
-                tabs.forEach { (tab, route) ->
-                    val isSelected = currentDestination?.hierarchy?.any { it.hasRoute(route::class) } == true
-                    NavigationBarItem(
-                        selected = isSelected,
-                        onClick = {
-                            navController.navigate(route) {
-                                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        icon = {
-                            val icon = when (tab) {
-                                AppTab.Graph -> Icons.AutoMirrored.Filled.ShowChart
-                                AppTab.Remit -> Icons.Filled.Warning
-                                AppTab.Settings -> Icons.Filled.Settings
-                                AppTab.Sofia -> Icons.Filled.Home
-                            }
-                            Icon(icon, contentDescription = null)
-                        },
-                        label = { Text(tab.label) },
-                    )
-                }
-            }
-        },
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Route.Graph,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable<Route.Graph> {
-                GraphScreen(
-                    state = graphState,
-                    onRefresh = graphViewModel::refresh,
-                    onSelectWindow = graphViewModel::selectWindow,
-                    onToggleDataset = graphViewModel::toggleDataset,
-                    onDismissError = graphViewModel::dismissError,
-                )
-            }
-            composable<Route.Remit> {
-                RemitScreen(
-                    state = remitState,
-                    onRefresh = remitViewModel::refresh,
-                    onDismissError = remitViewModel::dismissError,
-                    onNavigateToDetail = { id -> navController.navigate(Route.RemitDetail(id)) }
-                )
-            }
-            composable<Route.RemitDetail> { backStackEntry ->
-                val route: Route.RemitDetail = backStackEntry.toRoute()
-                val notice = remitState.remits.firstOrNull { it.id == route.id }
-                if (notice != null) {
-                    RemitDetailScreen(
-                        notice = notice,
-                        onBack = { navController.popBackStack() }
-                    )
-                }
-            }
-            composable<Route.Sofia> {
-                SofiaScreen(
-                    state = sofiaState,
-                    onDismissError = sofiaViewModel::onDismissError,
-                )
-            }
-            composable<Route.Settings> {
-                SettingsScreen(
-                    state = settingsState,
-                    onToggleTestMode = settingsViewModel::setTestMode,
-                )
-            }
-        }
-    }
-}
-
-===== Fichier: java/com/lemarc/sofia/ui/sofia/SofiaScreen.kt =====
+===== Fichier: com\lemarc\sofia\ui\sofia\SofiaScreen.kt =====
 
 package com.lemarc.sofia.ui.sofia
 
@@ -3031,6 +3038,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.R
 import com.lemarc.sofia.ui.components.ErrorBanner
@@ -3047,7 +3055,7 @@ fun SofiaScreen(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        item { TitleBanner(title = "Sofia") }
+        item { TitleBanner(title = stringResource(R.string.title_sofia)) }
 
         if (state.errorMessage != null) {
             item {
@@ -3066,17 +3074,12 @@ fun SofiaDescriptionCard(modifier: Modifier = Modifier) {
     ElevatedCard(modifier = modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Sofia Offshore Wind Farm",
+                text = stringResource(R.string.sofia_about_title),
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = "Parc éolien offshore de 1,4 GW situé sur le Dogger Bank, " +
-                        "en mer du Nord centrale, à environ 195 km au large des côtes " +
-                        "du nord-est de l'Angleterre. Il comprend 100 turbines Siemens " +
-                        "Gamesa SG 14-222 DD (14 MW chacune) réparties sur un site de " +
-                        "593 km². Détenu à 100 % par RWE, sa mise en service complète " +
-                        "est prévue fin 2026.",
+                text = stringResource(R.string.sofia_about_description),
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
@@ -3089,12 +3092,12 @@ fun SofiaLocationCard(modifier: Modifier = Modifier) {
         Column {
             Image(
                 painter = painterResource(id = R.drawable.sofia_maps),
-                contentDescription = "Position du parc éolien Sofia, Dogger Bank",
+                contentDescription = stringResource(R.string.sofia_location_image_desc),
                 modifier = Modifier.fillMaxWidth().height(200.dp),
                 contentScale = ContentScale.Crop,
             )
             Text(
-                text = "Dogger Bank · 195 km au large des côtes du nord-est anglais",
+                text = stringResource(R.string.sofia_location_caption),
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier.padding(12.dp),
             )
@@ -3102,7 +3105,7 @@ fun SofiaLocationCard(modifier: Modifier = Modifier) {
     }
 }
 
-===== Fichier: java/com/lemarc/sofia/ui/sofia/SofiaViewModel.kt =====
+===== Fichier: com\lemarc\sofia\ui\sofia\SofiaViewModel.kt =====
 
 package com.lemarc.sofia.ui.sofia
 
@@ -3127,8 +3130,7 @@ class SofiaViewModel : ViewModel() {
         _state.update { it.copy(errorMessage = null) }
     }
 
-    class Factory(
-    ) : ViewModelProvider.Factory {
+    class Factory : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -3137,7 +3139,8 @@ class SofiaViewModel : ViewModel() {
         }
     }
 }
-===== Fichier: java/com/lemarc/sofia/ui/theme/Color.kt =====
+
+===== Fichier: com\lemarc\sofia\ui\theme\Color.kt =====
 
 package com.lemarc.sofia.ui.theme
 
@@ -3146,13 +3149,11 @@ import androidx.compose.ui.graphics.Color
 val SofiaCyan = Color(0xFF4DD0E1)
 val SofiaBlue = Color(0xFF1E88E5)
 val SofiaIndigo = Color(0xFF3949AB)
-val SofiaSurfaceLight = Color(0xFFF3F7FF)
-val SofiaSurfaceDark = Color(0xFF121826)
 val SofiaYellow = Color(0xFFFFF3CD)
 val SofiaYellowText = Color(0xFF6A4F00)
 val SofiaErrorContainer = Color(0xFFFFDAD6)
 
-===== Fichier: java/com/lemarc/sofia/ui/theme/Theme.kt =====
+===== Fichier: com\lemarc\sofia\ui\theme\Theme.kt =====
 
 package com.lemarc.sofia.ui.theme
 
@@ -3239,7 +3240,7 @@ fun Sofia_AndroidTheme(
     )
 }
 
-===== Fichier: java/com/lemarc/sofia/ui/theme/Type.kt =====
+===== Fichier: com\lemarc\sofia\ui\theme\Type.kt =====
 
 package com.lemarc.sofia.ui.theme
 
@@ -3275,7 +3276,8 @@ val Typography = Typography(
     )
     */
 )
-===== Fichier: java/com/lemarc/sofia/util/TimeUtils.kt =====
+
+===== Fichier: com\lemarc\sofia\util\TimeUtils.kt =====
 
 package com.lemarc.sofia.util
 
@@ -3295,7 +3297,7 @@ fun parseApiInstant(value: String?): Instant? {
         .getOrElse { parseApiUtc(normalized) }
 }
 
-===== Fichier: java/com/lemarc/sofia/widget/SofiaMediumWidgetProvider.kt =====
+===== Fichier: com\lemarc\sofia\widget\SofiaMediumWidgetProvider.kt =====
 
 package com.lemarc.sofia.widget
 
@@ -3331,7 +3333,7 @@ class SofiaMediumWidgetProvider : AppWidgetProvider() {
     }
 }
 
-===== Fichier: java/com/lemarc/sofia/widget/SofiaSmallWidgetProvider.kt =====
+===== Fichier: com\lemarc\sofia\widget\SofiaSmallWidgetProvider.kt =====
 
 package com.lemarc.sofia.widget
 
@@ -3367,7 +3369,7 @@ class SofiaSmallWidgetProvider : AppWidgetProvider() {
     }
 }
 
-===== Fichier: java/com/lemarc/sofia/widget/SofiaWidgetsUpdater.kt =====
+===== Fichier: com\lemarc\sofia\widget\SofiaWidgetsUpdater.kt =====
 
 package com.lemarc.sofia.widget
 
@@ -3524,446 +3526,1305 @@ object SofiaWidgetsUpdater {
     }
 }
 
-===== Fichier: res/drawable/ic_launcher_background.xml =====
+===== Fichier: com\lemarc\sofia\widget\modern\SofiaGraphConfig.kt =====
 
-<?xml version="1.0" encoding="utf-8"?>
-<vector
-    android:height="108dp"
-    android:width="108dp"
-    android:viewportHeight="108"
-    android:viewportWidth="108"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="#3DDC84"
-          android:pathData="M0,0h108v108h-108z"/>
-    <path android:fillColor="#00000000" android:pathData="M9,0L9,108"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M19,0L19,108"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M29,0L29,108"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M39,0L39,108"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M49,0L49,108"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M59,0L59,108"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M69,0L69,108"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M79,0L79,108"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M89,0L89,108"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M99,0L99,108"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M0,9L108,9"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M0,19L108,19"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M0,29L108,29"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M0,39L108,39"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M0,49L108,49"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M0,59L108,59"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M0,69L108,69"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M0,79L108,79"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M0,89L108,89"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M0,99L108,99"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M19,29L89,29"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M19,39L89,39"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M19,49L89,49"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M19,59L89,59"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M19,69L89,69"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M19,79L89,79"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M29,19L29,89"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M39,19L39,89"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M49,19L49,89"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M59,19L59,89"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M69,19L69,89"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-    <path android:fillColor="#00000000" android:pathData="M79,19L79,89"
-          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
-</vector>
+package com.lemarc.sofia.widget.modern
 
-===== Fichier: res/drawable/ic_launcher_foreground.xml =====
+import android.appwidget.AppWidgetManager
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.state.updateAppWidgetState
+import androidx.lifecycle.lifecycleScope
+import com.lemarc.sofia.R
+import com.lemarc.sofia.TimeWindow
+import com.lemarc.sofia.ui.theme.Sofia_AndroidTheme
+import java.time.Duration
+import kotlinx.coroutines.launch
 
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <path android:pathData="M31,63.928c0,0 6.4,-11 12.1,-13.1c7.2,-2.6 26,-1.4 26,-1.4l38.1,38.1L107,108.928l-32,-1L31,63.928z">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:endX="85.84757"
-                android:endY="92.4963"
-                android:startX="42.9492"
-                android:startY="49.59793"
-                android:type="linear">
-                <item
-                    android:color="#44000000"
-                    android:offset="0.0" />
-                <item
-                    android:color="#00000000"
-                    android:offset="1.0" />
-            </gradient>
-        </aapt:attr>
-    </path>
-    <path
-        android:fillColor="#FFFFFF"
-        android:fillType="nonZero"
-        android:pathData="M65.3,45.828l3.8,-6.6c0.2,-0.4 0.1,-0.9 -0.3,-1.1c-0.4,-0.2 -0.9,-0.1 -1.1,0.3l-3.9,6.7c-6.3,-2.8 -13.4,-2.8 -19.7,0l-3.9,-6.7c-0.2,-0.4 -0.7,-0.5 -1.1,-0.3C38.8,38.328 38.7,38.828 38.9,39.228l3.8,6.6C36.2,49.428 31.7,56.028 31,63.928h46C76.3,56.028 71.8,49.428 65.3,45.828zM43.4,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2c-0.3,-0.7 -0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C45.3,56.528 44.5,57.328 43.4,57.328L43.4,57.328zM64.6,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2s-0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C66.5,56.528 65.6,57.328 64.6,57.328L64.6,57.328z"
-        android:strokeWidth="1"
-        android:strokeColor="#00000000" />
-</vector>
-===== Fichier: res/drawable/widget_background.xml =====
+/** Les données réelles (B1610) ne sont affichées qu'à partir de 7 jours (« All » inclus). */
+private val ActualMinWindow: Duration = Duration.ofDays(7)
 
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners android:radius="16dp" />
-    <solid android:color="#1B1F2A" />
-</shape>
+fun TimeWindow.showsActual(): Boolean {
+    val d = duration
+    return d == null || d >= ActualMinWindow
+}
 
-===== Fichier: res/drawable/widget_progress_bar_drawable.xml =====
+@StringRes
+fun TimeWindow.longLabelRes(): Int = when (this) {
+    TimeWindow.HOURS_6 -> R.string.time_window_long_6h
+    TimeWindow.HOURS_24 -> R.string.time_window_long_24h
+    TimeWindow.HOURS_48 -> R.string.time_window_long_48h
+    TimeWindow.DAYS_7 -> R.string.time_window_long_7d
+    TimeWindow.MONTH_1 -> R.string.time_window_long_1m
+    TimeWindow.MONTH_3 -> R.string.time_window_long_3m
+    TimeWindow.ALL -> R.string.time_window_long_all
+}
 
-<?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@android:id/background">
-        <shape>
-            <corners android:radius="999dp" />
-            <solid android:color="#3A3F4C" />
-        </shape>
-    </item>
-    <item android:id="@android:id/progress">
-        <clip>
-            <shape>
-                <corners android:radius="999dp" />
-                <solid android:color="#4FC3F7" />
-            </shape>
-        </clip>
-    </item>
-</layer-list>
+@StringRes
+fun TimeWindow.shortTitleRes(): Int = when (this) {
+    TimeWindow.HOURS_6 -> R.string.time_window_short_6h
+    TimeWindow.HOURS_24 -> R.string.time_window_short_24h
+    TimeWindow.HOURS_48 -> R.string.time_window_short_48h
+    TimeWindow.DAYS_7 -> R.string.time_window_short_7d
+    TimeWindow.MONTH_1 -> R.string.time_window_short_1m
+    TimeWindow.MONTH_3 -> R.string.time_window_short_3m
+    TimeWindow.ALL -> R.string.time_window_short_all
+}
 
-===== Fichier: res/drawable/widget_ring_background.xml =====
+fun TimeWindow.longLabel(context: Context): String = context.getString(longLabelRes())
 
-<?xml version="1.0" encoding="utf-8"?>
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="ring"
-    android:innerRadiusRatio="2.5"
-    android:thicknessRatio="10"
-    android:useLevel="false">
-    <solid android:color="#3A3F4C" />
-</shape>
-===== Fichier: res/drawable/widget_ring_progress_drawable.xml =====
+fun TimeWindow.shortTitle(context: Context): String = context.getString(shortTitleRes())
 
-<?xml version="1.0" encoding="utf-8"?>
-<rotate
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fromDegrees="270"
-    android:toDegrees="270">
-    <shape
-        android:shape="ring"
-        android:innerRadiusRatio="2.5"
-        android:thicknessRatio="10"
-        android:useLevel="true">
-        <gradient
-            android:type="sweep"
-            android:startColor="#4FC3F7"
-            android:endColor="#4FC3F7"
-            android:useLevel="false" />
-    </shape>
-</rotate>
-===== Fichier: res/drawable/widget_test_badge_background.xml =====
+/** Fenêtre choisie, stockée dans l'état Glance de chaque instance de widget. */
+object GraphWidgetPrefs {
+    val WINDOW_KEY = stringPreferencesKey("graph_window")
 
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners android:radius="999dp" />
-    <solid android:color="#D32F2F" />
-</shape>
+    fun windowOf(prefs: Preferences): TimeWindow =
+        TimeWindow.entries.firstOrNull { it.name == prefs[WINDOW_KEY] } ?: TimeWindow.HOURS_24
+}
 
-===== Fichier: res/layout/widget_sofia_medium.xml =====
+/**
+ * Lancée par le launcher quand on dépose le widget (et via « reconfigurer » en appui long).
+ * Tant qu'on n'a pas renvoyé RESULT_OK, le widget n'est pas ajouté.
+ */
+class SofiaGraphConfigActivity : ComponentActivity() {
 
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/widget_medium_root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/widget_background"
-    android:orientation="vertical"
-    android:padding="12dp">
+    private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
-        <ProgressBar
-            android:id="@+id/widget_medium_ring"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="125dp"
-            android:layout_height="125dp"
-            android:layout_marginTop="4dp"
-            android:indeterminate="false"
-            android:max="100"
-            android:progress="0"
-            android:background="@drawable/widget_ring_background"
-            android:progressDrawable="@drawable/widget_ring_progress_drawable" />
+        appWidgetId = intent?.extras
+            ?.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+            ?: AppWidgetManager.INVALID_APPWIDGET_ID
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
+        // Par défaut : annulé (retour arrière = pas de widget)
+        setResult(RESULT_CANCELED, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId))
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+            finish()
+            return
+        }
 
-            <TextView
-                android:id="@+id/widget_medium_mw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-                android:textColor="@android:color/white"
-                android:textStyle="bold" />
+        val initial = TimeWindow.HOURS_24
+        setContent {
+            Sofia_AndroidTheme {
+                var busy by remember { mutableStateOf(false) }
+                ConfigScreen(
+                    initial = initial,
+                    busy = busy,
+                    onConfirm = { window ->
+                        busy = true
+                        confirm(window)
+                    },
+                )
+            }
+        }
+    }
 
-            <TextView
-                android:id="@+id/widget_medium_capacity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-                android:textColor="#CFD8DC" />
-        </LinearLayout>
+    private fun confirm(window: TimeWindow) {
+        lifecycleScope.launch {
+            // 1) on enregistre le choix dans l'état Glance du widget, 2) on déclenche la mise à jour.
+            // (Avec une activité de configuration, le système n'envoie pas la 1re mise à jour.)
+            runCatching {
+                val glanceId = GlanceAppWidgetManager(this@SofiaGraphConfigActivity).getGlanceIdBy(appWidgetId)
+                updateAppWidgetState(this@SofiaGraphConfigActivity, glanceId) { prefs ->
+                    prefs[GraphWidgetPrefs.WINDOW_KEY] = window.name
+                }
+                SofiaGraphGlanceWidget().update(this@SofiaGraphConfigActivity, glanceId)
+            }
+            setResult(RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId))
+            finish()
+        }
+    }
+}
 
-        <TextView
-            android:id="@+id/widget_medium_test_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/widget_test_badge_background"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="2dp"
-            android:text="@string/widget_test_badge"
-            android:textColor="@android:color/white"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-    </LinearLayout>
+@Composable
+private fun ConfigScreen(
+    initial: TimeWindow,
+    busy: Boolean,
+    onConfirm: (TimeWindow) -> Unit,
+) {
+    var selected by remember { mutableStateOf(initial) }
 
-    <ProgressBar
-        android:id="@+id/widget_medium_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:layout_marginTop="10dp"
-        android:indeterminate="false"
-        android:max="100"
-        android:progress="0"
-        android:progressDrawable="@drawable/widget_progress_bar_drawable" />
+    Scaffold { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            Text(
+                text = stringResource(R.string.widget_config_time_window_title),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = stringResource(R.string.widget_config_time_window_subtitle),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 4.dp, bottom = 16.dp),
+            )
 
-    <TextView
-        android:id="@+id/widget_medium_details"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-        android:textColor="#CFD8DC" />
+            TimeWindow.entries.forEach { window ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = window == selected,
+                            onClick = { selected = window },
+                            role = Role.RadioButton,
+                        )
+                        .padding(vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    RadioButton(selected = window == selected, onClick = null)
+                    Spacer(Modifier.width(12.dp))
+                    Text(stringResource(window.longLabelRes()), style = MaterialTheme.typography.bodyLarge)
+                }
+            }
 
-    <TextView
-        android:id="@+id/widget_medium_last_update"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-        android:textColor="#ECEFF1"
-        android:textStyle="bold" />
-</LinearLayout>
+            Text(
+                text = if (selected.showsActual()) {
+                    stringResource(R.string.widget_config_actual_included)
+                } else {
+                    stringResource(R.string.widget_config_actual_excluded)
+                },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 12.dp, bottom = 24.dp),
+            )
 
-===== Fichier: res/layout/widget_sofia_small.xml =====
+            Button(
+                onClick = { onConfirm(selected) },
+                enabled = !busy,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(if (busy) stringResource(R.string.widget_config_adding) else stringResource(R.string.widget_config_validate))
+            }
+        }
+    }
+}
 
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/widget_small_root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/widget_background"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:padding="12dp">
+===== Fichier: com\lemarc\sofia\widget\modern\SofiaGraphGlanceWidget.kt =====
 
-    <TextView
-        android:id="@+id/widget_small_test_badge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:background="@drawable/widget_test_badge_background"
-        android:paddingHorizontal="8dp"
-        android:paddingVertical="2dp"
-        android:text="@string/widget_test_badge"
-        android:textColor="@android:color/white"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
+package com.lemarc.sofia.widget.modern
 
-    <ProgressBar
-        android:id="@+id/widget_small_ring"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="125dp"
-        android:layout_height="125dp"
-        android:layout_marginTop="4dp"
-        android:indeterminate="false"
-        android:max="100"
-        android:progress="0"
-        android:background="@drawable/widget_ring_background"
-        android:progressDrawable="@drawable/widget_ring_progress_drawable" />
+import android.content.Context
+import android.graphics.Bitmap
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.Preferences
+import androidx.glance.GlanceId
+import androidx.glance.GlanceModifier
+import androidx.glance.Image
+import androidx.glance.ImageProvider
+import androidx.glance.LocalContext
+import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.SizeMode
+import androidx.glance.appwidget.provideContent
+import androidx.glance.currentState
+import androidx.glance.layout.Alignment
+import androidx.glance.layout.Box
+import androidx.glance.layout.Column
+import androidx.glance.layout.ContentScale
+import androidx.glance.layout.Row
+import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.fillMaxWidth
+import androidx.glance.layout.height
+import androidx.glance.layout.padding
+import androidx.glance.layout.width
+import androidx.glance.state.PreferencesGlanceStateDefinition
+import com.lemarc.sofia.R
+import com.lemarc.sofia.TimeWindow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-    <TextView
-        android:id="@+id/widget_small_mw"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-        android:textColor="@android:color/white"
-        android:textStyle="bold" />
+/**
+ * Courbe de production sur la fenêtre choisie à la création du widget (SofiaGraphConfigActivity) :
+ * production engagée (PN, remplie) et, si la fenêtre est ≥ 7 jours, production réelle (B1610).
+ *
+ * La fenêtre est lue dans l'ÉTAT Glance et les données sont (re)chargées DANS la composition :
+ * si une session Glance est déjà ouverte (ex. rafraîchissement lancé pendant la configuration),
+ * un changement de fenêtre déclenche bien un nouveau chargement, au lieu de rester sur 24 h.
+ */
+class SofiaGraphGlanceWidget : GlanceAppWidget() {
 
-    <TextView
-        android:id="@+id/widget_small_capacity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-        android:textColor="#CFD8DC" />
-</LinearLayout>
+    override val sizeMode = SizeMode.Single
+    override val stateDefinition = PreferencesGlanceStateDefinition
 
-===== Fichier: res/mipmap-anydpi-v26/ic_launcher_round.xml =====
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        provideContent {
+            val window = GraphWidgetPrefs.windowOf(currentState<Preferences>())
+            val loaded by produceState<GraphUi?>(initialValue = null, key1 = window) {
+                value = buildGraphUi(context, window)
+            }
+            // On ignore un résultat calculé pour une autre fenêtre (changement en cours)
+            val ui = loaded?.takeIf { it.window == window }
 
-<?xml version="1.0" encoding="utf-8"?>
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@drawable/ic_launcher_background"/>
-    <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
-    <monochrome android:drawable="@mipmap/ic_launcher_foreground"/>
-</adaptive-icon>
-===== Fichier: res/mipmap-anydpi-v26/ic_launcher.xml =====
+            WidgetRoot { GraphContent(window, ui) }
+        }
+    }
+}
 
-<?xml version="1.0" encoding="utf-8"?>
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@drawable/ic_launcher_background"/>
-    <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
-    <monochrome android:drawable="@mipmap/ic_launcher_foreground"/>
-</adaptive-icon>
-===== Fichier: res/values/colors.xml =====
+private data class GraphUi(
+    val window: TimeWindow,
+    val data: LiveData,
+    val chart: Bitmap?,
+)
 
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-</resources>
-===== Fichier: res/values/ic_launcher_background.xml =====
+private suspend fun buildGraphUi(context: Context, window: TimeWindow): GraphUi {
+    val showActual = window.showsActual()
+    val data = SofiaWidgetData.loadLive(
+        context = context,
+        window = window.duration, // null pour « All »
+        includeActual = showActual,
+    )
+    val density = context.resources.displayMetrics.density
 
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="ic_launcher_background">#FFFFFF</color>
-</resources>
-===== Fichier: res/values/strings.xml =====
+    val chart = if (data.committed.isEmpty() && (!showActual || data.actual.isEmpty())) {
+        null
+    } else {
+        withContext(Dispatchers.Default) {
+            val lines = buildList {
+                add(ChartLine(data.committed, WidgetPalette.Committed.toArgb(), filled = true))
+                if (showActual) add(ChartLine(data.actual, WidgetPalette.Actual.toArgb()))
+            }
+            SofiaWidgetCharts.lineChart(
+                widthPx = (320 * density).toInt(),
+                heightPx = (140 * density).toInt(),
+                density = density,
+                lines = lines,
+                from = data.from,
+                to = data.to,
+            )
+        }
+    }
+    return GraphUi(window, data, chart)
+}
 
-<resources>
-    <string name="app_name">Sofia Wind Farm</string>
-    <string name="widget_test_badge">TEST</string>
-    <string name="widget_mw_value">%1$d MW</string>
-    <string name="widget_capacity_value">Capacity %1$d%%</string>
-    <string name="widget_capacity_of_max_value">Capacity %1$d%% of %2$d MW</string>
-    <string name="widget_last_refresh_value">Last update: %1$s</string>
-    <string name="widget_mode_test">TEST</string>
-    <string name="widget_mode_live">LIVE</string>
-    <string name="widget_details_value">Mode: %1$s • API: %2$s</string>
-    <string name="widget_small_description">Small Sofia production widget</string>
-    <string name="widget_medium_description">Medium Sofia production widget</string>
-</resources>
+@Composable
+private fun GraphContent(window: TimeWindow, ui: GraphUi?) {
+    val context = LocalContext.current
+    val showActual = window.showsActual()
+    val chart = ui?.chart
+    val title = (if (ui?.data?.fromCache == true) {
+        context.getString(R.string.widget_graph_title_offline_format, window.shortTitle(context))
+    } else {
+        context.getString(R.string.widget_graph_title_online_format, window.shortTitle(context))
+    }) + if (ui?.data?.testMode == true) context.getString(R.string.widget_graph_title_test_suffix) else ""
 
-===== Fichier: res/values/themes.xml =====
+    Column(modifier = GlanceModifier.fillMaxSize().padding(horizontal = 12.dp, vertical = 10.dp)) {
+        Row(modifier = GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            WText(title, 10, WidgetPalette.Muted, bold = true)
+            Spacer(modifier = GlanceModifier.defaultWeight())
+            Dot(WidgetPalette.Committed)
+            Spacer(modifier = GlanceModifier.width(4.dp))
+            WText(context.getString(R.string.widget_graph_committed), 10)
+            if (showActual) {
+                Spacer(modifier = GlanceModifier.width(10.dp))
+                Dot(WidgetPalette.Actual)
+                Spacer(modifier = GlanceModifier.width(4.dp))
+                WText(context.getString(R.string.widget_graph_actual), 10)
+            }
+        }
+        Spacer(modifier = GlanceModifier.height(6.dp))
+        when {
+            ui == null -> Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                WText(context.getString(R.string.widget_graph_loading), 12, WidgetPalette.Muted)
+            }
+            chart == null -> Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                WText(context.getString(R.string.widget_graph_no_data), 12, WidgetPalette.Muted)
+            }
+            else -> Image(
+                provider = ImageProvider(chart),
+                contentDescription = context.getString(R.string.widget_graph_content_description, window.longLabel(context)),
+                modifier = GlanceModifier.fillMaxWidth().defaultWeight(),
+                contentScale = ContentScale.Fit,
+            )
+        }
+    }
+}
 
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+// L'état Glance (fenêtre choisie) est supprimé automatiquement avec le widget : plus de nettoyage à faire.
+class SofiaGraphGlanceReceiver : ModernWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = SofiaGraphGlanceWidget()
+}
 
-    <style name="Theme.Sofia_Android" parent="android:Theme.Material.Light.NoActionBar" />
-</resources>
-===== Fichier: res/xml/backup_rules.xml =====
+===== Fichier: com\lemarc\sofia\widget\modern\SofiaLiveGlanceWidget.kt =====
 
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample backup rules file; uncomment and customize as necessary.
-   See https://developer.android.com/guide/topics/data/autobackup
-   for details.
-   Note: This file is ignored for devices older than API 31
-   See https://developer.android.com/about/versions/12/backup-restore
--->
-<full-backup-content>
-    <!--
-   <include domain="sharedpref" path="."/>
-   <exclude domain="sharedpref" path="device.xml"/>
--->
-</full-backup-content>
-===== Fichier: res/xml/data_extraction_rules.xml =====
+package com.lemarc.sofia.widget.modern
 
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample data extraction rules file; uncomment and customize as necessary.
-   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
-   for details.
--->
-<data-extraction-rules>
-    <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
-    </cloud-backup>
-    <!--
-    <device-transfer>
-        <include .../>
-        <exclude .../>
-    </device-transfer>
-    -->
-</data-extraction-rules>
-===== Fichier: res/xml/sofia_medium_widget_info.xml =====
+import android.content.Context
+import android.graphics.Bitmap
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import androidx.glance.GlanceId
+import androidx.glance.GlanceModifier
+import androidx.glance.Image
+import androidx.glance.ImageProvider
+import androidx.glance.LocalContext
+import androidx.glance.LocalSize
+import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.SizeMode
+import androidx.glance.appwidget.provideContent
+import androidx.glance.layout.Alignment
+import androidx.glance.layout.Box
+import androidx.glance.layout.Column
+import androidx.glance.layout.ContentScale
+import androidx.glance.layout.Row
+import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.height
+import androidx.glance.layout.padding
+import androidx.glance.layout.size
+import androidx.glance.layout.width
+import androidx.glance.text.TextAlign
+import com.lemarc.sofia.R
+import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
+import kotlin.math.roundToInt
 
-<?xml version="1.0" encoding="utf-8"?>
-<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:description="@string/widget_medium_description"
-    android:initialLayout="@layout/widget_sofia_medium"
-    android:minHeight="120dp"
-    android:minWidth="240dp"
-    android:resizeMode="horizontal|vertical"
-    android:updatePeriodMillis="1800000"
-    android:widgetCategory="home_screen" />
+private val CompactSize = DpSize(110.dp, 110.dp)
+private val WideSize = DpSize(250.dp, 110.dp)
 
-===== Fichier: res/xml/sofia_small_widget_info.xml =====
+/** Production en direct : jauge + MW. 2x2 = jauge seule, 4x2 = jauge + détails. */
+class SofiaLiveGlanceWidget : GlanceAppWidget() {
 
-<?xml version="1.0" encoding="utf-8"?>
-<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:description="@string/widget_small_description"
-    android:initialLayout="@layout/widget_sofia_small"
-    android:minHeight="110dp"
-    android:minWidth="110dp"
-    android:resizeMode="horizontal|vertical"
-    android:updatePeriodMillis="1800000"
-    android:widgetCategory="home_screen" />
+    override val sizeMode = SizeMode.Responsive(setOf(CompactSize, WideSize))
+
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        val data = SofiaWidgetData.loadLive(context)
+        val density = context.resources.displayMetrics.density
+        val fraction = (data.currentMw / SOFIA_MAX_CAPACITY_MW).toFloat()
+        val gauge = SofiaWidgetCharts.gauge((120 * density).toInt(), fraction)
+
+        provideContent {
+            val wide = LocalSize.current.width >= WideSize.width
+            WidgetRoot {
+                if (wide) WideLayout(data, gauge) else CompactLayout(data, gauge)
+            }
+        }
+    }
+}
+
+private fun LiveData.percent(): Int =
+    (currentMw / SOFIA_MAX_CAPACITY_MW * 100).roundToInt().coerceIn(0, 100)
+
+@Composable
+private fun CompactLayout(data: LiveData, gauge: Bitmap) {
+    val context = LocalContext.current
+    Box(
+        modifier = GlanceModifier.fillMaxSize().padding(8.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Image(
+            provider = ImageProvider(gauge),
+            contentDescription = null,
+            modifier = GlanceModifier.fillMaxSize(),
+            contentScale = ContentScale.Fit,
+        )
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            WText("${data.currentMw.roundToInt()}", 22, bold = true, align = TextAlign.Center)
+            WText(context.getString(R.string.widget_live_mw), 11, WidgetPalette.Muted, align = TextAlign.Center)
+            if (data.testMode) WText(context.getString(R.string.widget_live_test), 9, WidgetPalette.Bad, bold = true)
+        }
+    }
+}
+
+@Composable
+private fun WideLayout(data: LiveData, gauge: Bitmap) {
+    val context = LocalContext.current
+    Row(
+        modifier = GlanceModifier.fillMaxSize().padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(modifier = GlanceModifier.size(92.dp), contentAlignment = Alignment.Center) {
+            Image(
+                provider = ImageProvider(gauge),
+                contentDescription = null,
+                modifier = GlanceModifier.fillMaxSize(),
+                contentScale = ContentScale.Fit,
+            )
+            WText("${data.percent()}%", 18, bold = true)
+        }
+        Spacer(modifier = GlanceModifier.width(14.dp))
+        Column(modifier = GlanceModifier.defaultWeight()) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                WText(context.getString(R.string.widget_live_sofia_offshore), 10, WidgetPalette.Muted, bold = true)
+                if (data.testMode) {
+                    Spacer(modifier = GlanceModifier.width(6.dp))
+                    WText(context.getString(R.string.widget_live_test), 10, WidgetPalette.Bad, bold = true)
+                }
+            }
+            WText(context.getString(R.string.widget_mw_value, data.currentMw.roundToInt()), 28, bold = true)
+            WText(context.getString(R.string.widget_live_installed_capacity_format, SOFIA_MAX_CAPACITY_MW.roundToInt()), 11, WidgetPalette.Muted)
+            Spacer(modifier = GlanceModifier.height(6.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Dot(WidgetPalette.Actual)
+                Spacer(modifier = GlanceModifier.width(6.dp))
+                WText(
+                    text = data.actualMw?.let { context.getString(R.string.widget_live_actual_format, it.roundToInt()) } ?: context.getString(R.string.widget_live_actual_empty),
+                    size = 11,
+                )
+            }
+            Spacer(modifier = GlanceModifier.height(2.dp))
+            WText(
+                text = (if (data.fromCache) context.getString(R.string.widget_prefix_offline) else context.getString(R.string.widget_prefix_updated)) + formatClock(data.to),
+                size = 10,
+                color = WidgetPalette.Muted,
+            )
+        }
+    }
+}
+
+class SofiaLiveGlanceReceiver : ModernWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = SofiaLiveGlanceWidget()
+}
+
+===== Fichier: com\lemarc\sofia\widget\modern\SofiaUnitsGlanceWidget.kt =====
+
+package com.lemarc.sofia.widget.modern
+
+import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import androidx.glance.GlanceId
+import androidx.glance.GlanceModifier
+import androidx.glance.LocalContext
+import androidx.glance.LocalSize
+import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.LinearProgressIndicator
+import androidx.glance.appwidget.SizeMode
+import androidx.glance.appwidget.cornerRadius
+import androidx.glance.appwidget.provideContent
+import androidx.glance.background
+import androidx.glance.layout.Alignment
+import androidx.glance.layout.Column
+import androidx.glance.layout.Row
+import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxHeight
+import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.fillMaxWidth
+import androidx.glance.layout.height
+import androidx.glance.layout.padding
+import androidx.glance.layout.width
+import com.lemarc.sofia.R
+import kotlin.math.roundToInt
+
+private val CompactSize = DpSize(110.dp, 110.dp)
+private val WideSize = DpSize(250.dp, 110.dp)
+
+/** Disponibilité (REMIT) par unité : 2x2 = grille de 4 tuiles, 4x2 = 4 tuiles + total. */
+class SofiaUnitsGlanceWidget : GlanceAppWidget() {
+
+    override val sizeMode = SizeMode.Responsive(setOf(CompactSize, WideSize))
+
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        val data = SofiaWidgetData.loadUnits(context)
+        provideContent {
+            val wide = LocalSize.current.width >= WideSize.width
+            WidgetRoot { if (wide) WideLayout(data) else CompactLayout(data) }
+        }
+    }
+}
+
+@Composable
+private fun WideLayout(data: UnitsData) {
+    val context = LocalContext.current
+    Column(modifier = GlanceModifier.fillMaxSize().padding(12.dp)) {
+        Row(modifier = GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            WText(context.getString(R.string.widget_units_header), 10, WidgetPalette.Muted, bold = true)
+            Spacer(modifier = GlanceModifier.defaultWeight())
+            val total = if (data.totalNormal > 0) {
+                "${data.totalAvailable.roundToInt()} / ${data.totalNormal.roundToInt()} MW"
+            } else {
+                "${data.totalAvailable.roundToInt()} MW"
+            }
+            WText(total, 11, bold = true)
+        }
+        Spacer(modifier = GlanceModifier.height(8.dp))
+        Row(modifier = GlanceModifier.fillMaxWidth().defaultWeight()) {
+            data.units.forEachIndexed { i, unit ->
+                if (i > 0) Spacer(modifier = GlanceModifier.width(6.dp))
+                UnitTile(unit, GlanceModifier.defaultWeight().fillMaxHeight(), compact = false)
+            }
+        }
+        Spacer(modifier = GlanceModifier.height(6.dp))
+        WText(
+            text = (if (data.fromCache) context.getString(R.string.widget_prefix_offline) else context.getString(R.string.widget_prefix_updated)) + formatClock(data.fetchedAt),
+            size = 9,
+            color = WidgetPalette.Muted,
+        )
+    }
+}
+
+@Composable
+private fun CompactLayout(data: UnitsData) {
+    Column(modifier = GlanceModifier.fillMaxSize().padding(8.dp)) {
+        data.units.chunked(2).forEachIndexed { r, rowUnits ->
+            if (r > 0) Spacer(modifier = GlanceModifier.height(6.dp))
+            Row(modifier = GlanceModifier.fillMaxWidth().defaultWeight()) {
+                rowUnits.forEachIndexed { i, unit ->
+                    if (i > 0) Spacer(modifier = GlanceModifier.width(6.dp))
+                    UnitTile(unit, GlanceModifier.defaultWeight().fillMaxHeight(), compact = true)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun UnitTile(unit: UnitStatus, modifier: GlanceModifier, compact: Boolean) {
+    val context = LocalContext.current
+    val color = unit.statusColor()
+    val mw = unit.availableMw?.roundToInt()?.toString() ?: "—"
+    Column(
+        modifier = modifier
+            .background(solid(WidgetPalette.Tile))
+            .cornerRadius(14.dp)
+            .padding(horizontal = 8.dp, vertical = if (compact) 4.dp else 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Dot(color, sizeDp = 6)
+            Spacer(modifier = GlanceModifier.width(4.dp))
+            WText(if (compact) unit.shortLabel else unit.label, if (compact) 10 else 9, WidgetPalette.Muted, bold = true)
+        }
+        if (compact) {
+            WText("$mw ${context.getString(R.string.unit_mw)}", 13, color, bold = true)
+        } else {
+            WText(mw, 18, color, bold = true)
+            WText(context.getString(R.string.unit_mw), 9, WidgetPalette.Muted)
+            Spacer(modifier = GlanceModifier.height(4.dp))
+            LinearProgressIndicator(
+                progress = unit.fraction,
+                modifier = GlanceModifier.fillMaxWidth(),
+                color = solid(color),
+                backgroundColor = solid(WidgetPalette.Track),
+            )
+        }
+    }
+}
+
+class SofiaUnitsGlanceReceiver : ModernWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = SofiaUnitsGlanceWidget()
+}
+
+===== Fichier: com\lemarc\sofia\widget\modern\SofiaWidgetCharts.kt =====
+
+package com.lemarc.sofia.widget.modern
+
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.LinearGradient
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.RectF
+import android.graphics.Shader
+import android.graphics.SweepGradient
+import androidx.compose.ui.graphics.toArgb
+import com.lemarc.sofia.data.model.GraphPoint
+import com.lemarc.sofia.ui.theme.SofiaBlue
+import com.lemarc.sofia.ui.theme.SofiaCyan
+import com.lemarc.sofia.ui.theme.SofiaIndigo
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+import kotlin.math.ceil
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.withRotation
+
+data class ChartLine(
+    val points: List<GraphPoint>,
+    val color: Int,
+    val filled: Boolean = false,
+)
+
+/** Glance n'a pas de Canvas : on dessine en Bitmap (android.graphics) puis on l'affiche avec Image. */
+object SofiaWidgetCharts {
+
+    private fun withAlpha(color: Int, alpha: Int): Int = (color and 0x00FFFFFF) or (alpha shl 24)
+
+    /** Jauge 270° avec dégradé cyan → bleu → indigo, comme dans l'appli. */
+    fun gauge(sizePx: Int, fraction: Float): Bitmap {
+        val bitmap = createBitmap(sizePx, sizePx)
+        val canvas = Canvas(bitmap)
+        val stroke = sizePx * 0.12f
+        val inset = stroke / 2f + 1f
+        val oval = RectF(inset, inset, sizePx - inset, sizePx - inset)
+        val center = sizePx / 2f
+
+        val track = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            strokeWidth = stroke
+            strokeCap = Paint.Cap.ROUND
+            color = 0x2EFFFFFF
+        }
+        canvas.drawArc(oval, 135f, 270f, false, track)
+
+        val sweep = 270f * fraction.coerceIn(0f, 1f)
+        if (sweep > 0f) {
+            val progress = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                style = Paint.Style.STROKE
+                strokeWidth = stroke
+                strokeCap = Paint.Cap.ROUND
+                shader = SweepGradient(
+                    center, center,
+                    intArrayOf(SofiaCyan.toArgb(), SofiaBlue.toArgb(), SofiaIndigo.toArgb(), SofiaIndigo.toArgb()),
+                    floatArrayOf(0f, 0.35f, 0.75f, 1f),
+                )
+            }
+            canvas.withRotation(135f, center, center) {
+                drawArc(oval, 0f, sweep, false, progress)
+            }
+        }
+        return bitmap
+    }
+
+    /** Courbes temporelles (MW) sur [from, to], grille, libellés Y/X et point sur la dernière valeur. */
+    fun lineChart(
+        widthPx: Int,
+        heightPx: Int,
+        density: Float,
+        lines: List<ChartLine>,
+        from: Instant,
+        to: Instant,
+    ): Bitmap {
+        val bitmap = createBitmap(widthPx, heightPx)
+        val canvas = Canvas(bitmap)
+        val plot = RectF(34f * density, 8f * density, widthPx - 8f * density, heightPx - 20f * density)
+
+        val fromMs = from.toEpochMilli()
+        val spanMs = (to.toEpochMilli() - fromMs).coerceAtLeast(1L).toFloat()
+        val maxValue = lines.flatMap { it.points }.maxOfOrNull { it.quantity } ?: 0.0
+        val yMax = (ceil(maxValue * 1.05 / 100.0) * 100.0).coerceAtLeast(100.0)
+
+        fun xOf(t: Instant): Float = plot.left + ((t.toEpochMilli() - fromMs) / spanMs).coerceIn(0f, 1f) * plot.width()
+        fun yOf(v: Double): Float = plot.bottom - (v / yMax).toFloat().coerceIn(0f, 1f) * plot.height()
+
+        val grid = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            strokeWidth = density
+            color = 0x1FFFFFFF
+        }
+        val label = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = 0xFF9FB0C8.toInt()
+            textSize = 10f * density
+        }
+
+        // Grille + axe Y (0, milieu, max)
+        for (i in 0..2) {
+            val v = yMax * i / 2.0
+            val y = yOf(v)
+            canvas.drawLine(plot.left, y, plot.right, y, grid)
+            label.textAlign = Paint.Align.RIGHT
+            canvas.drawText(v.toInt().toString(), plot.left - 6f * density, y + label.textSize / 3f, label)
+        }
+
+        // Axe X : 5 repères horaires
+        val pattern = when {
+            spanMs <= 12 * 3_600_000f -> "HH:mm"
+            spanMs <= 3 * 86_400_000f -> "EEE HH:mm"
+            spanMs <= 365 * 86_400_000f -> "dd/MM"
+            else -> "MM/yy"
+        }
+        val timeFmt = DateTimeFormatter.ofPattern(pattern, Locale.getDefault()).withZone(ZoneId.systemDefault())
+        val ticks = 4
+        for (i in 0..ticks) {
+            val t = Instant.ofEpochMilli(fromMs + (spanMs * i / ticks).toLong())
+            label.textAlign = when (i) {
+                0 -> Paint.Align.LEFT
+                ticks -> Paint.Align.RIGHT
+                else -> Paint.Align.CENTER
+            }
+            val x = when (i) {
+                0 -> plot.left
+                ticks -> plot.right
+                else -> plot.left + plot.width() * i / ticks
+            }
+            canvas.drawText(timeFmt.format(t), x, heightPx - 4f * density, label)
+        }
+
+        // Courbes
+        lines.forEach { line ->
+            val pts = line.points.filter { it.timeFrom >= from }
+            if (pts.isEmpty()) return@forEach
+
+            val path = Path()
+            pts.forEachIndexed { i, p ->
+                val x = xOf(p.timeFrom)
+                val y = yOf(p.quantity)
+                if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
+            }
+
+            if (line.filled) {
+                val area = Path(path).apply {
+                    lineTo(xOf(pts.last().timeFrom), plot.bottom)
+                    lineTo(xOf(pts.first().timeFrom), plot.bottom)
+                    close()
+                }
+                val fill = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    style = Paint.Style.FILL
+                    shader = LinearGradient(
+                        0f, plot.top, 0f, plot.bottom,
+                        withAlpha(line.color, 0x66), withAlpha(line.color, 0x00),
+                        Shader.TileMode.CLAMP,
+                    )
+                }
+                canvas.drawPath(area, fill)
+            }
+
+            val stroke = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                style = Paint.Style.STROKE
+                strokeWidth = 2.2f * density
+                strokeJoin = Paint.Join.ROUND
+                strokeCap = Paint.Cap.ROUND
+                color = line.color
+            }
+            canvas.drawPath(path, stroke)
+
+            val last = pts.last()
+            val dot = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL; color = line.color }
+            canvas.drawCircle(xOf(last.timeFrom), yOf(last.quantity), 3.5f * density, dot)
+        }
+        return bitmap
+    }
+}
+
+===== Fichier: com\lemarc\sofia\widget\modern\SofiaWidgetData.kt =====
+
+package com.lemarc.sofia.widget.modern
+
+import android.content.Context
+import androidx.glance.appwidget.updateAll
+import com.lemarc.sofia.BASE_URL
+import com.lemarc.sofia.HISTORY_START
+import com.lemarc.sofia.SOFIA_BMUS
+import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
+import com.lemarc.sofia.TEST_BMU
+import com.lemarc.sofia.data.api.SofiaApiService
+import com.lemarc.sofia.data.local.SofiaDatabase
+import com.lemarc.sofia.data.model.GraphPoint
+import com.lemarc.sofia.data.model.RemitNotice
+import com.lemarc.sofia.data.repository.aggregateB1610
+import com.lemarc.sofia.data.repository.aggregateProduction
+import com.lemarc.sofia.data.repository.toEntity
+import com.lemarc.sofia.data.repository.toModel
+import com.lemarc.sofia.data.settings.SettingsRepository
+import java.time.Duration
+import java.time.Instant
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.time.Duration.Companion.milliseconds
+
+// ── Modèles ──────────────────────────────────────────────────────────────────
+
+data class LiveData(
+    val testMode: Boolean,
+    val committed: List<GraphPoint>, // MW (PN)
+    val actual: List<GraphPoint>,    // MW (B1610 MWh/30min × 2)
+    val from: Instant,
+    val to: Instant,
+    val fromCache: Boolean,
+) {
+    val currentMw: Double get() = committed.lastOrNull()?.quantity ?: 0.0
+    val actualMw: Double? get() = actual.lastOrNull()?.quantity
+}
+
+data class UnitStatus(
+    val bmuId: String,
+    val normalMw: Double?,
+    val availableMw: Double?,
+    val hasNotice: Boolean,
+    val cause: String?,
+) {
+    val label: String get() = bmuId.removePrefix("T_")
+    val shortLabel: String get() = bmuId.substringAfterLast('-').removePrefix("T_")
+    val fraction: Float
+        get() {
+            val n = normalMw
+            val a = availableMw
+            return if (n != null && n > 0.0 && a != null) (a / n).toFloat().coerceIn(0f, 1f) else 1f
+        }
+}
+
+data class UnitsData(
+    val testMode: Boolean,
+    val units: List<UnitStatus>,
+    val fetchedAt: Instant,
+    val fromCache: Boolean,
+) {
+    val totalAvailable: Double get() = units.sumOf { it.availableMw ?: 0.0 }
+    val totalNormal: Double get() = units.sumOf { it.normalMw ?: 0.0 }
+}
+
+// ── Chargement ───────────────────────────────────────────────────────────────
+
+object SofiaWidgetData {
+
+    private val api: SofiaApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SofiaApiService::class.java)
+    }
+
+    /**
+     * Récupère seulement la fenêtre demandée (24 h) au lieu de tout l'historique, et lit le cache Room
+     * en secours. On n'ÉCRIT volontairement pas en base : refreshProductionPoints() efface tout, ça
+     * tronquerait l'historique de l'appli.
+     */
+    suspend fun loadLive(
+        context: Context,
+        window: Duration? = Duration.ofHours(24), // null = tout l'historique
+        includeActual: Boolean = true,            // false = on ne charge pas du tout le B1610
+    ): LiveData = withContext(Dispatchers.IO) {
+        val app = context.applicationContext
+        val testMode = SettingsRepository(app).testMode.first()
+        val to = Instant.now()
+        val from = window?.let { to.minus(it) } ?: HISTORY_START
+        val bmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
+        val snapshotName = "live_${window?.toMinutes() ?: "all"}_${if (includeActual) "a" else "c"}"
+
+        val fresh = runCatching {
+            withTimeout(30_000.milliseconds) {
+                coroutineScope {
+                    val pn = bmus.map { id -> async { api.getProduction(id, from.toString(), to.toString()) } }
+                    val b1610 = if (includeActual) {
+                        bmus.map { id -> async { api.getB1610(id, from.toString(), to.toString()) } }
+                    } else null
+                    val committed = aggregateProduction(pn.awaitAll().flatten(), testMode)
+                    val actual = b1610
+                        ?.let { calls -> aggregateB1610(calls.awaitAll().flatten(), testMode) }
+                        ?.map { it.copy(quantity = it.quantity * 2) }
+                        ?: emptyList()
+                    committed to actual
+                }
+            }
+        }.getOrNull()
+
+        if (fresh != null) {
+            LiveData(testMode, fresh.first, fresh.second, from, to, fromCache = false)
+                .also { SofiaWidgetSnapshots.saveLive(app, snapshotName, it) }
+        } else {
+            val dao = SofiaDatabase.getDatabase(app).sofiaDao()
+            val committed = dao.getProductionPoints(testMode).first()
+                .filter { it.timeFrom >= from }.map { it.toModel() }
+            val actual = if (includeActual) {
+                dao.getB1610Points(testMode).first()
+                    .filter { it.timeFrom >= from }
+                    .map { it.toModel() }
+                    .map { it.copy(quantity = it.quantity * 2) }
+            } else emptyList()
+            val room = LiveData(testMode, committed, actual, from, to, fromCache = true)
+            // Cache Room vide/périmé (appli pas ouverte depuis longtemps) → dernier snapshot du widget
+            if (committed.isNotEmpty()) room
+            else SofiaWidgetSnapshots.loadLive(app, snapshotName)?.takeIf { it.testMode == testMode } ?: room
+        }
+    }
+
+    /** Disponibilité par unité d'après les avis REMIT actifs (sans avis → pleine capacité nominale). */
+    suspend fun loadUnits(context: Context): UnitsData = withContext(Dispatchers.IO) {
+        val app = context.applicationContext
+        val testMode = SettingsRepository(app).testMode.first()
+        val bmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
+        val now = Instant.now()
+
+        val fresh: List<RemitNotice>? = runCatching {
+            withTimeout(20_000.milliseconds) {
+                coroutineScope {
+                    bmus.map { id ->
+                        async { api.getRemits(bmuId = id, eventStatus = "Active", limit = 100, offset = 0) }
+                    }.awaitAll().flatten().distinctBy { it.id }.map { it.toEntity(testMode).toModel() }
+                }
+            }
+        }.getOrNull()
+
+        if (fresh == null) {
+            SofiaWidgetSnapshots.loadUnits(app)?.takeIf { it.testMode == testMode }?.let { return@withContext it }
+        }
+
+        val notices = fresh ?: SofiaDatabase.getDatabase(app).sofiaDao()
+            .getRemitNotices(testMode).first().map { it.toModel() }
+
+        // En mode test (T_HEYM11) la capacité nominale d'une unité est inconnue sans avis.
+        val nominal = if (testMode) null else SOFIA_MAX_CAPACITY_MW / SOFIA_BMUS.size
+
+        val units = bmus.map { id ->
+            val active = notices.filter { it.bmuId == id && it.isInEffectAt(now) }
+            val normal = active.firstNotNullOfOrNull { it.normalCapacityMw } ?: nominal
+            val available = active.mapNotNull { it.availableMw() }.minOrNull() ?: normal
+            UnitStatus(
+                bmuId = id,
+                normalMw = normal,
+                availableMw = available,
+                hasNotice = active.isNotEmpty(),
+                cause = active.firstOrNull()?.cause?.takeIf { it.isNotBlank() },
+            )
+        }
+        UnitsData(testMode, units, now, fromCache = fresh == null)
+            .also { if (fresh != null) SofiaWidgetSnapshots.saveUnits(app, it) }
+    }
+}
+
+private fun RemitNotice.isInEffectAt(t: Instant): Boolean =
+    (eventStartTime == null || eventStartTime <= t) && (eventEndTime == null || eventEndTime >= t)
+
+private fun RemitNotice.availableMw(): Double? {
+    availableCapacityMw?.let { return it }
+    val n = normalCapacityMw
+    val u = unavailableCapacityMw
+    return if (n != null && u != null) n - u else null
+}
+
+/** À appeler si tu veux forcer le rafraîchissement des 3 nouveaux widgets (ex. changement du mode test). */
+object SofiaModernWidgets {
+    suspend fun updateAll(context: Context) {
+        SofiaLiveGlanceWidget().updateAll(context)
+        SofiaUnitsGlanceWidget().updateAll(context)
+        SofiaGraphGlanceWidget().updateAll(context)
+    }
+}
+
+===== Fichier: com\lemarc\sofia\widget\modern\SofiaWidgetRefreshWorker.kt =====
+
+package com.lemarc.sofia.widget.modern
+
+import android.appwidget.AppWidgetManager
+import android.content.Context
+import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.work.Constraints
+import androidx.work.CoroutineWorker
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
+import java.util.concurrent.TimeUnit
+
+/**
+ * Rafraîchit les 3 widgets toutes les ~30 min, appli fermée, dès qu'il y a du réseau.
+ * Plus fiable que updatePeriodMillis seul (que le système peut espacer fortement).
+ * Se désactive tout seul quand il n'y a plus aucun widget.
+ */
+class SofiaWidgetRefreshWorker(
+    context: Context,
+    params: WorkerParameters,
+) : CoroutineWorker(context, params) {
+
+    override suspend fun doWork(): Result {
+        val manager = GlanceAppWidgetManager(applicationContext)
+        val hasWidgets = listOf(
+            SofiaLiveGlanceWidget::class.java,
+            SofiaUnitsGlanceWidget::class.java,
+            SofiaGraphGlanceWidget::class.java,
+        ).any { manager.getGlanceIds(it).isNotEmpty() }
+
+        if (!hasWidgets) {
+            cancel(applicationContext)
+            return Result.success()
+        }
+        SofiaModernWidgets.updateAll(applicationContext)
+        return Result.success()
+    }
+
+    companion object {
+        private const val NAME = "sofia_modern_widgets_refresh"
+
+        /** Idempotent (KEEP) : peut être appelé autant de fois que nécessaire. */
+        fun schedule(context: Context) {
+            val request = PeriodicWorkRequestBuilder<SofiaWidgetRefreshWorker>(30, TimeUnit.MINUTES)
+                .setInitialDelay(30, TimeUnit.MINUTES) // pas d'exécution immédiate pendant la configuration
+                .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                .build()
+            WorkManager.getInstance(context)
+                .enqueueUniquePeriodicWork(NAME, ExistingPeriodicWorkPolicy.KEEP, request)
+        }
+
+        fun cancel(context: Context) {
+            WorkManager.getInstance(context).cancelUniqueWork(NAME)
+        }
+    }
+}
+
+/** Base commune des receivers : programme le rafraîchissement périodique. */
+abstract class ModernWidgetReceiver : GlanceAppWidgetReceiver() {
+    override fun onEnabled(context: Context) {
+        super.onEnabled(context)
+        SofiaWidgetRefreshWorker.schedule(context)
+    }
+
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        super.onUpdate(context, appWidgetManager, appWidgetIds)
+        SofiaWidgetRefreshWorker.schedule(context) // se « répare » après un redémarrage / force-stop
+    }
+}
+
+===== Fichier: com\lemarc\sofia\widget\modern\SofiaWidgetSnapshots.kt =====
+
+package com.lemarc.sofia.widget.modern
+
+import android.content.Context
+import com.lemarc.sofia.data.model.GraphPoint
+import java.io.File
+import java.time.Instant
+import org.json.JSONArray
+import org.json.JSONObject
+
+/**
+ * Dernier jeu de données récupéré avec succès par un widget. Si un rafraîchissement échoue (hors-ligne,
+ * appli jamais ouverte donc cache Room vide…), le widget réaffiche ces données au lieu de se vider.
+ */
+object SofiaWidgetSnapshots {
+
+    private fun file(context: Context, name: String) = File(context.filesDir, "widget_$name.json")
+
+    // ── Live / graphique ─────────────────────────────────────────────────────
+    fun saveLive(context: Context, name: String, data: LiveData) {
+        try {
+            val json = JSONObject()
+                .put("testMode", data.testMode)
+                .put("from", data.from.toEpochMilli())
+                .put("to", data.to.toEpochMilli())
+                .put("committed", points(data.committed))
+                .put("actual", points(data.actual))
+            file(context, name).writeText(json.toString())
+        } catch (_: Exception) {
+        }
+    }
+
+    fun loadLive(context: Context, name: String): LiveData? = try {
+        val f = file(context, name)
+        if (!f.exists()) null else {
+            val o = JSONObject(f.readText())
+            LiveData(
+                testMode = o.getBoolean("testMode"),
+                committed = readPoints(o.getJSONArray("committed")),
+                actual = readPoints(o.getJSONArray("actual")),
+                from = Instant.ofEpochMilli(o.getLong("from")),
+                to = Instant.ofEpochMilli(o.getLong("to")),
+                fromCache = true,
+            )
+        }
+    } catch (_: Exception) {
+        null
+    }
+
+    // ── Disponibilité par unité ──────────────────────────────────────────────
+    fun saveUnits(context: Context, data: UnitsData) {
+        try {
+            val units = JSONArray()
+            data.units.forEach { u ->
+                units.put(
+                    JSONObject().put("bmu", u.bmuId).put("notice", u.hasNotice).apply {
+                        u.normalMw?.let { put("normal", it) }
+                        u.availableMw?.let { put("available", it) }
+                        u.cause?.let { put("cause", it) }
+                    },
+                )
+            }
+            val json = JSONObject()
+                .put("testMode", data.testMode)
+                .put("at", data.fetchedAt.toEpochMilli())
+                .put("units", units)
+            file(context, "units").writeText(json.toString())
+        } catch (_: Exception) {
+        }
+    }
+
+    fun loadUnits(context: Context): UnitsData? = try {
+        val f = file(context, "units")
+        if (!f.exists()) null else {
+            val o = JSONObject(f.readText())
+            val arr = o.getJSONArray("units")
+            UnitsData(
+                testMode = o.getBoolean("testMode"),
+                units = List(arr.length()) { i ->
+                    val u = arr.getJSONObject(i)
+                    UnitStatus(
+                        bmuId = u.getString("bmu"),
+                        normalMw = if (u.has("normal")) u.getDouble("normal") else null,
+                        availableMw = if (u.has("available")) u.getDouble("available") else null,
+                        hasNotice = u.getBoolean("notice"),
+                        cause = if (u.has("cause")) u.getString("cause") else null,
+                    )
+                },
+                fetchedAt = Instant.ofEpochMilli(o.getLong("at")),
+                fromCache = true,
+            )
+        }
+    } catch (_: Exception) {
+        null
+    }
+
+    // ── Points ───────────────────────────────────────────────────────────────
+    private fun points(list: List<GraphPoint>): JSONArray {
+        val arr = JSONArray()
+        list.forEach {
+            arr.put(JSONArray().put(it.timeFrom.toEpochMilli()).put(it.timeTo.toEpochMilli()).put(it.quantity))
+        }
+        return arr
+    }
+
+    private fun readPoints(arr: JSONArray): List<GraphPoint> = List(arr.length()) { i ->
+        val p = arr.getJSONArray(i)
+        GraphPoint(
+            id = "SNAPSHOT",
+            timeFrom = Instant.ofEpochMilli(p.getLong(0)),
+            timeTo = Instant.ofEpochMilli(p.getLong(1)),
+            quantity = p.getDouble(2),
+        )
+    }
+}
+
+===== Fichier: com\lemarc\sofia\widget\modern\SofiaWidgetUi.kt =====
+
+package com.lemarc.sofia.widget.modern
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.glance.GlanceModifier
+import androidx.glance.action.actionStartActivity
+import androidx.glance.action.clickable
+import androidx.glance.appwidget.appWidgetBackground
+import androidx.glance.appwidget.cornerRadius
+import androidx.glance.background
+import androidx.glance.layout.Box
+import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.size
+import androidx.glance.text.FontWeight
+import androidx.glance.text.Text
+import androidx.glance.text.TextAlign
+import androidx.glance.text.TextStyle
+import com.lemarc.sofia.MainActivity
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+
+/**
+ * ColorProvider(Color) est restreint (RestrictedApi) dans Glance ; la variante publique est
+ * androidx.glance.color.ColorProvider(day, night). Même couleur jour/nuit = couleur fixe.
+ */
+fun solid(color: Color) = androidx.glance.color.ColorProvider(day = color, night = color)
+
+/** Palette sombre fixe, alignée sur le thème de l'appli. */
+object WidgetPalette {
+    val Surface = Color(0xFF141B2B)
+    val Tile = Color(0xFF1F2A3F)
+    val OnSurface = Color.White
+    val Muted = Color(0xFF9FB0C8)
+    val Track = Color(0xFF2C3B52)
+    val Committed = Color(0xFF1E88E5)
+    val Actual = Color(0xFFFF9800)
+    val Good = Color(0xFF4CAF50)
+    val Warn = Color(0xFFFFB300)
+    val Bad = Color(0xFFEF5350)
+}
+
+fun UnitStatus.statusColor(): Color = when {
+    fraction >= 0.999f -> WidgetPalette.Good
+    fraction > 0f -> WidgetPalette.Warn
+    else -> WidgetPalette.Bad
+}
+
+fun formatClock(instant: Instant): String =
+    DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault()).format(instant)
+
+/** Carte arrondie plein widget ; un tap ouvre l'appli. */
+@Composable
+fun WidgetRoot(content: @Composable () -> Unit) {
+    Box(
+        modifier = GlanceModifier
+            .fillMaxSize()
+            .appWidgetBackground()
+            .background(solid(WidgetPalette.Surface))
+            .cornerRadius(22.dp)
+            .clickable(actionStartActivity<MainActivity>()),
+    ) { content() }
+}
+
+@Composable
+fun WText(
+    text: String,
+    size: Int,
+    color: Color = WidgetPalette.OnSurface,
+    bold: Boolean = false,
+    modifier: GlanceModifier = GlanceModifier,
+    align: TextAlign? = null,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        maxLines = 1,
+        style = TextStyle(
+            color = solid(color),
+            fontSize = size.sp,
+            fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
+            textAlign = align,
+        ),
+    )
+}
+
+@Composable
+fun Dot(color: Color, sizeDp: Int = 8) {
+    Box(
+        modifier = GlanceModifier
+            .size(sizeDp.dp)
+            .background(solid(color))
+            .cornerRadius((sizeDp / 2).dp),
+    ) {}
+}

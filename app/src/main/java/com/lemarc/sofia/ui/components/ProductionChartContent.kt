@@ -75,7 +75,15 @@ data class ChartSeries(
     val unit: String,
     val label: String = "",
     val color: Int // Color.rgb(76, 175, 80),
-)
+) {
+    constructor(
+        points: List<GraphPoint>,
+        allowNegative: Boolean,
+        unit: String,
+        label: Int,
+        color: Int
+    ) : this(points, allowNegative, unit, label, color)
+}
 
 private fun colorFor(color: Int) = androidx.compose.ui.graphics.Color(color)
 

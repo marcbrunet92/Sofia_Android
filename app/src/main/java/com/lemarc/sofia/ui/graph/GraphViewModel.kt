@@ -24,10 +24,10 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-enum class GraphDataset(val label: String, @StringRes val labelRes: Int) {
-    Weather("Weather", R.string.dataset_weather),
-    PN("Comitted", R.string.dataset_pn),
-    B1610("Actual Production", R.string.dataset_b1610),
+enum class GraphDataset(@StringRes val labelRes: Int) {
+    Weather(R.string.dataset_weather),
+    PN(R.string.dataset_pn),
+    B1610(R.string.dataset_b1610),
 }
 
 data class GraphUiState(
@@ -42,7 +42,7 @@ data class GraphUiState(
     // Meta
     val latestDataTimestamp: Instant? = null,
     val lastFetchTimestamp: Instant? = null,
-    val errorMessage: String? = null,
+    @StringRes val errorMessageRes: Int? = null,
     val testMode: Boolean = false,
 )
 
@@ -130,7 +130,7 @@ class GraphViewModel(
                 it.copy(
                     isLoading = forceLoading || !hasExistingData,
                     isRefreshing = hasExistingData,
-                    errorMessage = null,
+                    errorMessageRes  = null,
                 )
             }
 
@@ -145,17 +145,18 @@ class GraphViewModel(
                 _uiState.update {
                     it.copy(
                         lastFetchTimestamp = Instant.now(),
-                        errorMessage = null,
+                        errorMessageRes  = null,
                     )
                 }
             }.onFailure { throwable ->
                 if (throwable is CancellationException) return@onFailure
+                android.util.Log.w("GraphViewModel", "Refresh failed", throwable)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         isRefreshing = false,
                         lastFetchTimestamp = Instant.now(),
-                        errorMessage = throwable.message ?: "Unable to refresh data.",
+                        errorMessageRes = R.string.error_unable_to_refresh_data,
                     )
                 }
             }
@@ -163,7 +164,7 @@ class GraphViewModel(
     }
 
     fun dismissError() {
-        _uiState.update { it.copy(errorMessage = null) }
+        _uiState.update { it.copy(errorMessageRes  = null) }
     }
 
     class Factory(

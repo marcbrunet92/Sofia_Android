@@ -71,21 +71,21 @@ fun GraphScreen(
                     points = state.pnPoints, // toutes les données, plus de filterPoints
                     allowNegative = false,
                     unit = "MW",
-                    label = GraphDataset.PN.label,
+                    label = GraphDataset.PN.labelRes,
                     color = GraphDataset.PN.color,
                 )
                 GraphDataset.B1610 -> ChartSeries(
                     points = state.b1610PointsMwh.map { it.copy(quantity = it.quantity * 2) },
                     allowNegative = true,
                     unit = "MW",
-                    label = GraphDataset.B1610.label,
+                    label = GraphDataset.B1610.labelRes,
                     color = GraphDataset.B1610.color,
                 )
                 GraphDataset.Weather -> ChartSeries(
                     points = state.weatherPoints.map { it.copy(quantity = it.quantity / 3.6) },
                     allowNegative = false,
                     unit = "km/h",
-                    label = GraphDataset.Weather.label,
+                    label = GraphDataset.Weather.labelRes,
                     color = GraphDataset.Weather.color,
                 )
             }
@@ -132,10 +132,10 @@ fun GraphScreen(
                         WarningBanner(text = stringResource(R.string.test_mode_warning))
                     }
                 }
-                if (state.errorMessage != null) {
+                if (state.errorMessageRes != null) {
                     item {
                         ErrorBanner(
-                            text = state.errorMessage,
+                            text = stringResource(state.errorMessageRes),
                             onDismiss = onDismissError,
                         )
                     }
