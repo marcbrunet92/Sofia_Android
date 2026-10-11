@@ -47,17 +47,24 @@ import java.util.Locale
  * donc il suit aussi les pincements de zoom.
  */
 private enum class AxisTimeFormat(val pattern: String) {
-    HOURS("HH:mm"),        // ≤ 12 h
-    DAY_HOURS("EEE HH:mm"), // ≤ 3 j
-    DATES("dd/MM"),        // ≤ 1 an
-    MONTHS("MM/yy");       // > 1 an
+    HOURS("HH:mm"),         // ≤ 12 h
+    DAY_HOURS("EEE HH:mm"), // ≤ 3 j ET dans les 3 derniers jours de données
+    DATES("dd/MM"),         // ≤ 1 an
+    MONTHS("MM/yy");        // > 1 an
 
     companion object {
-        fun forVisibleSpan(spanMs: Double): AxisTimeFormat = when {
-            spanMs <= Duration.ofHours(12).toMillis() -> HOURS
-            spanMs <= Duration.ofDays(3).toMillis() -> DAY_HOURS
-            spanMs <= Duration.ofDays(365).toMillis() -> DATES
-            else -> MONTHS
+        private val RECENT_MS = Duration.ofDays(3).toMillis()
+
+        fun forVisibleRange(spanMs: Double, startMs: Double, dataEndMs: Double): AxisTimeFormat {
+            // Petite tolérance : le calcul de la fenêtre visible est approximatif (en pixels)
+            val tolerance = spanMs * 0.05
+            val isRecent = startMs >= dataEndMs - RECENT_MS - tolerance
+            return when {
+                spanMs <= Duration.ofHours(12).toMillis() -> HOURS
+                spanMs <= RECENT_MS && isRecent -> DAY_HOURS
+                spanMs <= Duration.ofDays(365).toMillis() -> DATES
+                else -> MONTHS
+            }
         }
     }
 }
@@ -125,19 +132,28 @@ fun ProductionChartContent(
         scrollState.animateScroll(Scroll.Absolute.End)
     }
 
-    // ── Durée visible estimée ────────────────────────────────────────────────
-    // contenu total (px) = viewport + maxValue (scroll max)  →  part visible = viewport / contenu
-    val totalSpanMs = remember(left, right) {
+    // ── Fenêtre visible estimée ──────────────────────────────────────────────
+    // contenu total (px) = viewport + maxValue ; la fenêtre visible couvre [value, value + viewport]
+    val dataRange = remember(left, right) {
         val filled = (left + right).filter { it.points.isNotEmpty() }
-        if (filled.isEmpty()) 0.0
-        else filled.maxOf { xOf(it.points.last()) } - filled.minOf { xOf(it.points.first()) }
+        if (filled.isEmpty()) 0.0 to 0.0
+        else filled.minOf { xOf(it.points.first()) } to filled.maxOf { xOf(it.points.last()) }
     }
     var viewportPx by remember { mutableFloatStateOf(0f) }
-    val visibleSpanMs by remember(totalSpanMs) {
+    val visibleFormat by remember(dataRange) {
         derivedStateOf {
+            val (dataStartMs, dataEndMs) = dataRange
+            val totalSpanMs = dataEndMs - dataStartMs
             val viewport = viewportPx
-            if (viewport <= 0f || totalSpanMs <= 0.0) totalSpanMs
-            else totalSpanMs * viewport / (viewport + scrollState.maxValue.coerceAtLeast(0f))
+            if (viewport <= 0f || totalSpanMs <= 0.0) {
+                AxisTimeFormat.forVisibleRange(totalSpanMs, dataStartMs, dataEndMs)
+            } else {
+                val maxScroll = scrollState.maxValue.coerceAtLeast(0f)
+                val contentPx = viewport + maxScroll
+                val spanMs = totalSpanMs * viewport / contentPx
+                val startMs = dataStartMs + totalSpanMs * scrollState.value.coerceIn(0f, maxScroll) / contentPx
+                AxisTimeFormat.forVisibleRange(spanMs, startMs, dataEndMs)
+            }
         }
     }
     val formatters = remember {
@@ -197,8 +213,7 @@ fun ProductionChartContent(
             bottomAxis = HorizontalAxis.rememberBottom(
                 // Lu à chaque dessin : le format suit le zoom courant (pincement ou chip)
                 valueFormatter = { _, value, _ ->
-                    val format = AxisTimeFormat.forVisibleSpan(visibleSpanMs)
-                    formatters.getValue(format).format(Instant.ofEpochMilli(value.toLong()))
+                    formatters.getValue(visibleFormat).format(Instant.ofEpochMilli(value.toLong()))
                 },
                 labelRotationDegrees = -20f,
             ),
