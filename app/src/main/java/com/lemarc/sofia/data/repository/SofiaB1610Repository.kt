@@ -1,25 +1,19 @@
 package com.lemarc.sofia.data.repository
 
 import com.lemarc.sofia.HISTORY_START
-import com.lemarc.sofia.SOFIA_BMUS
 import com.lemarc.sofia.TEST_BMU
 import com.lemarc.sofia.data.api.B1610EntryDto
-import com.lemarc.sofia.data.api.B1610TopProductionPointDto
-import com.lemarc.sofia.data.api.B1610TopProductionWindowsDto
 import com.lemarc.sofia.data.api.SofiaApiService
+import com.lemarc.sofia.data.api.getB1610For
 import com.lemarc.sofia.data.model.B1610Snapshot
 import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.data.model.TopPoint
 import com.lemarc.sofia.data.model.TopWindows
 import com.lemarc.sofia.data.local.B1610PointEntity
 import com.lemarc.sofia.data.local.dao.SofiaDao
-import com.lemarc.sofia.util.parseApiInstant
 import com.lemarc.sofia.util.parseApiUtc
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -41,27 +35,13 @@ class SofiaB1610Repository(
     }
 
     suspend fun refreshB1610(testMode: Boolean) = withContext(Dispatchers.IO) {
-        val requestedBmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
-        val (entries, _) = coroutineScope {
-            val b1610Deferred = async {
-                requestedBmus.map { bmuId ->
-                    async {
-                        apiService.getB1610(
-                            bmuId = bmuId,
-                            timeFrom = HISTORY_START.toString(),
-                            timeTo = Instant.now().toString(),
-                        )
-                    }
-                }.awaitAll().flatten()
-            }
-            val topB1610Deferred = async {
-                runCatching { apiService.getB1610TopProduction() }
-                    .getOrNull()
-                    ?.toTopWindows()
-                    ?: TopWindows.Empty
-            }
-            b1610Deferred.await() to topB1610Deferred.await()
-        }
+        // Une seule série : la somme Sofia est calculée par le serveur.
+        // Les records sont recalculés localement (calculateTopB1610).
+        val entries = apiService.getB1610For(
+            testMode = testMode,
+            timeFrom = HISTORY_START.toString(),
+            timeTo = Instant.now().toString(),
+        )
 
         val aggregatedPoints = aggregateB1610(entries, testMode)
         val entities: List<B1610PointEntity> = aggregatedPoints.map { it.toB1610Entity(testMode) }
@@ -137,16 +117,3 @@ internal fun aggregateB1610(
         .sortedBy { it.timeFrom }
 }
 
-private fun B1610TopProductionWindowsDto.toTopWindows(): TopWindows =
-    TopWindows(
-        allTime = all_time.toTopPoint(),
-        last7Days = last_7_days.toTopPoint(),
-        last30Days = last_30_days.toTopPoint(),
-        last90Days = last_90_days.toTopPoint(),
-    )
-
-private fun B1610TopProductionPointDto.toTopPoint(): TopPoint =
-    TopPoint(
-        maxQuantity = quantity,
-        maxDate = parseApiInstant(max_date),
-    )

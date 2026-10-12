@@ -1,10 +1,18 @@
 package com.lemarc.sofia.data.api
 
+import com.lemarc.sofia.TEST_BMU
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface SofiaApiService {
+    // Somme des 4 unités Sofia, calculée par le serveur (bmu_id = "SOFIA_TOTAL")
+    @GET("pn/total")
+    suspend fun getProductionTotal(
+        @Query("time_from") timeFrom: String,
+        @Query("time_to") timeTo: String,
+    ): List<PnEntryDto>
+
     @GET("pn/{bmuId}")
     suspend fun getProduction(
         @Path("bmuId") bmuId: String,
@@ -26,6 +34,13 @@ interface SofiaApiService {
         @Query("time_to") timeTo: String,
     ): List<WeatherEntryDto>
 
+    // Somme des 4 unités Sofia, calculée par le serveur (bmu_id = "SOFIA_TOTAL")
+    @GET("b1610/total")
+    suspend fun getB1610Total(
+        @Query("time_from") timeFrom: String,
+        @Query("time_to") timeTo: String,
+    ): List<B1610EntryDto>
+
     @GET("b1610/{bmuId}")
     suspend fun getB1610(
         @Path("bmuId") bmuId: String,
@@ -33,10 +48,15 @@ interface SofiaApiService {
         @Query("time_to") timeTo: String,
     ): List<B1610EntryDto>
 
-    @GET("b1610/top-production")
-    suspend fun getB1610TopProduction(): B1610TopProductionWindowsDto
-
 }
+
+/** PN du mode courant : la somme Sofia calculée par le serveur, ou l'unité de test. */
+suspend fun SofiaApiService.getProductionFor(testMode: Boolean, timeFrom: String, timeTo: String): List<PnEntryDto> =
+    if (testMode) getProduction(TEST_BMU, timeFrom, timeTo) else getProductionTotal(timeFrom, timeTo)
+
+/** B1610 du mode courant : la somme Sofia calculée par le serveur, ou l'unité de test. */
+suspend fun SofiaApiService.getB1610For(testMode: Boolean, timeFrom: String, timeTo: String): List<B1610EntryDto> =
+    if (testMode) getB1610(TEST_BMU, timeFrom, timeTo) else getB1610Total(timeFrom, timeTo)
 
 data class PnEntryDto(
     val bmu_id: String,

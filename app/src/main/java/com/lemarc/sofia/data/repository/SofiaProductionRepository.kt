@@ -1,21 +1,19 @@
 package com.lemarc.sofia.data.repository
 
 import com.lemarc.sofia.HISTORY_START
-import com.lemarc.sofia.SOFIA_BMUS
 import com.lemarc.sofia.TEST_BMU
 import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.data.model.TopPoint
 import com.lemarc.sofia.data.model.TopWindows
 import com.lemarc.sofia.data.api.PnEntryDto
 import com.lemarc.sofia.data.api.SofiaApiService
+import com.lemarc.sofia.data.api.getProductionFor
 import com.lemarc.sofia.data.local.ProductionPointEntity
 import com.lemarc.sofia.data.local.dao.SofiaDao
 import com.lemarc.sofia.data.model.ProductionSnapshot
 import com.lemarc.sofia.util.parseApiUtc
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -38,16 +36,12 @@ class SofiaProductionRepository(
     }
 
     suspend fun refreshProduction(testMode: Boolean) = withContext(Dispatchers.IO) {
-        val requestedBmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
-        val entries = requestedBmus.map { bmuId ->
-            async {
-                apiService.getProduction(
-                    bmuId = bmuId,
-                    timeFrom = HISTORY_START.toString(),
-                    timeTo = Instant.now().toString(),
-                )
-            }
-        }.awaitAll().flatten()
+        // Une seule série : la somme Sofia est calculée par le serveur
+        val entries = apiService.getProductionFor(
+            testMode = testMode,
+            timeFrom = HISTORY_START.toString(),
+            timeTo = Instant.now().toString(),
+        )
 
         val aggregatedPoints = aggregateProduction(entries, testMode)
         val entities: List<ProductionPointEntity> = aggregatedPoints.map { it.toProductionEntity(testMode) }

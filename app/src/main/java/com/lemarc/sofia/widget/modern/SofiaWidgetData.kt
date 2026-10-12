@@ -8,6 +8,8 @@ import com.lemarc.sofia.SOFIA_BMUS
 import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
 import com.lemarc.sofia.TEST_BMU
 import com.lemarc.sofia.data.api.SofiaApiService
+import com.lemarc.sofia.data.api.getB1610For
+import com.lemarc.sofia.data.api.getProductionFor
 import com.lemarc.sofia.data.local.SofiaDatabase
 import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.data.model.RemitNotice
@@ -96,19 +98,19 @@ object SofiaWidgetData {
         val testMode = SettingsRepository(app).testMode.first()
         val to = Instant.now()
         val from = window?.let { to.minus(it) } ?: HISTORY_START
-        val bmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
         val snapshotName = "live_${window?.toMinutes() ?: "all"}_${if (includeActual) "a" else "c"}"
 
         val fresh = runCatching {
             withTimeout(30_000.milliseconds) {
                 coroutineScope {
-                    val pn = bmus.map { id -> async { api.getProduction(id, from.toString(), to.toString()) } }
+                    // Somme Sofia calculée par le serveur (ou unité de test) : une requête par jeu
+                    val pn = async { api.getProductionFor(testMode, from.toString(), to.toString()) }
                     val b1610 = if (includeActual) {
-                        bmus.map { id -> async { api.getB1610(id, from.toString(), to.toString()) } }
+                        async { api.getB1610For(testMode, from.toString(), to.toString()) }
                     } else null
-                    val committed = aggregateProduction(pn.awaitAll().flatten(), testMode)
+                    val committed = aggregateProduction(pn.await(), testMode)
                     val actual = b1610
-                        ?.let { calls -> aggregateB1610(calls.awaitAll().flatten(), testMode) }
+                        ?.let { call -> aggregateB1610(call.await(), testMode) }
                         ?.map { it.copy(quantity = it.quantity * 2) }
                         ?: emptyList()
                     committed to actual
