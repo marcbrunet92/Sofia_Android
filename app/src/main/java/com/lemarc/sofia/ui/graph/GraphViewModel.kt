@@ -38,7 +38,7 @@ data class GraphUiState(
     // Raw data
     val pnPoints: List<GraphPoint> = emptyList(), // MW
     val b1610PointsMwh: List<GraphPoint> = emptyList(), // MWh per 30min
-    val weatherPoints: List<GraphPoint> = emptyList(), // m/s
+    val weatherPoints: List<GraphPoint> = emptyList(), // km/h (affiché en m/s)
     // Meta
     val latestDataTimestamp: Instant? = null,
     val lastFetchTimestamp: Instant? = null,

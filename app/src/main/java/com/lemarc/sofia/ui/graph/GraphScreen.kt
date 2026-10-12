@@ -81,10 +81,11 @@ fun GraphScreen(
                     label = GraphDataset.B1610.labelRes,
                     color = GraphDataset.B1610.color,
                 )
+                // L'API donne le vent en km/h : / 3.6 pour l'afficher en m/s
                 GraphDataset.Weather -> ChartSeries(
                     points = state.weatherPoints.map { it.copy(quantity = it.quantity / 3.6) },
                     allowNegative = false,
-                    unit = "km/h",
+                    unit = "m/s",
                     label = GraphDataset.Weather.labelRes,
                     color = GraphDataset.Weather.color,
                 )
