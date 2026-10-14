@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lemarc.sofia.R
+import com.lemarc.sofia.SOFIA_BMUS
+import com.lemarc.sofia.TEST_BMU
 import com.lemarc.sofia.data.model.RemitNotice
 import com.lemarc.sofia.data.repository.SofiaRemitRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
@@ -27,6 +29,8 @@ data class RemitUiState(
     val isRefreshing: Boolean = false,
     val testMode: Boolean = false,
     val remits: List<RemitNotice> = emptyList(),
+    /** Avis en vigueur puis à venir, regroupés quand ils concernent tout le parc. */
+    val sections: RemitSections = RemitSections(),
     val units: UnitsData? = null,
     val lastFetchTimestamp: Instant? = null,
     @StringRes val errorMessageRes: Int? = null,
@@ -63,9 +67,11 @@ class RemitViewModel(
         observeJob = viewModelScope.launch {
             repository.observeRemits(testMode).collect { remits ->
                 val now = Instant.now()
+                val bmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
                 _uiState.update {
                     it.copy(
                         remits = remits,
+                        sections = groupRemits(remits, bmus, now),
                         units = UnitsData(testMode, computeUnitStatuses(remits, testMode, now), now, fromCache = false),
                         isLoading = false,
                         isRefreshing = false

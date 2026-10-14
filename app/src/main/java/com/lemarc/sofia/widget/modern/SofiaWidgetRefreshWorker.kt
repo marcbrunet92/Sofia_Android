@@ -14,7 +14,7 @@ import androidx.work.WorkerParameters
 import java.util.concurrent.TimeUnit
 
 /**
- * Rafraîchit les 3 widgets toutes les ~30 min, appli fermée, dès qu'il y a du réseau.
+ * Rafraîchit les widgets Glance toutes les ~30 min, appli fermée, dès qu'il y a du réseau.
  * Plus fiable que updatePeriodMillis seul (que le système peut espacer fortement).
  * Se désactive tout seul quand il n'y a plus aucun widget.
  */
@@ -29,6 +29,8 @@ class SofiaWidgetRefreshWorker(
             SofiaLiveGlanceWidget::class.java,
             SofiaUnitsGlanceWidget::class.java,
             SofiaGraphGlanceWidget::class.java,
+            SofiaNextDaysGlanceWidget::class.java,
+            SofiaGbShareGlanceWidget::class.java,
         ).any { manager.getGlanceIds(it).isNotEmpty() }
 
         if (!hasWidgets) {

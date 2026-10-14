@@ -10,6 +10,8 @@ import android.graphics.Shader
 import android.graphics.SweepGradient
 import androidx.compose.ui.graphics.toArgb
 import com.lemarc.sofia.data.model.GraphPoint
+import com.lemarc.sofia.ui.components.AvailableGreen
+import com.lemarc.sofia.ui.components.UnavailableRed
 import com.lemarc.sofia.ui.theme.SofiaBlue
 import com.lemarc.sofia.ui.theme.SofiaCyan
 import com.lemarc.sofia.ui.theme.SofiaIndigo
@@ -64,6 +66,29 @@ object SofiaWidgetCharts {
             canvas.withRotation(135f, center, center) {
                 drawArc(oval, 0f, sweep, false, progress)
             }
+        }
+        return bitmap
+    }
+
+    /**
+     * Une barre par jour, hauteur ∝ valeur / [scale] ; un jour à 0 MW = trait rouge au pied.
+     * Mêmes couleurs que la carte « 14 prochains jours » de l'appli. À afficher en FillBounds.
+     */
+    fun dayBars(widthPx: Int, heightPx: Int, density: Float, values: List<Double>, scale: Double): Bitmap {
+        val bitmap = createBitmap(widthPx, heightPx)
+        if (values.isEmpty()) return bitmap
+        val canvas = Canvas(bitmap)
+        val gap = 2f * density
+        val barWidth = (widthPx - gap * (values.size - 1)) / values.size
+        val radius = 2f * density
+        val minHeight = 2f * density
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
+        values.forEachIndexed { i, value ->
+            val fraction = (value / scale.coerceAtLeast(1.0)).toFloat().coerceIn(0f, 1f)
+            val left = i * (barWidth + gap)
+            val height = if (fraction > 0f) (heightPx * fraction).coerceAtLeast(heightPx * 0.07f) else minHeight
+            paint.color = if (fraction > 0f) AvailableGreen.toArgb() else UnavailableRed.toArgb()
+            canvas.drawRoundRect(RectF(left, heightPx - height, left + barWidth, heightPx.toFloat()), radius, radius, paint)
         }
         return bitmap
     }

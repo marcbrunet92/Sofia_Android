@@ -151,4 +151,66 @@
     <string name="widget_prefix_updated">"Updated "</string>
 
     <string name="widget_units_header">AVAILABILITY BY UNIT</string>
+
+    <!-- MEL, UOU2T14D, AGWS et écran REMIT regroupé -->
+    <string name="dataset_mel">Available (MEL)</string>
+    <string name="next_days_title">Next 14 days</string>
+    <string name="next_days_subtitle">Planned availability · UOU2T14D</string>
+    <string name="next_days_empty">No forecast yet.</string>
+    <string name="next_days_label_format">%1$s · %2$d MW</string>
+    <string name="gb_context_title">GB context</string>
+    <string name="gb_offshore_label">GB offshore wind</string>
+    <string name="gb_share_label">Sofia share</string>
+    <string name="gb_share_caption">PN ÷ offshore</string>
+    <string name="gb_source_format">AGWS · %1$s</string>
+    <string name="gb_gw_format">%1$s GW</string>
+    <string name="gb_others_format">Onshore %1$s GW · Solar %2$s GW</string>
+    <string name="gb_empty">No data yet.</string>
+    <string name="data_info_title">About the data</string>
+    <string name="data_info_pn">Production announced by the operator for each half-hour, published up to 1 h ahead: the near real-time value.</string>
+    <string name="data_info_b1610">Metered production. Arrives about 6 days later, then is revised: the reference value.</string>
+    <string name="data_info_mel">Maximum the farm can export right now (turbines and export link available). Shaded ceiling on the chart.</string>
+    <string name="data_info_uou">Planned available output for each day, 2 to 14 days ahead, updated every hour.</string>
+    <string name="data_info_agws">Wind and solar generation for the whole of Great Britain, about 2 h 30 behind.</string>
+    <string name="data_info_remit">Official unavailability notices: outages, commissioning, reduced capacity.</string>
+    <string name="data_info_wind">Wind speed at 120 m at the farm, history and forecast.</string>
+    <string name="remit_section_upcoming">Upcoming</string>
+    <string name="remit_type_planned">Planned</string>
+    <string name="remit_type_unplanned">Unplanned</string>
+    <string name="remit_all_units_format">All %1$d units</string>
+    <string name="remit_unit_format">Unit %1$s</string>
+    <string name="remit_available_of_format">%1$d / %2$d MW available</string>
+    <string name="remit_available_format">%1$d MW available</string>
+    <string name="remit_available_unknown">Available capacity unknown</string>
+    <string name="remit_until_format">Until %1$s</string>
+    <string name="remit_no_end">No end date</string>
+    <string name="remit_starts_format">Starts %1$s</string>
+    <string name="remit_show_units">Show units</string>
+    <string name="remit_hide_units">Hide units</string>
+    <string name="remit_profile_caption">Available capacity (MW) over time</string>
+    <string name="remit_profile_now">now</string>
+    <string name="remit_profile_normal_format">Normal %1$d MW</string>
+    <plurals name="remit_in_days">
+        <item quantity="one">in %d day</item>
+        <item quantity="other">in %d days</item>
+    </plurals>
+    <plurals name="remit_in_hours">
+        <item quantity="one">in %d h</item>
+        <item quantity="other">in %d h</item>
+    </plurals>
+
+    <!-- Widgets « 14 prochains jours » et « Part de l'éolien GB » -->
+    <string name="widget_next_days_label">Sofia · Next 14 days</string>
+    <string name="widget_next_days_description">Planned availability for each of the next 14 days (UOU2T14D)</string>
+    <string name="widget_next_days_header">NEXT 14 DAYS</string>
+    <string name="widget_next_days_header_short">14 DAYS</string>
+    <string name="widget_next_days_today_format">Today %1$d MW</string>
+    <string name="widget_gb_label">Sofia · Share of GB wind</string>
+    <string name="widget_gb_description">Sofia\'s announced output compared to offshore wind across Great Britain (AGWS)</string>
+    <string name="widget_gb_header">SOFIA VS GB</string>
+    <string name="widget_gb_of_offshore">of GB offshore wind</string>
+    <string name="widget_gb_of_all_wind_format">%1$s of all GB wind</string>
+    <string name="widget_gb_sofia_format">Sofia (PN) %1$s MW</string>
+    <string name="widget_gb_offshore_format">GB offshore %1$s GW</string>
+    <string name="widget_gb_onshore_format">GB onshore %1$s GW</string>
 </resources>

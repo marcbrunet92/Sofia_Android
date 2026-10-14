@@ -14,9 +14,13 @@ import java.time.Instant
         ProductionPointEntity::class,
         B1610PointEntity::class,
         WeatherPointEntity::class,
-        RemitNoticeEntity::class
+        RemitNoticeEntity::class,
+        MelPointEntity::class,
+        UouDayEntity::class,
+        GbContextEntity::class,
     ],
-    version = 1,
+    // v2 : + mel_points, uou_days, gb_context. C'est un cache : on le recrée au lieu de migrer.
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(SofiaDatabase.Converters::class)
@@ -45,7 +49,7 @@ abstract class SofiaDatabase : RoomDatabase() {
                     context.applicationContext,
                     SofiaDatabase::class.java,
                     "sofia_database"
-                ).build()
+                ).fallbackToDestructiveMigration(dropAllTables = true).build()
                 INSTANCE = instance
                 instance
             }

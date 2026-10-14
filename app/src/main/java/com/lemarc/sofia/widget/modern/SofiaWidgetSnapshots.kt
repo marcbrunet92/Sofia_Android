@@ -2,8 +2,10 @@ package com.lemarc.sofia.widget.modern
 
 import android.content.Context
 import com.lemarc.sofia.data.model.GraphPoint
+import com.lemarc.sofia.data.model.UouDay
 import java.io.File
 import java.time.Instant
+import java.time.LocalDate
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -85,6 +87,74 @@ object SofiaWidgetSnapshots {
                         cause = if (u.has("cause")) u.getString("cause") else null,
                     )
                 },
+                fetchedAt = Instant.ofEpochMilli(o.getLong("at")),
+                fromCache = true,
+            )
+        }
+    } catch (_: Exception) {
+        null
+    }
+
+    // ── 14 prochains jours ───────────────────────────────────────────────────
+    fun saveNextDays(context: Context, data: NextDaysData) {
+        try {
+            val days = JSONArray()
+            data.days.forEach { days.put(JSONArray().put(it.date.toEpochDay()).put(it.outputUsableMw)) }
+            val json = JSONObject()
+                .put("testMode", data.testMode)
+                .put("at", data.fetchedAt.toEpochMilli())
+                .put("days", days)
+            file(context, "next_days").writeText(json.toString())
+        } catch (_: Exception) {
+        }
+    }
+
+    fun loadNextDays(context: Context): NextDaysData? = try {
+        val f = file(context, "next_days")
+        if (!f.exists()) null else {
+            val o = JSONObject(f.readText())
+            val arr = o.getJSONArray("days")
+            NextDaysData(
+                testMode = o.getBoolean("testMode"),
+                days = List(arr.length()) { i ->
+                    val d = arr.getJSONArray(i)
+                    UouDay(LocalDate.ofEpochDay(d.getLong(0)), d.getDouble(1))
+                },
+                fetchedAt = Instant.ofEpochMilli(o.getLong("at")),
+                fromCache = true,
+            )
+        }
+    } catch (_: Exception) {
+        null
+    }
+
+    // ── Part de l'éolien GB ──────────────────────────────────────────────────
+    fun saveGbShare(context: Context, data: GbShareData) {
+        try {
+            val json = JSONObject()
+                .put("testMode", data.testMode)
+                .put("at", data.fetchedAt.toEpochMilli())
+                .apply {
+                    data.timeFrom?.let { put("timeFrom", it.toEpochMilli()) }
+                    data.sofiaMw?.let { put("sofia", it) }
+                    data.offshoreMw?.let { put("offshore", it) }
+                    data.onshoreMw?.let { put("onshore", it) }
+                }
+            file(context, "gb_share").writeText(json.toString())
+        } catch (_: Exception) {
+        }
+    }
+
+    fun loadGbShare(context: Context): GbShareData? = try {
+        val f = file(context, "gb_share")
+        if (!f.exists()) null else {
+            val o = JSONObject(f.readText())
+            GbShareData(
+                testMode = o.getBoolean("testMode"),
+                timeFrom = if (o.has("timeFrom")) Instant.ofEpochMilli(o.getLong("timeFrom")) else null,
+                sofiaMw = if (o.has("sofia")) o.getDouble("sofia") else null,
+                offshoreMw = if (o.has("offshore")) o.getDouble("offshore") else null,
+                onshoreMw = if (o.has("onshore")) o.getDouble("onshore") else null,
                 fetchedAt = Instant.ofEpochMilli(o.getLong("at")),
                 fromCache = true,
             )

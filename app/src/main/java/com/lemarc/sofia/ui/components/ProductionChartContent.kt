@@ -74,18 +74,24 @@ data class ChartSeries(
     val allowNegative: Boolean,
     val unit: String,
     val label: String = "",
-    val color: Int // Color.rgb(76, 175, 80),
+    val color: Int, // Color.rgb(76, 175, 80),
+    /** Zone sous la courbe colorée (MEL : plafond de production). */
+    val filled: Boolean = false,
 ) {
     constructor(
         points: List<GraphPoint>,
         allowNegative: Boolean,
         unit: String,
         label: Int,
-        color: Int
-    ) : this(points, allowNegative, unit, label.toString(), color)
+        color: Int,
+        filled: Boolean = false,
+    ) : this(points, allowNegative, unit, label.toString(), color, filled)
 }
 
 private fun colorFor(color: Int) = androidx.compose.ui.graphics.Color(color)
+
+private fun areaFillFor(series: ChartSeries): LineCartesianLayer.AreaFill? =
+    if (series.filled) LineCartesianLayer.AreaFill.single(Fill(colorFor(series.color).copy(alpha = 0.2f))) else null
 
 // x = timestamp en millisecondes epoch, pour que chaque quantity reste liée à son propre instant
 private fun xOf(point: GraphPoint): Double = point.timeFrom.toEpochMilli().toDouble()
@@ -173,7 +179,10 @@ fun ProductionChartContent(
     val leftLayer = rememberLineCartesianLayer(
         lineProvider = LineCartesianLayer.LineProvider.series(
             List(left.size) { i ->
-                LineCartesianLayer.rememberLine(fill = LineCartesianLayer.LineFill.single(Fill(colorFor(left[i].color))))
+                LineCartesianLayer.rememberLine(
+                    fill = LineCartesianLayer.LineFill.single(Fill(colorFor(left[i].color))),
+                    areaFill = areaFillFor(left[i]),
+                )
             },
         ),
         verticalAxisPosition = Axis.Position.Vertical.Start,
@@ -183,7 +192,10 @@ fun ProductionChartContent(
         rememberLineCartesianLayer(
             lineProvider = LineCartesianLayer.LineProvider.series(
                 List(right.size) { i ->
-                    LineCartesianLayer.rememberLine(fill = LineCartesianLayer.LineFill.single(Fill(colorFor(right[i].color))))
+                    LineCartesianLayer.rememberLine(
+                        fill = LineCartesianLayer.LineFill.single(Fill(colorFor(right[i].color))),
+                        areaFill = areaFillFor(right[i]),
+                    )
                 },
             ),
             verticalAxisPosition = Axis.Position.Vertical.End,

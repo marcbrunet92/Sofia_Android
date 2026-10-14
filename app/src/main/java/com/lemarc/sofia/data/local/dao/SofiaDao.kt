@@ -6,8 +6,11 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.lemarc.sofia.data.local.B1610PointEntity
+import com.lemarc.sofia.data.local.GbContextEntity
+import com.lemarc.sofia.data.local.MelPointEntity
 import com.lemarc.sofia.data.local.ProductionPointEntity
 import com.lemarc.sofia.data.local.RemitNoticeEntity
+import com.lemarc.sofia.data.local.UouDayEntity
 import com.lemarc.sofia.data.local.WeatherPointEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -73,4 +76,40 @@ interface SofiaDao {
         clearRemitNotices(testMode)
         insertRemitNotices(notices)
     }
+
+    @Query("SELECT * FROM mel_points WHERE isTestMode = :testMode ORDER BY timeFrom ASC")
+    fun getMelPoints(testMode: Boolean): Flow<List<MelPointEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMelPoints(points: List<MelPointEntity>)
+
+    @Query("DELETE FROM mel_points WHERE isTestMode = :testMode")
+    suspend fun clearMelPoints(testMode: Boolean)
+
+    @Transaction
+    suspend fun refreshMelPoints(testMode: Boolean, points: List<MelPointEntity>) {
+        clearMelPoints(testMode)
+        insertMelPoints(points)
+    }
+
+    @Query("SELECT * FROM uou_days WHERE isTestMode = :testMode ORDER BY epochDay ASC")
+    fun getUouDays(testMode: Boolean): Flow<List<UouDayEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUouDays(days: List<UouDayEntity>)
+
+    @Query("DELETE FROM uou_days WHERE isTestMode = :testMode")
+    suspend fun clearUouDays(testMode: Boolean)
+
+    @Transaction
+    suspend fun refreshUouDays(testMode: Boolean, days: List<UouDayEntity>) {
+        clearUouDays(testMode)
+        insertUouDays(days)
+    }
+
+    @Query("SELECT * FROM gb_context WHERE id = 0")
+    fun getGbContext(): Flow<GbContextEntity?>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertGbContext(context: GbContextEntity)
 }

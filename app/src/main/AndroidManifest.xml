@@ -71,6 +71,30 @@
                 android:resource="@xml/sofia_units_glance_info" />
         </receiver>
 
+        <receiver
+            android:name=".widget.modern.SofiaNextDaysGlanceReceiver"
+            android:exported="true"
+            android:label="@string/widget_next_days_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sofia_next_days_glance_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.modern.SofiaGbShareGlanceReceiver"
+            android:exported="true"
+            android:label="@string/widget_gb_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sofia_gb_share_glance_info" />
+        </receiver>
+
         <!-- Choix de la fenêtre de temps à l'ajout du widget graphique -->
         <activity
             android:name=".widget.modern.SofiaGraphConfigActivity"

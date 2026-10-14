@@ -152,4 +152,68 @@
     <string name="widget_prefix_updated">"Mis à jour "</string>
 
     <string name="widget_units_header">DISPONIBILITÉ PAR UNITÉ</string>
+
+    <!-- MEL, UOU2T14D, AGWS et écran REMIT regroupé -->
+    <string name="dataset_mel">Disponible (MEL)</string>
+    <string name="next_days_title">14 prochains jours</string>
+    <string name="next_days_subtitle">Disponibilité prévue · UOU2T14D</string>
+    <string name="next_days_empty">Pas encore de prévision.</string>
+    <string name="next_days_label_format">%1$s · %2$d MW</string>
+    <string name="gb_context_title">Contexte Grande-Bretagne</string>
+    <string name="gb_offshore_label">Éolien en mer GB</string>
+    <string name="gb_share_label">Part de Sofia</string>
+    <string name="gb_share_caption">PN ÷ éolien en mer</string>
+    <string name="gb_source_format">AGWS · %1$s</string>
+    <string name="gb_gw_format">%1$s GW</string>
+    <string name="gb_others_format">Terrestre %1$s GW · Solaire %2$s GW</string>
+    <string name="gb_empty">Pas encore de données.</string>
+    <string name="data_info_title">À propos des données</string>
+    <string name="data_info_pn">Production annoncée par l\'exploitant pour chaque demi-heure, publiée jusqu\'à 1 h à l\'avance : la valeur quasi temps réel.</string>
+    <string name="data_info_b1610">Production mesurée au compteur. Arrive environ 6 jours plus tard, puis est révisée : la valeur de référence.</string>
+    <string name="data_info_mel">Puissance maximale que le parc peut exporter maintenant (turbines et liaison d\'export disponibles). Plafond coloré sur le graphique.</string>
+    <string name="data_info_uou">Puissance disponible prévue pour chaque jour, de J+2 à J+14, mise à jour toutes les heures.</string>
+    <string name="data_info_agws">Production éolienne et solaire de toute la Grande-Bretagne, avec environ 2 h 30 de retard.</string>
+    <string name="data_info_remit">Avis officiels d\'indisponibilité : pannes, mise en service, capacité réduite.</string>
+    <string name="data_info_wind">Vitesse du vent à 120 m sur le parc, historique et prévision.</string>
+    <string name="remit_section_upcoming">À venir</string>
+    <string name="remit_type_planned">Planifié</string>
+    <string name="remit_type_unplanned">Imprévu</string>
+    <string name="remit_all_units_format">Les %1$d unités</string>
+    <string name="remit_unit_format">Unité %1$s</string>
+    <string name="remit_available_of_format">%1$d / %2$d MW disponibles</string>
+    <string name="remit_available_format">%1$d MW disponibles</string>
+    <string name="remit_available_unknown">Capacité disponible inconnue</string>
+    <string name="remit_until_format">Jusqu\'au %1$s</string>
+    <string name="remit_no_end">Sans date de fin</string>
+    <string name="remit_starts_format">Début %1$s</string>
+    <string name="remit_show_units">Afficher les unités</string>
+    <string name="remit_hide_units">Masquer les unités</string>
+    <string name="remit_profile_caption">Capacité disponible (MW) au fil du temps</string>
+    <string name="remit_profile_now">maintenant</string>
+    <string name="remit_profile_normal_format">Normale %1$d MW</string>
+    <plurals name="remit_in_days">
+        <item quantity="one">dans %d jour</item>
+        <item quantity="other">dans %d jours</item>
+        <item quantity="many">dans %d jours</item>
+    </plurals>
+    <plurals name="remit_in_hours">
+        <item quantity="one">dans %d h</item>
+        <item quantity="other">dans %d h</item>
+        <item quantity="many">dans %d h</item>
+    </plurals>
+
+    <!-- Widgets « 14 prochains jours » et « Part de l'éolien GB » -->
+    <string name="widget_next_days_label">Sofia · 14 prochains jours</string>
+    <string name="widget_next_days_description">Disponibilité prévue pour chacun des 14 prochains jours (UOU2T14D)</string>
+    <string name="widget_next_days_header">14 PROCHAINS JOURS</string>
+    <string name="widget_next_days_header_short">14 JOURS</string>
+    <string name="widget_next_days_today_format">Aujourd\'hui %1$d MW</string>
+    <string name="widget_gb_label">Sofia · Part de l\'éolien GB</string>
+    <string name="widget_gb_description">Production annoncée de Sofia comparée à l\'éolien en mer de Grande-Bretagne (AGWS)</string>
+    <string name="widget_gb_header">SOFIA VS GB</string>
+    <string name="widget_gb_of_offshore">de l\'éolien en mer GB</string>
+    <string name="widget_gb_of_all_wind_format">%1$s de tout l\'éolien GB</string>
+    <string name="widget_gb_sofia_format">Sofia (PN) %1$s MW</string>
+    <string name="widget_gb_offshore_format">En mer GB %1$s GW</string>
+    <string name="widget_gb_onshore_format">Terrestre GB %1$s GW</string>
 </resources>

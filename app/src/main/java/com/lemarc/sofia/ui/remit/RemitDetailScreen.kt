@@ -23,12 +23,15 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.R
 import com.lemarc.sofia.data.model.RemitNotice
+import com.lemarc.sofia.data.model.parseOutageProfile
+import com.lemarc.sofia.ui.components.OutageProfileChart
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -127,15 +130,16 @@ fun RemitDetailScreen(
             }
 
             // ── Profil d'indisponibilité ──────────────────────────────────────
-            if (notice.outageProfile.isNotBlank()) {
+            val profile = remember(notice.outageProfile) { parseOutageProfile(notice.outageProfile) }
+            if (profile.isNotEmpty()) {
                 HorizontalDivider()
                 SectionTitle(stringResource(R.string.remit_detail_outage_profile))
                 Text(
-                    text = notice.outageProfile,
+                    text = stringResource(R.string.remit_profile_caption),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
                 )
+                OutageProfileChart(steps = profile, normalMw = notice.normalCapacityMw)
             }
             Spacer(modifier = Modifier.height(16.dp))
         }

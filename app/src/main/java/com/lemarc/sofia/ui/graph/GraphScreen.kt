@@ -2,6 +2,8 @@ package com.lemarc.sofia.ui.graph
 
 import android.graphics.Color
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,8 +33,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.R
+import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
 import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.ui.components.ChartSeries
+import com.lemarc.sofia.ui.components.DatasetsInfoCard
+import com.lemarc.sofia.ui.components.GbContextCard
+import com.lemarc.sofia.ui.components.NextDaysCard
 import com.lemarc.sofia.ui.components.ErrorBanner
 import com.lemarc.sofia.ui.components.ProductionChartMulti
 import com.lemarc.sofia.ui.components.ProductionGaugeCard
@@ -45,7 +51,11 @@ private val GraphDataset.color: Int
         GraphDataset.PN -> Color.rgb(30, 136, 229)
         GraphDataset.B1610 -> Color.rgb(255, 152, 0)
         GraphDataset.Weather -> Color.rgb(76, 175, 80)
+        GraphDataset.MEL -> Color.rgb(29, 158, 117)
     }
+
+// Ordre de dessin : le MEL (zone colorée) passe sous les courbes de production
+private val drawOrder = listOf(GraphDataset.MEL, GraphDataset.PN, GraphDataset.B1610, GraphDataset.Weather)
 
 @Composable
 fun GraphScreen(
@@ -63,9 +73,10 @@ fun GraphScreen(
         state.pnPoints,
         state.b1610PointsMwh,
         state.weatherPoints,
+        state.melPoints,
         // state.selectedWindow n'est plus une clé ici : il ne change plus les données affichées
     ) {
-        val series = state.selectedDatasets.map { ds ->
+        val series = state.selectedDatasets.sortedBy { drawOrder.indexOf(it) }.map { ds ->
             when (ds) {
                 GraphDataset.PN -> ChartSeries(
                     points = state.pnPoints, // toutes les données, plus de filterPoints
@@ -87,6 +98,14 @@ fun GraphScreen(
                     unit = "km/h",
                     label = GraphDataset.Weather.labelRes,
                     color = GraphDataset.Weather.color,
+                )
+                GraphDataset.MEL -> ChartSeries(
+                    points = state.melPoints,
+                    allowNegative = false,
+                    unit = "MW",
+                    label = GraphDataset.MEL.labelRes,
+                    color = GraphDataset.MEL.color,
+                    filled = true,
                 )
             }
         }
@@ -163,6 +182,14 @@ fun GraphScreen(
                         onSelectWindow = onSelectWindow,
                     )
                 }
+                item {
+                    NextDaysCard(
+                        days = state.uouDays,
+                        capacityMw = if (state.testMode) null else SOFIA_MAX_CAPACITY_MW,
+                    )
+                }
+                item { GbContextCard(context = state.gbContext, pnPoints = state.pnPoints) }
+                item { DatasetsInfoCard() }
             }
         }
     }
@@ -174,10 +201,12 @@ private fun DatasetSelector(
     onSelect: (GraphDataset) -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        listOf(GraphDataset.Weather, GraphDataset.PN, GraphDataset.B1610).forEach { option ->
+        listOf(GraphDataset.Weather, GraphDataset.PN, GraphDataset.B1610, GraphDataset.MEL).forEach { option ->
             FilterChip(
                 selected = option in selected,
                 onClick = { onSelect(option) },

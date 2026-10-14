@@ -10,16 +10,20 @@ import com.lemarc.sofia.TEST_BMU
 import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.data.api.getB1610For
 import com.lemarc.sofia.data.api.getProductionFor
+import com.lemarc.sofia.data.api.getUouFor
 import com.lemarc.sofia.data.local.SofiaDatabase
 import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.data.model.RemitNotice
+import com.lemarc.sofia.data.model.UouDay
 import com.lemarc.sofia.data.repository.aggregateB1610
 import com.lemarc.sofia.data.repository.aggregateProduction
 import com.lemarc.sofia.data.repository.toEntity
 import com.lemarc.sofia.data.repository.toModel
 import com.lemarc.sofia.data.settings.SettingsRepository
+import com.lemarc.sofia.util.parseApiInstant
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -60,6 +64,38 @@ data class UnitStatus(
             val a = availableMw
             return if (n != null && n > 0.0 && a != null) (a / n).toFloat().coerceIn(0f, 1f) else 1f
         }
+}
+
+/** Puissance utilisable prévue par jour (UOU2T14D), pour le widget « 14 prochains jours ». */
+data class NextDaysData(
+    val testMode: Boolean,
+    val days: List<UouDay>,
+    val fetchedAt: Instant,
+    val fromCache: Boolean,
+)
+
+/**
+ * Production annoncée de Sofia (PN) comparée à l'éolien de Grande-Bretagne (AGWS) sur la même
+ * demi-heure, la dernière publiée par AGWS.
+ */
+data class GbShareData(
+    val testMode: Boolean,
+    val timeFrom: Instant?,
+    val sofiaMw: Double?,
+    val offshoreMw: Double?,
+    val onshoreMw: Double?,
+    val fetchedAt: Instant,
+    val fromCache: Boolean,
+) {
+    /** Part de Sofia dans l'éolien en mer GB, en %. */
+    val offshoreSharePercent: Double? get() = shareOf(offshoreMw)
+
+    /** Part de Sofia dans tout l'éolien GB (en mer + terrestre), en %. */
+    val windSharePercent: Double?
+        get() = shareOf(if (offshoreMw != null && onshoreMw != null) offshoreMw + onshoreMw else null)
+
+    private fun shareOf(totalMw: Double?): Double? =
+        if (sofiaMw != null && totalMw != null && totalMw > 0.0) sofiaMw / totalMw * 100 else null
 }
 
 data class UnitsData(
@@ -138,6 +174,61 @@ object SofiaWidgetData {
         }
     }
 
+    /** Prévision UOU2T14D à partir d'aujourd'hui ; en secours le dernier instantané, puis le cache de l'appli. */
+    suspend fun loadNextDays(context: Context): NextDaysData = withContext(Dispatchers.IO) {
+        val app = context.applicationContext
+        val testMode = SettingsRepository(app).testMode.first()
+        val now = Instant.now()
+
+        val fresh = runCatching {
+            withTimeout(20_000.milliseconds) {
+                api.getUouFor(testMode).map { UouDay(LocalDate.parse(it.forecast_date), it.output_usable) }
+            }
+        }.getOrNull()
+
+        if (fresh != null) {
+            return@withContext NextDaysData(testMode, fresh, now, fromCache = false)
+                .also { SofiaWidgetSnapshots.saveNextDays(app, it) }
+        }
+        SofiaWidgetSnapshots.loadNextDays(app)?.takeIf { it.testMode == testMode }?.let { return@withContext it }
+        val cached = SofiaDatabase.getDatabase(app).sofiaDao().getUouDays(testMode).first()
+            .map { UouDay(LocalDate.ofEpochDay(it.epochDay), it.outputUsableMw) }
+        NextDaysData(testMode, cached, now, fromCache = true)
+    }
+
+    /**
+     * Dernière demi-heure AGWS et PN de Sofia sur la même demi-heure (le B1610 arrive trop tard).
+     * En secours le dernier instantané, puis le cache de l'appli.
+     */
+    suspend fun loadGbShare(context: Context): GbShareData = withContext(Dispatchers.IO) {
+        val app = context.applicationContext
+        val testMode = SettingsRepository(app).testMode.first()
+        val now = Instant.now()
+
+        val fresh = runCatching {
+            withTimeout(20_000.milliseconds) {
+                val gb = api.getAgwsLatest()
+                val timeFrom = parseApiInstant(gb.time_from)
+                val sofiaMw = timeFrom?.let { start ->
+                    val pn = api.getProductionFor(testMode, start.toString(), start.plus(Duration.ofMinutes(30)).toString())
+                    aggregateProduction(pn, testMode).firstOrNull { it.timeFrom == start }?.quantity
+                }
+                GbShareData(testMode, timeFrom, sofiaMw, gb.wind_offshore_mw, gb.wind_onshore_mw, now, fromCache = false)
+            }
+        }.getOrNull()
+
+        if (fresh != null) {
+            return@withContext fresh.also { SofiaWidgetSnapshots.saveGbShare(app, it) }
+        }
+        SofiaWidgetSnapshots.loadGbShare(app)?.takeIf { it.testMode == testMode }?.let { return@withContext it }
+        val dao = SofiaDatabase.getDatabase(app).sofiaDao()
+        val gb = dao.getGbContext().first()
+        val sofiaMw = gb?.let { latest ->
+            dao.getProductionPoints(testMode).first().lastOrNull { it.timeFrom == latest.timeFrom }?.quantity
+        }
+        GbShareData(testMode, gb?.timeFrom, sofiaMw, gb?.windOffshoreMw, gb?.windOnshoreMw, now, fromCache = true)
+    }
+
     /** Disponibilité par unité d'après les avis REMIT actifs (sans avis → pleine capacité nominale). */
     suspend fun loadUnits(context: Context): UnitsData = withContext(Dispatchers.IO) {
         val app = context.applicationContext
@@ -197,11 +288,13 @@ private fun RemitNotice.availableMw(): Double? {
     return if (n != null && u != null) n - u else null
 }
 
-/** À appeler si tu veux forcer le rafraîchissement des 3 nouveaux widgets (ex. changement du mode test). */
+/** À appeler si tu veux forcer le rafraîchissement des widgets Glance (ex. changement du mode test). */
 object SofiaModernWidgets {
     suspend fun updateAll(context: Context) {
         SofiaLiveGlanceWidget().updateAll(context)
         SofiaUnitsGlanceWidget().updateAll(context)
         SofiaGraphGlanceWidget().updateAll(context)
+        SofiaNextDaysGlanceWidget().updateAll(context)
+        SofiaGbShareGlanceWidget().updateAll(context)
     }
 }

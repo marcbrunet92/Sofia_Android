@@ -57,3 +57,30 @@ data class RemitNoticeEntity(
     val outageProfile: String,
     val isTestMode: Boolean,
 )
+
+@Entity(tableName = "mel_points")
+data class MelPointEntity(
+    @PrimaryKey(autoGenerate = true) val localId: Int = 0,
+    val id: String,
+    val timeFrom: Instant,
+    val timeTo: Instant,
+    val quantity: Double,
+    val isTestMode: Boolean,
+)
+
+@Entity(tableName = "uou_days", primaryKeys = ["isTestMode", "epochDay"])
+data class UouDayEntity(
+    val isTestMode: Boolean,
+    val epochDay: Long,
+    val outputUsableMw: Double,
+)
+
+/** Une seule ligne (id = 0) : la dernière demi-heure AGWS connue. */
+@Entity(tableName = "gb_context")
+data class GbContextEntity(
+    @PrimaryKey val id: Int = 0,
+    val timeFrom: Instant,
+    val windOffshoreMw: Double?,
+    val windOnshoreMw: Double?,
+    val solarMw: Double?,
+)

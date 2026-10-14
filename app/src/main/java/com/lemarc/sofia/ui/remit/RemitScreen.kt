@@ -10,6 +10,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -19,7 +24,9 @@ import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.R
 import com.lemarc.sofia.ui.components.InfoCard
 import com.lemarc.sofia.ui.components.RemitErrorBanner
+import com.lemarc.sofia.ui.components.RemitGroupCard
 import com.lemarc.sofia.ui.components.RemitNoticeCard
+import com.lemarc.sofia.ui.components.UpcomingDivider
 import com.lemarc.sofia.ui.components.UnitsAvailabilityCard
 import java.time.Instant
 import java.time.ZoneId
@@ -40,6 +47,11 @@ fun RemitScreen(
     onDismissError: () -> Unit,
     onNavigateToDetail: (Int) -> Unit,
 ) {
+    // Groupes dépliés (clé du groupe), conservés au retour du détail
+    val expandedGroups = rememberSaveable(
+        saver = listSaver(save = { it.toList() }, restore = { it.toMutableStateList() }),
+    ) { mutableStateListOf<String>() }
+
     PullToRefreshBox(
         isRefreshing = state.isRefreshing,
         onRefresh = onRefresh,
@@ -81,28 +93,34 @@ fun RemitScreen(
                 state.units?.let { units ->
                     item { UnitsAvailabilityCard(units) }
                 }
+                val sections = state.sections
                 item {
                     InfoCard(
                         pluralStringResource(
                             R.plurals.remit_active_notices_format,
-                            state.remits.size,
-                            state.remits.size,
+                            sections.noticeCount,
+                            sections.noticeCount,
                         )
                     )
                 }
-                if (state.remits.isEmpty()) {
+                if (sections.noticeCount == 0) {
                     item {
                         InfoCard(stringResource(R.string.remit_no_active_notices))
                     }
                 } else {
-                    items(
-                        count = state.remits.size,
-                        key = { index -> state.remits[index].id },
-                    ) { index ->
-                        RemitNoticeCard(
-                            notice = state.remits[index],
-                            onClick = { onNavigateToDetail(state.remits[index].id) },
-                        )
+                    // En vigueur d'abord, puis « À venir »
+                    sections.current.forEach { group ->
+                        item(key = group.key) {
+                            RemitGroupItem(group, expandedGroups, onNavigateToDetail)
+                        }
+                    }
+                    if (sections.upcoming.isNotEmpty()) {
+                        item(key = "upcoming_divider") { UpcomingDivider() }
+                        sections.upcoming.forEach { group ->
+                            item(key = group.key) {
+                                RemitGroupItem(group, expandedGroups, onNavigateToDetail)
+                            }
+                        }
                     }
                 }
                 item {
@@ -110,5 +128,28 @@ fun RemitScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun RemitGroupItem(
+    group: RemitGroup,
+    expandedGroups: SnapshotStateList<String>,
+    onNavigateToDetail: (Int) -> Unit,
+) {
+    if (group.isFarmWide) {
+        val expanded = group.key in expandedGroups
+        RemitGroupCard(
+            group = group,
+            expanded = expanded,
+            onToggle = { if (expanded) expandedGroups.remove(group.key) else expandedGroups.add(group.key) },
+            onOpenNotice = onNavigateToDetail,
+        )
+    } else {
+        RemitNoticeCard(
+            notice = group.first,
+            phase = group.phase,
+            onClick = { onNavigateToDetail(group.first.id) },
+        )
     }
 }

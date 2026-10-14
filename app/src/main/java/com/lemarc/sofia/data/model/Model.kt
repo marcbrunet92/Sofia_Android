@@ -1,6 +1,7 @@
 package com.lemarc.sofia.data.model
 
 import java.time.Instant
+import java.time.LocalDate
 
 data class GraphPoint(
     val id: String,
@@ -70,4 +71,17 @@ data class RemitNotice(
     val relatedInformation: String,
     val publishTime: Instant?,
     val outageProfile: String,
+)
+/** Puissance utilisable prévue pour un jour (UOU2T14D), en MW. */
+data class UouDay(
+    val date: LocalDate,
+    val outputUsableMw: Double,
+)
+
+/** Dernière demi-heure publiée de l'éolien et du solaire de Grande-Bretagne (AGWS), en MW. */
+data class GbContext(
+    val timeFrom: Instant,
+    val windOffshoreMw: Double?,
+    val windOnshoreMw: Double?,
+    val solarMw: Double?,
 )

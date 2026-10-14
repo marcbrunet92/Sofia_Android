@@ -11,6 +11,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.data.local.SofiaDatabase
 import com.lemarc.sofia.data.repository.SofiaB1610Repository
+import com.lemarc.sofia.data.repository.SofiaContextRepository
+import com.lemarc.sofia.data.repository.SofiaMelRepository
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import com.lemarc.sofia.data.repository.SofiaRemitRepository
 import com.lemarc.sofia.data.repository.SofiaWeatherRepository
@@ -44,6 +46,8 @@ class MainActivity : ComponentActivity() {
 
     private val weatherRepository by lazy { SofiaWeatherRepository.create(apiService, sofiaDao) }
     private val b1610Repository by lazy { SofiaB1610Repository.create(apiService, sofiaDao) }
+    private val melRepository by lazy { SofiaMelRepository.create(apiService, sofiaDao) }
+    private val contextRepository by lazy { SofiaContextRepository.create(apiService, sofiaDao) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +75,8 @@ class MainActivity : ComponentActivity() {
                         productionRepository = productionRepository,
                         b1610Repository = b1610Repository,
                         weatherRepository = weatherRepository,
+                        melRepository = melRepository,
+                        contextRepository = contextRepository,
                         settingsRepository = settingsRepository,
                     ),
                 )

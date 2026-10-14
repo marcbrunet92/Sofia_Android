@@ -6,8 +6,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lemarc.sofia.R
 import com.lemarc.sofia.TimeWindow
+import com.lemarc.sofia.data.model.GbContext
 import com.lemarc.sofia.data.model.GraphPoint
+import com.lemarc.sofia.data.model.UouDay
 import com.lemarc.sofia.data.repository.SofiaB1610Repository
+import com.lemarc.sofia.data.repository.SofiaContextRepository
+import com.lemarc.sofia.data.repository.SofiaMelRepository
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import com.lemarc.sofia.data.repository.SofiaWeatherRepository
 import com.lemarc.sofia.data.settings.SettingsRepository
@@ -28,17 +32,22 @@ enum class GraphDataset(@StringRes val labelRes: Int) {
     Weather(R.string.dataset_weather),
     PN(R.string.dataset_pn),
     B1610(R.string.dataset_b1610),
+    MEL(R.string.dataset_mel),
 }
 
 data class GraphUiState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val selectedWindow: TimeWindow = TimeWindow.ALL,
-    val selectedDatasets: Set<GraphDataset> = setOf(GraphDataset.PN),
+    val selectedDatasets: Set<GraphDataset> = setOf(GraphDataset.PN, GraphDataset.MEL),
     // Raw data
     val pnPoints: List<GraphPoint> = emptyList(), // MW
     val b1610PointsMwh: List<GraphPoint> = emptyList(), // MWh per 30min
     val weatherPoints: List<GraphPoint> = emptyList(), // km/h (affiché en m/s)
+    val melPoints: List<GraphPoint> = emptyList(), // MW
+    // Cartes sous le graphique
+    val uouDays: List<UouDay> = emptyList(),
+    val gbContext: GbContext? = null,
     // Meta
     val latestDataTimestamp: Instant? = null,
     val lastFetchTimestamp: Instant? = null,
@@ -50,6 +59,8 @@ class GraphViewModel(
     private val productionRepository: SofiaProductionRepository,
     private val b1610Repository: SofiaB1610Repository,
     private val weatherRepository: SofiaWeatherRepository,
+    private val melRepository: SofiaMelRepository,
+    private val contextRepository: SofiaContextRepository,
     settingsRepository: SettingsRepository,
 ) : ViewModel() {
 
@@ -58,6 +69,7 @@ class GraphViewModel(
 
     private var refreshJob: Job? = null
     private var observeJob: Job? = null
+    private var observeContextJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -76,6 +88,17 @@ class GraphViewModel(
     }
 
     private fun startObserving(testMode: Boolean) {
+        observeContextJob?.cancel()
+        observeContextJob = viewModelScope.launch {
+            kotlinx.coroutines.flow.combine(
+                melRepository.observeMel(testMode),
+                contextRepository.observeUou(testMode),
+                contextRepository.observeGbContext(),
+            ) { mel, uou, gb -> Triple(mel, uou, gb) }
+                .collect { (mel, uou, gb) ->
+                    _uiState.update { it.copy(melPoints = mel, uouDays = uou, gbContext = gb) }
+                }
+        }
         observeJob?.cancel()
         observeJob = viewModelScope.launch {
             kotlinx.coroutines.flow.combine(
@@ -139,7 +162,10 @@ class GraphViewModel(
                     val pnRefresh = launch { productionRepository.refreshProduction(_uiState.value.testMode) }
                     val b1610Refresh = launch { b1610Repository.refreshB1610(_uiState.value.testMode) }
                     val weatherRefresh = launch { weatherRepository.refreshWeather() }
-                    listOf(pnRefresh, b1610Refresh, weatherRefresh).joinAll()
+                    val melRefresh = launch { melRepository.refreshMel(_uiState.value.testMode) }
+                    val uouRefresh = launch { contextRepository.refreshUou(_uiState.value.testMode) }
+                    val gbRefresh = launch { contextRepository.refreshGbContext() }
+                    listOf(pnRefresh, b1610Refresh, weatherRefresh, melRefresh, uouRefresh, gbRefresh).joinAll()
                 }
             }.onSuccess {
                 _uiState.update {
@@ -171,10 +197,19 @@ class GraphViewModel(
         private val productionRepository: SofiaProductionRepository,
         private val b1610Repository: SofiaB1610Repository,
         private val weatherRepository: SofiaWeatherRepository,
+        private val melRepository: SofiaMelRepository,
+        private val contextRepository: SofiaContextRepository,
         private val settingsRepository: SettingsRepository,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            GraphViewModel(productionRepository, b1610Repository, weatherRepository, settingsRepository) as T
+            GraphViewModel(
+                productionRepository,
+                b1610Repository,
+                weatherRepository,
+                melRepository,
+                contextRepository,
+                settingsRepository,
+            ) as T
     }
 }
