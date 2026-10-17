@@ -1,7 +1,6 @@
 package com.lemarc.sofia.data.repository
 
 import com.lemarc.sofia.SOFIA_BMUS
-import com.lemarc.sofia.TEST_BMU
 import com.lemarc.sofia.data.api.RemitEntryDto
 import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.data.local.RemitNoticeEntity
@@ -19,14 +18,14 @@ class SofiaRemitRepository(
     private val apiService: SofiaApiService,
     private val sofiaDao: SofiaDao,
 ) {
-    fun observeRemits(testMode: Boolean): Flow<List<RemitNotice>> {
-        return sofiaDao.getRemitNotices(testMode).map { entities ->
+    fun observeRemits(): Flow<List<RemitNotice>> {
+        return sofiaDao.getRemitNotices().map { entities ->
             entities.map { it.toModel() }
         }
     }
 
-    suspend fun refreshRemits(testMode: Boolean) = withContext(Dispatchers.IO) {
-        val bmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
+    suspend fun refreshRemits() = withContext(Dispatchers.IO) {
+        val bmus = SOFIA_BMUS
         val remits = bmus.map { bmuId ->
             async {
                 apiService.getRemits(
@@ -41,9 +40,9 @@ class SofiaRemitRepository(
         val notices = remits
             .distinctBy { it.id }
             .sortedByDescending { parseApiInstant(it.publish_time) ?: InstantMin }
-            .map { it.toEntity(testMode) }
+            .map { it.toEntity() }
 
-        sofiaDao.refreshRemitNotices(testMode, notices)
+        sofiaDao.refreshRemitNotices(notices)
     }
 
     companion object {
@@ -53,7 +52,7 @@ class SofiaRemitRepository(
     }
 }
 
-fun RemitEntryDto.toEntity(testMode: Boolean): RemitNoticeEntity =
+fun RemitEntryDto.toEntity(): RemitNoticeEntity =
     RemitNoticeEntity(
         id = id,
         mrid = mrid,
@@ -75,7 +74,6 @@ fun RemitEntryDto.toEntity(testMode: Boolean): RemitNoticeEntity =
         relatedInformation = related_information,
         publishTime = parseApiInstant(publish_time),
         outageProfile = outage_profile,
-        isTestMode = testMode
     )
 
 fun RemitNoticeEntity.toModel(): RemitNotice =

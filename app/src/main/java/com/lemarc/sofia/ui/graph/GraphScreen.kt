@@ -36,14 +36,12 @@ import com.lemarc.sofia.R
 import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
 import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.ui.components.ChartSeries
-import com.lemarc.sofia.ui.components.DatasetsInfoCard
 import com.lemarc.sofia.ui.components.GbContextCard
 import com.lemarc.sofia.ui.components.NextDaysCard
 import com.lemarc.sofia.ui.components.ErrorBanner
 import com.lemarc.sofia.ui.components.ProductionChartMulti
 import com.lemarc.sofia.ui.components.ProductionGaugeCard
 import com.lemarc.sofia.ui.components.TitleBanner
-import com.lemarc.sofia.ui.components.WarningBanner
 import androidx.compose.ui.graphics.Color as ComposeColor
 
 private val GraphDataset.color: Int
@@ -146,11 +144,6 @@ fun GraphScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 item { TitleBanner(title = stringResource(R.string.title_graph)) }
-                if (state.testMode) {
-                    item {
-                        WarningBanner(text = stringResource(R.string.test_mode_warning))
-                    }
-                }
                 if (state.errorMessageRes != null) {
                     item {
                         ErrorBanner(
@@ -185,11 +178,10 @@ fun GraphScreen(
                 item {
                     NextDaysCard(
                         days = state.uouDays,
-                        capacityMw = if (state.testMode) null else SOFIA_MAX_CAPACITY_MW,
+                        capacityMw = SOFIA_MAX_CAPACITY_MW,
                     )
                 }
                 item { GbContextCard(context = state.gbContext, pnPoints = state.pnPoints) }
-                item { DatasetsInfoCard() }
             }
         }
     }
@@ -206,7 +198,7 @@ private fun DatasetSelector(
             .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        listOf(GraphDataset.Weather, GraphDataset.PN, GraphDataset.B1610, GraphDataset.MEL).forEach { option ->
+        listOf(GraphDataset.B1610, GraphDataset.PN, GraphDataset.Weather).forEach { option ->
             FilterChip(
                 selected = option in selected,
                 onClick = { onSelect(option) },

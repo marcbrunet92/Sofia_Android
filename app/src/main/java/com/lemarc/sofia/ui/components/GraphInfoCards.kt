@@ -121,7 +121,7 @@ fun NextDaysCard(days: List<UouDay>, capacityMw: Double?) {
     }
 }
 
-/** Contexte national (AGWS) : éolien en mer de Grande-Bretagne et part de Sofia (PN ÷ éolien en mer). */
+/** Contexte national (AGWS) : part de Sofia (PN ÷ éolien en mer GB), en pourcentage. */
 @Composable
 fun GbContextCard(context: GbContext?, pnPoints: List<GraphPoint>) {
     InfoCardContainer {
@@ -134,79 +134,19 @@ fun GbContextCard(context: GbContext?, pnPoints: List<GraphPoint>) {
             )
             return@InfoCardContainer
         }
-        val zone = ZoneId.systemDefault()
-        val sameDay = context.timeFrom.atZone(zone).toLocalDate() == LocalDate.now(zone)
-        val time = DateTimeFormatter.ofPattern(if (sameDay) "HH:mm" else "dd/MM HH:mm", Locale.getDefault())
-            .withZone(zone)
-            .format(context.timeFrom)
-        val offshore = context.windOffshoreMw
+        val offshore = context.windOffshoreMw?.let { off -> off + (context.windOnshoreMw ?: 0.0) }
         val sofiaMw = pnPoints.lastOrNull { it.timeFrom == context.timeFrom }?.quantity
         val share = if (offshore != null && offshore > 0.0 && sofiaMw != null) sofiaMw / offshore * 100 else null
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            StatTile(
-                label = stringResource(R.string.gb_offshore_label),
-                value = offshore?.let { stringResource(R.string.gb_gw_format, gigawatts(it)) } ?: "—",
-                caption = stringResource(R.string.gb_source_format, time),
-                modifier = Modifier.weight(1f),
-            )
-            StatTile(
-                label = stringResource(R.string.gb_share_label),
-                value = share?.let { String.format(Locale.getDefault(), "%.1f %%", it) } ?: "—",
-                caption = stringResource(R.string.gb_share_caption),
-                modifier = Modifier.weight(1f),
-            )
-        }
         Text(
-            text = stringResource(
-                R.string.gb_others_format,
-                context.windOnshoreMw?.let(::gigawatts) ?: "—",
-                context.solarMw?.let(::gigawatts) ?: "—",
-            ),
+            text = share?.let { String.format(Locale.getDefault(), "%.1f %%", it) } ?: "—",
+            style = MaterialTheme.typography.headlineMedium,
+        )
+        Text(
+            text = stringResource(R.string.gb_share_label),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
 
-private fun gigawatts(mw: Double): String = String.format(Locale.getDefault(), "%.1f", mw / 1000)
-
-@Composable
-private fun StatTile(label: String, value: String, caption: String, modifier: Modifier) {
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(8.dp),
-    ) {
-        Text(text = label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(text = value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Medium)
-        Text(text = caption, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
-}
-
-/** Rôle de chaque jeu de données, en une phrase. */
-@Composable
-fun DatasetsInfoCard() {
-    InfoCardContainer {
-        CardTitle(stringResource(R.string.data_info_title))
-        listOf(
-            "PN" to R.string.data_info_pn,
-            "B1610" to R.string.data_info_b1610,
-            "MEL" to R.string.data_info_mel,
-            "UOU2T14D" to R.string.data_info_uou,
-            "AGWS" to R.string.data_info_agws,
-            "REMIT" to R.string.data_info_remit,
-            "Open-Meteo" to R.string.data_info_wind,
-        ).forEach { (name, description) ->
-            Column {
-                Text(text = name, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
-                Text(
-                    text = stringResource(description),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-    }
-}

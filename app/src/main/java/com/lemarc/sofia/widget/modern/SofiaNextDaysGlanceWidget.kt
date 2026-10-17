@@ -47,8 +47,7 @@ class SofiaNextDaysGlanceWidget : GlanceAppWidget() {
         val data = SofiaWidgetData.loadNextDays(context)
         val today = LocalDate.now()
         val days = data.days.filter { !it.date.isBefore(today) }.take(14)
-        // Échelle : 1 400 MW pour Sofia ; en mode test, la plus grande valeur
-        val scale = if (data.testMode) days.maxOfOrNull { it.outputUsableMw } ?: 1.0 else SOFIA_MAX_CAPACITY_MW
+        val scale = SOFIA_MAX_CAPACITY_MW
         val density = context.resources.displayMetrics.density
         val bars = days.takeIf { it.isNotEmpty() }?.let {
             SofiaWidgetCharts.dayBars((280 * density).toInt(), (60 * density).toInt(), density, it.map { d -> d.outputUsableMw }, scale)
@@ -75,10 +74,6 @@ private fun NextDaysContent(data: NextDaysData, days: List<UouDay>, bars: Bitmap
                 WidgetPalette.Muted,
                 bold = true,
             )
-            if (data.testMode) {
-                Spacer(modifier = GlanceModifier.defaultWeight())
-                WText(context.getString(R.string.widget_live_test), 9, WidgetPalette.Bad, bold = true)
-            }
         }
         if (today != null) {
             WText(

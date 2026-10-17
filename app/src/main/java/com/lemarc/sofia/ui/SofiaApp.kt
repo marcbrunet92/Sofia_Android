@@ -31,34 +31,18 @@ import com.lemarc.sofia.ui.navigation.Route
 import com.lemarc.sofia.ui.remit.RemitDetailScreen
 import com.lemarc.sofia.ui.remit.RemitScreen
 import com.lemarc.sofia.ui.remit.RemitViewModel
-import com.lemarc.sofia.ui.settings.SettingsScreen
-import com.lemarc.sofia.ui.settings.SettingsViewModel
-import com.lemarc.sofia.ui.sofia.SofiaScreen
-import com.lemarc.sofia.ui.sofia.SofiaViewModel
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 private enum class AppTab(@StringRes val labelRes: Int) {
     Graph(R.string.tab_graph),
     Remit(R.string.tab_remit),
-    Settings(R.string.tab_settings),
-    Sofia(R.string.tab_sofia),
 }
-
-val timestampFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("dd-MM-yy HH:mm")
-        .withZone(ZoneId.systemDefault())
 @Composable
 fun SofiaApp(
     graphViewModel: GraphViewModel,
     remitViewModel: RemitViewModel,
-    settingsViewModel: SettingsViewModel,
-    sofiaViewModel: SofiaViewModel,
 ) {
     val graphState by graphViewModel.uiState.collectAsStateWithLifecycle()
     val remitState by remitViewModel.uiState.collectAsStateWithLifecycle()
-    val settingsState by settingsViewModel.uiState.collectAsStateWithLifecycle()
-    val sofiaState by sofiaViewModel.state.collectAsStateWithLifecycle()
 
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -67,8 +51,6 @@ fun SofiaApp(
     val tabs = listOf(
         AppTab.Graph to Route.Graph,
         AppTab.Remit to Route.Remit,
-        AppTab.Sofia to Route.Sofia,
-        AppTab.Settings to Route.Settings,
     )
 
     Scaffold(
@@ -89,8 +71,6 @@ fun SofiaApp(
                             val icon = when (tab) {
                                 AppTab.Graph -> Icons.AutoMirrored.Filled.ShowChart
                                 AppTab.Remit -> Icons.Filled.Warning
-                                AppTab.Settings -> Icons.Filled.Settings
-                                AppTab.Sofia -> Icons.Filled.Home
                             }
                             Icon(icon, contentDescription = null)
                         },
@@ -131,18 +111,6 @@ fun SofiaApp(
                         onBack = { navController.popBackStack() }
                     )
                 }
-            }
-            composable<Route.Sofia> {
-                SofiaScreen(
-                    state = sofiaState,
-                    onDismissError = sofiaViewModel::onDismissError,
-                )
-            }
-            composable<Route.Settings> {
-                SettingsScreen(
-                    state = settingsState,
-                    onToggleTestMode = settingsViewModel::setTestMode,
-                )
             }
         }
     }

@@ -27,13 +27,6 @@ fun TitleBanner(title: String = stringResource(R.string.title_sofia_live_generat
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
             )
-            /*
-            Image(
-                painter = painterResource(id = com.lemarc.sofia.R.drawable.logo_sofia_rwe,),
-                contentDescription = "Logo",
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
-            )
-            */
         }
     }
 }

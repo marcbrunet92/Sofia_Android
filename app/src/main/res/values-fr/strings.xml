@@ -44,7 +44,8 @@
     <string name="gauge_data_timestamp_format">Donnée du %1$s</string>
 
     <!-- Graph Screen -->
-    <string name="title_graph">Graphique</string>
+    <string name="title_graph">Puissance délivré par Sofia</string>
+    <string name="timestamp_today_format">Today, %1$s</string>
     <string name="title_sofia_live_generation">Production Sofia en direct</string>
     <string name="test_mode_warning">MODE TEST — T_HEYM11 uniquement</string>
     <string name="chart_title">Courbe</string>
@@ -156,12 +157,12 @@
     <!-- MEL, UOU2T14D, AGWS et écran REMIT regroupé -->
     <string name="dataset_mel">Disponible (MEL)</string>
     <string name="next_days_title">14 prochains jours</string>
-    <string name="next_days_subtitle">Disponibilité prévue · UOU2T14D</string>
+    <string name="next_days_subtitle">Disponibilité prévue</string>
     <string name="next_days_empty">Pas encore de prévision.</string>
     <string name="next_days_label_format">%1$s · %2$d MW</string>
     <string name="gb_context_title">Contexte Grande-Bretagne</string>
     <string name="gb_offshore_label">Éolien en mer GB</string>
-    <string name="gb_share_label">Part de Sofia</string>
+    <string name="gb_share_label">Part de Sofia dans l\'énérgie éolienne du Royaume-Uni</string>
     <string name="gb_share_caption">PN ÷ éolien en mer</string>
     <string name="gb_source_format">AGWS · %1$s</string>
     <string name="gb_gw_format">%1$s GW</string>

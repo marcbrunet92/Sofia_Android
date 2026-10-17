@@ -1,12 +1,10 @@
 package com.lemarc.sofia.data.api
 
-import com.lemarc.sofia.TEST_BMU
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface SofiaApiService {
-    // Somme des 4 unités Sofia, calculée par le serveur (bmu_id = "SOFIA_TOTAL")
     @GET("pn/total")
     suspend fun getProductionTotal(
         @Query("time_from") timeFrom: String,
@@ -74,21 +72,17 @@ interface SofiaApiService {
     suspend fun getAgwsLatest(): AgwsLatestDto
 }
 
-/** PN du mode courant : la somme Sofia calculée par le serveur, ou l'unité de test. */
-suspend fun SofiaApiService.getProductionFor(testMode: Boolean, timeFrom: String, timeTo: String): List<PnEntryDto> =
-    if (testMode) getProduction(TEST_BMU, timeFrom, timeTo) else getProductionTotal(timeFrom, timeTo)
+suspend fun SofiaApiService.getProductionFor(timeFrom: String, timeTo: String): List<PnEntryDto> =
+    getProductionTotal(timeFrom, timeTo)
 
-/** B1610 du mode courant : la somme Sofia calculée par le serveur, ou l'unité de test. */
-suspend fun SofiaApiService.getB1610For(testMode: Boolean, timeFrom: String, timeTo: String): List<B1610EntryDto> =
-    if (testMode) getB1610(TEST_BMU, timeFrom, timeTo) else getB1610Total(timeFrom, timeTo)
+suspend fun SofiaApiService.getB1610For(timeFrom: String, timeTo: String): List<B1610EntryDto> =
+    getB1610Total(timeFrom, timeTo)
 
-/** MEL du mode courant : la somme Sofia calculée par le serveur, ou l'unité de test. */
-suspend fun SofiaApiService.getMelFor(testMode: Boolean, timeFrom: String, timeTo: String): List<MelEntryDto> =
-    if (testMode) getMel(TEST_BMU, timeFrom, timeTo) else getMelTotal(timeFrom, timeTo)
+suspend fun SofiaApiService.getMelFor(timeFrom: String, timeTo: String): List<MelEntryDto> =
+    getMelTotal(timeFrom, timeTo)
 
-/** Prévision UOU2T14D du mode courant : la somme Sofia, ou l'unité de test. */
-suspend fun SofiaApiService.getUouFor(testMode: Boolean): List<UouEntryDto> =
-    if (testMode) getUou(TEST_BMU) else getUouTotal()
+suspend fun SofiaApiService.getUouFor(): List<UouEntryDto> =
+    getUouTotal()
 
 data class PnEntryDto(
     val bmu_id: String,

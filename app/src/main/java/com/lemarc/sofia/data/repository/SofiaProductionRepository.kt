@@ -1,7 +1,6 @@
 package com.lemarc.sofia.data.repository
 
 import com.lemarc.sofia.HISTORY_START
-import com.lemarc.sofia.TEST_BMU
 import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.data.model.TopPoint
 import com.lemarc.sofia.data.model.TopWindows
@@ -22,8 +21,8 @@ class SofiaProductionRepository(
     private val apiService: SofiaApiService,
     private val sofiaDao: SofiaDao,
 ) {
-    fun observeProduction(testMode: Boolean): Flow<ProductionSnapshot> {
-        return sofiaDao.getProductionPoints(testMode).map { entities ->
+    fun observeProduction(): Flow<ProductionSnapshot> {
+        return sofiaDao.getProductionPoints().map { entities ->
             val points = entities.map { it.toModel() }
             val topProduction = calculateTopProduction(points)
             ProductionSnapshot(
@@ -35,17 +34,16 @@ class SofiaProductionRepository(
         }
     }
 
-    suspend fun refreshProduction(testMode: Boolean) = withContext(Dispatchers.IO) {
+    suspend fun refreshProduction() = withContext(Dispatchers.IO) {
         // Une seule série : la somme Sofia est calculée par le serveur
         val entries = apiService.getProductionFor(
-            testMode = testMode,
             timeFrom = HISTORY_START.toString(),
             timeTo = Instant.now().toString(),
         )
 
-        val aggregatedPoints = aggregateProduction(entries, testMode)
-        val entities: List<ProductionPointEntity> = aggregatedPoints.map { it.toProductionEntity(testMode) }
-        sofiaDao.refreshProductionPoints(testMode, entities)
+        val aggregatedPoints = aggregateProduction(entries)
+        val entities: List<ProductionPointEntity> = aggregatedPoints.map { it.toProductionEntity() }
+        sofiaDao.refreshProductionPoints(entities)
     }
 
     companion object {
@@ -55,13 +53,12 @@ class SofiaProductionRepository(
     }
 }
 
-fun GraphPoint.toProductionEntity(testMode: Boolean): ProductionPointEntity =
+fun GraphPoint.toProductionEntity(): ProductionPointEntity =
     ProductionPointEntity(
         id = id,
         timeFrom = timeFrom,
         timeTo = timeTo,
         quantity = quantity,
-        isTestMode = testMode
     )
 
 fun ProductionPointEntity.toModel(): GraphPoint =
@@ -96,7 +93,6 @@ fun calculateTopProduction(points: List<GraphPoint>): TopWindows {
 }
 internal fun aggregateProduction(
     entries: List<PnEntryDto>,
-    testMode: Boolean,
 ): List<GraphPoint> {
     if (entries.isEmpty()) return emptyList()
     return entries
@@ -106,7 +102,7 @@ internal fun aggregateProduction(
         .map { (_, groupedEntries) ->
             val first = groupedEntries.first()
             GraphPoint(
-                id = if (testMode) TEST_BMU else "SOFIA_TOTAL",
+                id = "SOFIA_TOTAL",
                 timeFrom = parseApiUtc(first.time_from),
                 timeTo = parseApiUtc(first.time_to),
                 quantity = groupedEntries.sumOf { it.level_mw },

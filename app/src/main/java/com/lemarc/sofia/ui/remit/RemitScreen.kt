@@ -78,11 +78,6 @@ fun RemitScreen(
                         )
                     }
                 }
-                if (state.testMode) {
-                    item {
-                        InfoCard(stringResource(R.string.remit_test_mode_info))
-                    }
-                }
                 item {
                     Text(
                         text = stringResource(R.string.remit_notices_title),

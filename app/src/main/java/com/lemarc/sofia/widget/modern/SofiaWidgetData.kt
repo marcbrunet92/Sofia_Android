@@ -6,7 +6,6 @@ import com.lemarc.sofia.BASE_URL
 import com.lemarc.sofia.HISTORY_START
 import com.lemarc.sofia.SOFIA_BMUS
 import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
-import com.lemarc.sofia.TEST_BMU
 import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.data.api.getB1610For
 import com.lemarc.sofia.data.api.getProductionFor
@@ -19,7 +18,6 @@ import com.lemarc.sofia.data.repository.aggregateB1610
 import com.lemarc.sofia.data.repository.aggregateProduction
 import com.lemarc.sofia.data.repository.toEntity
 import com.lemarc.sofia.data.repository.toModel
-import com.lemarc.sofia.data.settings.SettingsRepository
 import com.lemarc.sofia.util.parseApiInstant
 import java.time.Duration
 import java.time.Instant
@@ -38,7 +36,6 @@ import kotlin.time.Duration.Companion.milliseconds
 // ── Modèles ──────────────────────────────────────────────────────────────────
 
 data class LiveData(
-    val testMode: Boolean,
     val committed: List<GraphPoint>, // MW (PN)
     val actual: List<GraphPoint>,    // MW (B1610 MWh/30min × 2)
     val from: Instant,
@@ -68,7 +65,6 @@ data class UnitStatus(
 
 /** Puissance utilisable prévue par jour (UOU2T14D), pour le widget « 14 prochains jours ». */
 data class NextDaysData(
-    val testMode: Boolean,
     val days: List<UouDay>,
     val fetchedAt: Instant,
     val fromCache: Boolean,
@@ -79,7 +75,6 @@ data class NextDaysData(
  * demi-heure, la dernière publiée par AGWS.
  */
 data class GbShareData(
-    val testMode: Boolean,
     val timeFrom: Instant?,
     val sofiaMw: Double?,
     val offshoreMw: Double?,
@@ -99,7 +94,6 @@ data class GbShareData(
 }
 
 data class UnitsData(
-    val testMode: Boolean,
     val units: List<UnitStatus>,
     val fetchedAt: Instant,
     val fromCache: Boolean,
@@ -131,7 +125,6 @@ object SofiaWidgetData {
         includeActual: Boolean = true,            // false = on ne charge pas du tout le B1610
     ): LiveData = withContext(Dispatchers.IO) {
         val app = context.applicationContext
-        val testMode = SettingsRepository(app).testMode.first()
         val to = Instant.now()
         val from = window?.let { to.minus(it) } ?: HISTORY_START
         val snapshotName = "live_${window?.toMinutes() ?: "all"}_${if (includeActual) "a" else "c"}"
@@ -139,14 +132,13 @@ object SofiaWidgetData {
         val fresh = runCatching {
             withTimeout(30_000.milliseconds) {
                 coroutineScope {
-                    // Somme Sofia calculée par le serveur (ou unité de test) : une requête par jeu
-                    val pn = async { api.getProductionFor(testMode, from.toString(), to.toString()) }
+                    val pn = async { api.getProductionFor( from.toString(), to.toString()) }
                     val b1610 = if (includeActual) {
-                        async { api.getB1610For(testMode, from.toString(), to.toString()) }
+                        async { api.getB1610For( from.toString(), to.toString()) }
                     } else null
-                    val committed = aggregateProduction(pn.await(), testMode)
+                    val committed = aggregateProduction(pn.await())
                     val actual = b1610
-                        ?.let { call -> aggregateB1610(call.await(), testMode) }
+                        ?.let { call -> aggregateB1610(call.await()) }
                         ?.map { it.copy(quantity = it.quantity * 2) }
                         ?: emptyList()
                     committed to actual
@@ -155,45 +147,44 @@ object SofiaWidgetData {
         }.getOrNull()
 
         if (fresh != null) {
-            LiveData(testMode, fresh.first, fresh.second, from, to, fromCache = false)
+            LiveData( fresh.first, fresh.second, from, to, fromCache = false)
                 .also { SofiaWidgetSnapshots.saveLive(app, snapshotName, it) }
         } else {
             val dao = SofiaDatabase.getDatabase(app).sofiaDao()
-            val committed = dao.getProductionPoints(testMode).first()
+            val committed = dao.getProductionPoints().first()
                 .filter { it.timeFrom >= from }.map { it.toModel() }
             val actual = if (includeActual) {
-                dao.getB1610Points(testMode).first()
+                dao.getB1610Points().first()
                     .filter { it.timeFrom >= from }
                     .map { it.toModel() }
                     .map { it.copy(quantity = it.quantity * 2) }
             } else emptyList()
-            val room = LiveData(testMode, committed, actual, from, to, fromCache = true)
+            val room = LiveData( committed, actual, from, to, fromCache = true)
             // Cache Room vide/périmé (appli pas ouverte depuis longtemps) → dernier snapshot du widget
             if (committed.isNotEmpty()) room
-            else SofiaWidgetSnapshots.loadLive(app, snapshotName)?.takeIf { it.testMode == testMode } ?: room
+            else SofiaWidgetSnapshots.loadLive(app, snapshotName) ?: room
         }
     }
 
     /** Prévision UOU2T14D à partir d'aujourd'hui ; en secours le dernier instantané, puis le cache de l'appli. */
     suspend fun loadNextDays(context: Context): NextDaysData = withContext(Dispatchers.IO) {
         val app = context.applicationContext
-        val testMode = SettingsRepository(app).testMode.first()
         val now = Instant.now()
 
         val fresh = runCatching {
             withTimeout(20_000.milliseconds) {
-                api.getUouFor(testMode).map { UouDay(LocalDate.parse(it.forecast_date), it.output_usable) }
+                api.getUouFor().map { UouDay(LocalDate.parse(it.forecast_date), it.output_usable) }
             }
         }.getOrNull()
 
         if (fresh != null) {
-            return@withContext NextDaysData(testMode, fresh, now, fromCache = false)
+            return@withContext NextDaysData( fresh, now, fromCache = false)
                 .also { SofiaWidgetSnapshots.saveNextDays(app, it) }
         }
-        SofiaWidgetSnapshots.loadNextDays(app)?.takeIf { it.testMode == testMode }?.let { return@withContext it }
-        val cached = SofiaDatabase.getDatabase(app).sofiaDao().getUouDays(testMode).first()
+        SofiaWidgetSnapshots.loadNextDays(app)?.let { return@withContext it }
+        val cached = SofiaDatabase.getDatabase(app).sofiaDao().getUouDays().first()
             .map { UouDay(LocalDate.ofEpochDay(it.epochDay), it.outputUsableMw) }
-        NextDaysData(testMode, cached, now, fromCache = true)
+        NextDaysData(cached, now, fromCache = true)
     }
 
     /**
@@ -202,7 +193,6 @@ object SofiaWidgetData {
      */
     suspend fun loadGbShare(context: Context): GbShareData = withContext(Dispatchers.IO) {
         val app = context.applicationContext
-        val testMode = SettingsRepository(app).testMode.first()
         val now = Instant.now()
 
         val fresh = runCatching {
@@ -210,30 +200,29 @@ object SofiaWidgetData {
                 val gb = api.getAgwsLatest()
                 val timeFrom = parseApiInstant(gb.time_from)
                 val sofiaMw = timeFrom?.let { start ->
-                    val pn = api.getProductionFor(testMode, start.toString(), start.plus(Duration.ofMinutes(30)).toString())
-                    aggregateProduction(pn, testMode).firstOrNull { it.timeFrom == start }?.quantity
+                    val pn = api.getProductionFor(start.toString(), start.plus(Duration.ofMinutes(30)).toString())
+                    aggregateProduction(pn).firstOrNull { it.timeFrom == start }?.quantity
                 }
-                GbShareData(testMode, timeFrom, sofiaMw, gb.wind_offshore_mw, gb.wind_onshore_mw, now, fromCache = false)
+                GbShareData(timeFrom, sofiaMw, gb.wind_offshore_mw, gb.wind_onshore_mw, now, fromCache = false)
             }
         }.getOrNull()
 
         if (fresh != null) {
             return@withContext fresh.also { SofiaWidgetSnapshots.saveGbShare(app, it) }
         }
-        SofiaWidgetSnapshots.loadGbShare(app)?.takeIf { it.testMode == testMode }?.let { return@withContext it }
+        SofiaWidgetSnapshots.loadGbShare(app)?.let { return@withContext it }
         val dao = SofiaDatabase.getDatabase(app).sofiaDao()
         val gb = dao.getGbContext().first()
         val sofiaMw = gb?.let { latest ->
-            dao.getProductionPoints(testMode).first().lastOrNull { it.timeFrom == latest.timeFrom }?.quantity
+            dao.getProductionPoints().first().lastOrNull { it.timeFrom == latest.timeFrom }?.quantity
         }
-        GbShareData(testMode, gb?.timeFrom, sofiaMw, gb?.windOffshoreMw, gb?.windOnshoreMw, now, fromCache = true)
+        GbShareData(gb?.timeFrom, sofiaMw, gb?.windOffshoreMw, gb?.windOnshoreMw, now, fromCache = true)
     }
 
     /** Disponibilité par unité d'après les avis REMIT actifs (sans avis → pleine capacité nominale). */
     suspend fun loadUnits(context: Context): UnitsData = withContext(Dispatchers.IO) {
         val app = context.applicationContext
-        val testMode = SettingsRepository(app).testMode.first()
-        val bmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
+        val bmus = SOFIA_BMUS
         val now = Instant.now()
 
         val fresh: List<RemitNotice>? = runCatching {
@@ -241,29 +230,28 @@ object SofiaWidgetData {
                 coroutineScope {
                     bmus.map { id ->
                         async { api.getRemits(bmuId = id, eventStatus = "Active", limit = 100, offset = 0) }
-                    }.awaitAll().flatten().distinctBy { it.id }.map { it.toEntity(testMode).toModel() }
+                    }.awaitAll().flatten().distinctBy { it.id }.map { it.toEntity().toModel() }
                 }
             }
         }.getOrNull()
 
         if (fresh == null) {
-            SofiaWidgetSnapshots.loadUnits(app)?.takeIf { it.testMode == testMode }?.let { return@withContext it }
+            SofiaWidgetSnapshots.loadUnits(app)?.let { return@withContext it }
         }
 
         val notices = fresh ?: SofiaDatabase.getDatabase(app).sofiaDao()
-            .getRemitNotices(testMode).first().map { it.toModel() }
+            .getRemitNotices().first().map { it.toModel() }
 
-        val units = computeUnitStatuses(notices, testMode, now)
-        UnitsData(testMode, units, now, fromCache = fresh == null)
+        val units = computeUnitStatuses(notices, now)
+        UnitsData( units, now, fromCache = fresh == null)
             .also { if (fresh != null) SofiaWidgetSnapshots.saveUnits(app, it) }
     }
 }
 
 /** Disponibilité par unité à l'instant [now] d'après les avis REMIT (sans avis → pleine capacité nominale). */
-fun computeUnitStatuses(notices: List<RemitNotice>, testMode: Boolean, now: Instant): List<UnitStatus> {
-    val bmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
-    // En mode test (T_HEYM11) la capacité nominale d'une unité est inconnue sans avis.
-    val nominal = if (testMode) null else SOFIA_MAX_CAPACITY_MW / SOFIA_BMUS.size
+fun computeUnitStatuses(notices: List<RemitNotice>, now: Instant): List<UnitStatus> {
+    val bmus = SOFIA_BMUS
+    val nominal = SOFIA_MAX_CAPACITY_MW / SOFIA_BMUS.size
     return bmus.map { id ->
         val active = notices.filter { it.bmuId == id && it.isInEffectAt(now) }
         val normal = active.firstNotNullOfOrNull { it.normalCapacityMw } ?: nominal
@@ -288,7 +276,6 @@ private fun RemitNotice.availableMw(): Double? {
     return if (n != null && u != null) n - u else null
 }
 
-/** À appeler si tu veux forcer le rafraîchissement des widgets Glance (ex. changement du mode test). */
 object SofiaModernWidgets {
     suspend fun updateAll(context: Context) {
         SofiaLiveGlanceWidget().updateAll(context)

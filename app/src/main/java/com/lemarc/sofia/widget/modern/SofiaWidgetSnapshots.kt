@@ -21,7 +21,6 @@ object SofiaWidgetSnapshots {
     fun saveLive(context: Context, name: String, data: LiveData) {
         try {
             val json = JSONObject()
-                .put("testMode", data.testMode)
                 .put("from", data.from.toEpochMilli())
                 .put("to", data.to.toEpochMilli())
                 .put("committed", points(data.committed))
@@ -36,7 +35,6 @@ object SofiaWidgetSnapshots {
         if (!f.exists()) null else {
             val o = JSONObject(f.readText())
             LiveData(
-                testMode = o.getBoolean("testMode"),
                 committed = readPoints(o.getJSONArray("committed")),
                 actual = readPoints(o.getJSONArray("actual")),
                 from = Instant.ofEpochMilli(o.getLong("from")),
@@ -62,7 +60,6 @@ object SofiaWidgetSnapshots {
                 )
             }
             val json = JSONObject()
-                .put("testMode", data.testMode)
                 .put("at", data.fetchedAt.toEpochMilli())
                 .put("units", units)
             file(context, "units").writeText(json.toString())
@@ -76,7 +73,6 @@ object SofiaWidgetSnapshots {
             val o = JSONObject(f.readText())
             val arr = o.getJSONArray("units")
             UnitsData(
-                testMode = o.getBoolean("testMode"),
                 units = List(arr.length()) { i ->
                     val u = arr.getJSONObject(i)
                     UnitStatus(
@@ -101,7 +97,6 @@ object SofiaWidgetSnapshots {
             val days = JSONArray()
             data.days.forEach { days.put(JSONArray().put(it.date.toEpochDay()).put(it.outputUsableMw)) }
             val json = JSONObject()
-                .put("testMode", data.testMode)
                 .put("at", data.fetchedAt.toEpochMilli())
                 .put("days", days)
             file(context, "next_days").writeText(json.toString())
@@ -115,7 +110,6 @@ object SofiaWidgetSnapshots {
             val o = JSONObject(f.readText())
             val arr = o.getJSONArray("days")
             NextDaysData(
-                testMode = o.getBoolean("testMode"),
                 days = List(arr.length()) { i ->
                     val d = arr.getJSONArray(i)
                     UouDay(LocalDate.ofEpochDay(d.getLong(0)), d.getDouble(1))
@@ -132,7 +126,6 @@ object SofiaWidgetSnapshots {
     fun saveGbShare(context: Context, data: GbShareData) {
         try {
             val json = JSONObject()
-                .put("testMode", data.testMode)
                 .put("at", data.fetchedAt.toEpochMilli())
                 .apply {
                     data.timeFrom?.let { put("timeFrom", it.toEpochMilli()) }
@@ -150,7 +143,6 @@ object SofiaWidgetSnapshots {
         if (!f.exists()) null else {
             val o = JSONObject(f.readText())
             GbShareData(
-                testMode = o.getBoolean("testMode"),
                 timeFrom = if (o.has("timeFrom")) Instant.ofEpochMilli(o.getLong("timeFrom")) else null,
                 sofiaMw = if (o.has("sofia")) o.getDouble("sofia") else null,
                 offshoreMw = if (o.has("offshore")) o.getDouble("offshore") else null,

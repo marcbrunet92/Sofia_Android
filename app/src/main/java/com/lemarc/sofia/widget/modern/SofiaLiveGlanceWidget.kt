@@ -72,7 +72,6 @@ private fun CompactLayout(data: LiveData, gauge: Bitmap) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             WText("${data.currentMw.roundToInt()}", 22, bold = true, align = TextAlign.Center)
             WText(context.getString(R.string.widget_live_mw), 11, WidgetPalette.Muted, align = TextAlign.Center)
-            if (data.testMode) WText(context.getString(R.string.widget_live_test), 9, WidgetPalette.Bad, bold = true)
         }
     }
 }
@@ -97,10 +96,6 @@ private fun WideLayout(data: LiveData, gauge: Bitmap) {
         Column(modifier = GlanceModifier.defaultWeight()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 WText(context.getString(R.string.widget_live_sofia_offshore), 10, WidgetPalette.Muted, bold = true)
-                if (data.testMode) {
-                    Spacer(modifier = GlanceModifier.width(6.dp))
-                    WText(context.getString(R.string.widget_live_test), 10, WidgetPalette.Bad, bold = true)
-                }
             }
             WText(context.getString(R.string.widget_mw_value, data.currentMw.roundToInt()), 28, bold = true)
             WText(context.getString(R.string.widget_live_installed_capacity_format, SOFIA_MAX_CAPACITY_MW.roundToInt()), 11, WidgetPalette.Muted)

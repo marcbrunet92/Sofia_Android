@@ -14,7 +14,6 @@ import com.lemarc.sofia.data.api.SofiaApiService
 import com.lemarc.sofia.data.local.SofiaDatabase
 import com.lemarc.sofia.data.model.ProductionSnapshot
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
-import com.lemarc.sofia.data.settings.SettingsRepository
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -40,7 +39,6 @@ object SofiaWidgetsUpdater {
         )
         if (smallIds.isEmpty() && mediumIds.isEmpty()) return
 
-        val testMode = SettingsRepository(appContext).testMode.first()
         val fetchedAt = Instant.now()
         
         val apiService = Retrofit.Builder()
@@ -52,8 +50,8 @@ object SofiaWidgetsUpdater {
         val repository = SofiaProductionRepository.create(apiService, sofiaDao)
 
         val snapshot = runCatching {
-            repository.refreshProduction(testMode)
-            repository.observeProduction(testMode).first()
+            repository.refreshProduction()
+            repository.observeProduction().first()
         }.getOrNull()
 
         smallIds.forEach { appWidgetId ->
@@ -62,7 +60,6 @@ object SofiaWidgetsUpdater {
                 buildSmallRemoteViews(
                     context = appContext,
                     snapshot = snapshot,
-                    testMode = testMode,
                 ),
             )
         }
@@ -72,7 +69,6 @@ object SofiaWidgetsUpdater {
                 buildMediumRemoteViews(
                     context = appContext,
                     snapshot = snapshot,
-                    testMode = testMode,
                     fetchedAt = fetchedAt,
                 ),
             )
@@ -82,7 +78,6 @@ object SofiaWidgetsUpdater {
     private fun buildSmallRemoteViews(
         context: Context,
         snapshot: ProductionSnapshot?,
-        testMode: Boolean,
     ): RemoteViews {
         val safeMaxCapacity = SOFIA_MAX_CAPACITY_MW
         val currentMw = snapshot?.currentMw ?: 0.0
@@ -97,7 +92,7 @@ object SofiaWidgetsUpdater {
             )
             setViewVisibility(
                 R.id.widget_small_test_badge,
-                if (testMode) android.view.View.VISIBLE else android.view.View.GONE,
+                android.view.View.GONE,
             )
         }
     }
@@ -105,7 +100,6 @@ object SofiaWidgetsUpdater {
     private fun buildMediumRemoteViews(
         context: Context,
         snapshot: ProductionSnapshot?,
-        testMode: Boolean,
         fetchedAt: Instant,
     ): RemoteViews {
         val safeMaxCapacity = SOFIA_MAX_CAPACITY_MW
@@ -126,7 +120,7 @@ object SofiaWidgetsUpdater {
                 R.id.widget_medium_details,
                 context.getString(
                     R.string.widget_details_value,
-                    if (testMode) context.getString(R.string.widget_mode_test) else context.getString(R.string.widget_mode_live),
+                    context.getString(R.string.widget_mode_live),
                     lastApiUpdate,
                 ),
             )
@@ -136,7 +130,7 @@ object SofiaWidgetsUpdater {
             )
             setViewVisibility(
                 R.id.widget_medium_test_badge,
-                if (testMode) android.view.View.VISIBLE else android.view.View.GONE,
+                android.view.View.GONE,
             )
         }
     }

@@ -14,7 +14,6 @@ import com.lemarc.sofia.data.repository.SofiaContextRepository
 import com.lemarc.sofia.data.repository.SofiaMelRepository
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import com.lemarc.sofia.data.repository.SofiaWeatherRepository
-import com.lemarc.sofia.data.settings.SettingsRepository
 import java.time.Instant
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -39,7 +38,7 @@ data class GraphUiState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val selectedWindow: TimeWindow = TimeWindow.ALL,
-    val selectedDatasets: Set<GraphDataset> = setOf(GraphDataset.PN, GraphDataset.MEL),
+    val selectedDatasets: Set<GraphDataset> = setOf(GraphDataset.PN),
     // Raw data
     val pnPoints: List<GraphPoint> = emptyList(), // MW
     val b1610PointsMwh: List<GraphPoint> = emptyList(), // MWh per 30min
@@ -52,7 +51,6 @@ data class GraphUiState(
     val latestDataTimestamp: Instant? = null,
     val lastFetchTimestamp: Instant? = null,
     @StringRes val errorMessageRes: Int? = null,
-    val testMode: Boolean = false,
 )
 
 class GraphViewModel(
@@ -61,7 +59,6 @@ class GraphViewModel(
     private val weatherRepository: SofiaWeatherRepository,
     private val melRepository: SofiaMelRepository,
     private val contextRepository: SofiaContextRepository,
-    settingsRepository: SettingsRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(GraphUiState())
@@ -73,11 +70,9 @@ class GraphViewModel(
 
     init {
         viewModelScope.launch {
-            settingsRepository.testMode.collect { enabled ->
-                _uiState.update { current -> current.copy(testMode = enabled) }
-                startObserving(enabled)
-                refresh(forceLoading = _uiState.value.pnPoints.isEmpty() && _uiState.value.b1610PointsMwh.isEmpty() && _uiState.value.weatherPoints.isEmpty())
-            }
+            _uiState.update { current -> current.copy() }
+            startObserving()
+            refresh(forceLoading = _uiState.value.pnPoints.isEmpty() && _uiState.value.b1610PointsMwh.isEmpty() && _uiState.value.weatherPoints.isEmpty())
         }
         viewModelScope.launch {
             while (true) {
@@ -87,12 +82,12 @@ class GraphViewModel(
         }
     }
 
-    private fun startObserving(testMode: Boolean) {
+    private fun startObserving() {
         observeContextJob?.cancel()
         observeContextJob = viewModelScope.launch {
             kotlinx.coroutines.flow.combine(
-                melRepository.observeMel(testMode),
-                contextRepository.observeUou(testMode),
+                melRepository.observeMel(),
+                contextRepository.observeUou(),
                 contextRepository.observeGbContext(),
             ) { mel, uou, gb -> Triple(mel, uou, gb) }
                 .collect { (mel, uou, gb) ->
@@ -102,8 +97,8 @@ class GraphViewModel(
         observeJob?.cancel()
         observeJob = viewModelScope.launch {
             kotlinx.coroutines.flow.combine(
-                productionRepository.observeProduction(testMode),
-                b1610Repository.observeB1610(testMode),
+                productionRepository.observeProduction(),
+                b1610Repository.observeB1610(),
                 weatherRepository.observeWeather()
             ) { pn, b1610, weather ->
                 Triple(pn, b1610, weather)
@@ -159,11 +154,11 @@ class GraphViewModel(
 
             runCatching {
                 coroutineScope {
-                    val pnRefresh = launch { productionRepository.refreshProduction(_uiState.value.testMode) }
-                    val b1610Refresh = launch { b1610Repository.refreshB1610(_uiState.value.testMode) }
+                    val pnRefresh = launch { productionRepository.refreshProduction() }
+                    val b1610Refresh = launch { b1610Repository.refreshB1610() }
                     val weatherRefresh = launch { weatherRepository.refreshWeather() }
-                    val melRefresh = launch { melRepository.refreshMel(_uiState.value.testMode) }
-                    val uouRefresh = launch { contextRepository.refreshUou(_uiState.value.testMode) }
+                    val melRefresh = launch { melRepository.refreshMel() }
+                    val uouRefresh = launch { contextRepository.refreshUou() }
                     val gbRefresh = launch { contextRepository.refreshGbContext() }
                     listOf(pnRefresh, b1610Refresh, weatherRefresh, melRefresh, uouRefresh, gbRefresh).joinAll()
                 }
@@ -199,7 +194,6 @@ class GraphViewModel(
         private val weatherRepository: SofiaWeatherRepository,
         private val melRepository: SofiaMelRepository,
         private val contextRepository: SofiaContextRepository,
-        private val settingsRepository: SettingsRepository,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
@@ -209,7 +203,6 @@ class GraphViewModel(
                 weatherRepository,
                 melRepository,
                 contextRepository,
-                settingsRepository,
             ) as T
     }
 }

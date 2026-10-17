@@ -14,16 +14,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-/**
- * Données de contexte affichées sous le graphique :
- * prévision de disponibilité à 14 jours (UOU2T14D) et éolien de toute la Grande-Bretagne (AGWS).
- */
+
 class SofiaContextRepository(
     private val apiService: SofiaApiService,
     private val sofiaDao: SofiaDao,
 ) {
-    fun observeUou(testMode: Boolean): Flow<List<UouDay>> =
-        sofiaDao.getUouDays(testMode).map { entities ->
+    fun observeUou(): Flow<List<UouDay>> =
+        sofiaDao.getUouDays().map { entities ->
             entities.map { UouDay(LocalDate.ofEpochDay(it.epochDay), it.outputUsableMw) }
         }
 
@@ -32,15 +29,14 @@ class SofiaContextRepository(
             entity?.let { GbContext(it.timeFrom, it.windOffshoreMw, it.windOnshoreMw, it.solarMw) }
         }
 
-    suspend fun refreshUou(testMode: Boolean) = withContext(Dispatchers.IO) {
-        val days = apiService.getUouFor(testMode).map { dto ->
+    suspend fun refreshUou() = withContext(Dispatchers.IO) {
+        val days = apiService.getUouFor().map { dto ->
             UouDayEntity(
-                isTestMode = testMode,
                 epochDay = LocalDate.parse(dto.forecast_date).toEpochDay(),
                 outputUsableMw = dto.output_usable,
             )
         }
-        sofiaDao.refreshUouDays(testMode, days)
+        sofiaDao.refreshUouDays(days)
     }
 
     suspend fun refreshGbContext() = withContext(Dispatchers.IO) {

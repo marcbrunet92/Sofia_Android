@@ -1,11 +1,9 @@
 package com.lemarc.sofia
 
-import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lemarc.sofia.data.api.SofiaApiService
@@ -16,12 +14,9 @@ import com.lemarc.sofia.data.repository.SofiaMelRepository
 import com.lemarc.sofia.data.repository.SofiaProductionRepository
 import com.lemarc.sofia.data.repository.SofiaRemitRepository
 import com.lemarc.sofia.data.repository.SofiaWeatherRepository
-import com.lemarc.sofia.data.settings.SettingsRepository
 import com.lemarc.sofia.ui.SofiaApp
 import com.lemarc.sofia.ui.graph.GraphViewModel
 import com.lemarc.sofia.ui.remit.RemitViewModel
-import com.lemarc.sofia.ui.settings.SettingsViewModel
-import com.lemarc.sofia.ui.sofia.SofiaViewModel
 import com.lemarc.sofia.ui.theme.Sofia_AndroidTheme
 import com.lemarc.sofia.widget.SofiaWidgetsUpdater
 import kotlinx.coroutines.launch
@@ -29,7 +24,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
-    private val settingsRepository by lazy { SettingsRepository(applicationContext) }
     private val database by lazy { SofiaDatabase.getDatabase(applicationContext) }
     private val sofiaDao by lazy { database.sofiaDao() }
     
@@ -57,17 +51,9 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             Sofia_AndroidTheme {
-                val application = LocalContext.current.applicationContext as Application
-                val settingsViewModel: SettingsViewModel = viewModel(
-                    factory = SettingsViewModel.Factory(
-                        application = application,
-                        settingsRepository = settingsRepository,
-                    ),
-                )
                 val remitViewModel: RemitViewModel = viewModel(
                     factory = RemitViewModel.Factory(
                         repository = remitRepository,
-                        settingsRepository = settingsRepository,
                     ),
                 )
                 val graphViewModel: GraphViewModel = viewModel(
@@ -77,17 +63,11 @@ class MainActivity : ComponentActivity() {
                         weatherRepository = weatherRepository,
                         melRepository = melRepository,
                         contextRepository = contextRepository,
-                        settingsRepository = settingsRepository,
                     ),
-                )
-                val sofiaViewModel: SofiaViewModel = viewModel(
-                    factory = SofiaViewModel.Factory(),
                 )
                 SofiaApp(
                     graphViewModel = graphViewModel,
                     remitViewModel = remitViewModel,
-                    settingsViewModel = settingsViewModel,
-                    sofiaViewModel = sofiaViewModel,
                 )
             }
         }

@@ -106,7 +106,7 @@ private fun GraphContent(window: TimeWindow, ui: GraphUi?) {
         context.getString(R.string.widget_graph_title_offline_format, window.shortTitle(context))
     } else {
         context.getString(R.string.widget_graph_title_online_format, window.shortTitle(context))
-    }) + if (ui?.data?.testMode == true) context.getString(R.string.widget_graph_title_test_suffix) else ""
+    })
 
     Column(modifier = GlanceModifier.fillMaxSize().padding(horizontal = 12.dp, vertical = 10.dp)) {
         Row(modifier = GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {

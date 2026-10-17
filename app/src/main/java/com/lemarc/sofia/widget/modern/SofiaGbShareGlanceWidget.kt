@@ -60,14 +60,10 @@ private fun agwsTime(data: GbShareData): String {
 }
 
 @Composable
-private fun Header(data: GbShareData) {
+private fun Header() {
     val context = LocalContext.current
     Row(verticalAlignment = Alignment.CenterVertically) {
         WText(context.getString(R.string.widget_gb_header), 10, WidgetPalette.Muted, bold = true)
-        if (data.testMode) {
-            Spacer(modifier = GlanceModifier.width(6.dp))
-            WText(context.getString(R.string.widget_live_test), 9, WidgetPalette.Bad, bold = true)
-        }
     }
 }
 
@@ -78,7 +74,7 @@ private fun GbShareCompact(data: GbShareData) {
         modifier = GlanceModifier.fillMaxSize().padding(10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Header(data)
+        Header()
         Spacer(modifier = GlanceModifier.height(4.dp))
         WText(percent(data.offshoreSharePercent), 26, bold = true)
         WText(context.getString(R.string.widget_gb_of_offshore), 10, WidgetPalette.Muted)
@@ -95,7 +91,7 @@ private fun GbShareWide(data: GbShareData) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = GlanceModifier.defaultWeight()) {
-            Header(data)
+            Header()
             Spacer(modifier = GlanceModifier.height(4.dp))
             WText(percent(data.offshoreSharePercent), 30, bold = true)
             WText(context.getString(R.string.widget_gb_of_offshore), 10, WidgetPalette.Muted)

@@ -11,7 +11,6 @@ data class ProductionPointEntity(
     val timeFrom: Instant,
     val timeTo: Instant,
     val quantity: Double,
-    val isTestMode: Boolean,
 )
 
 @Entity(tableName = "b1610_points")
@@ -21,7 +20,6 @@ data class B1610PointEntity(
     val timeFrom: Instant,
     val timeTo: Instant,
     val quantity: Double,
-    val isTestMode: Boolean,
 )
 
 @Entity(tableName = "weather_points")
@@ -55,7 +53,6 @@ data class RemitNoticeEntity(
     val relatedInformation: String,
     val publishTime: Instant?,
     val outageProfile: String,
-    val isTestMode: Boolean,
 )
 
 @Entity(tableName = "mel_points")
@@ -65,12 +62,10 @@ data class MelPointEntity(
     val timeFrom: Instant,
     val timeTo: Instant,
     val quantity: Double,
-    val isTestMode: Boolean,
 )
 
-@Entity(tableName = "uou_days", primaryKeys = ["isTestMode", "epochDay"])
+@Entity(tableName = "uou_days", primaryKeys = ["epochDay"])
 data class UouDayEntity(
-    val isTestMode: Boolean,
     val epochDay: Long,
     val outputUsableMw: Double,
 )

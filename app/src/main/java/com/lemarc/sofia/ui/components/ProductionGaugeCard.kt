@@ -20,15 +20,18 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.R
 import com.lemarc.sofia.ui.theme.SofiaBlue
 import com.lemarc.sofia.ui.theme.SofiaCyan
-import com.lemarc.sofia.ui.remit.formatTimestamp
 import com.lemarc.sofia.ui.theme.SofiaIndigo
 import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
 @Composable
@@ -101,11 +104,26 @@ fun ProductionGaugeCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = stringResource(R.string.gauge_data_timestamp_format, formatTimestamp(dataTimestamp)),
+                    text = stringResource(R.string.gauge_data_timestamp_format, formatDataTimestamp(dataTimestamp)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
+    }
+}
+
+/** « Aujourd'hui, 14:30 » / « Today, 14:30 » si la donnée date d'aujourd'hui, sinon « 17/10 14:30 ». */
+@Composable
+private fun formatDataTimestamp(timestamp: Instant?): String {
+    if (timestamp == null) return "—"
+    val zone = ZoneId.systemDefault()
+    val locale = LocalLocale.current.platformLocale
+    val dateTime = timestamp.atZone(zone)
+    return if (dateTime.toLocalDate() == LocalDate.now(zone)) {
+        val time = DateTimeFormatter.ofPattern("HH:mm", locale).format(dateTime)
+        stringResource(R.string.timestamp_today_format, time)
+    } else {
+        DateTimeFormatter.ofPattern("dd/MM HH:mm", locale).format(dateTime)
     }
 }

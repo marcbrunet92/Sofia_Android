@@ -7,10 +7,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lemarc.sofia.R
 import com.lemarc.sofia.SOFIA_BMUS
-import com.lemarc.sofia.TEST_BMU
 import com.lemarc.sofia.data.model.RemitNotice
 import com.lemarc.sofia.data.repository.SofiaRemitRepository
-import com.lemarc.sofia.data.settings.SettingsRepository
 import com.lemarc.sofia.widget.modern.UnitsData
 import com.lemarc.sofia.widget.modern.computeUnitStatuses
 import java.time.Instant
@@ -27,7 +25,6 @@ import kotlin.time.Duration.Companion.milliseconds
 data class RemitUiState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
-    val testMode: Boolean = false,
     val remits: List<RemitNotice> = emptyList(),
     /** Avis en vigueur puis à venir, regroupés quand ils concernent tout le parc. */
     val sections: RemitSections = RemitSections(),
@@ -38,7 +35,6 @@ data class RemitUiState(
 
 class RemitViewModel(
     private val repository: SofiaRemitRepository,
-    settingsRepository: SettingsRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RemitUiState())
     val uiState: StateFlow<RemitUiState> = _uiState.asStateFlow()
@@ -48,11 +44,9 @@ class RemitViewModel(
 
     init {
         viewModelScope.launch {
-            settingsRepository.testMode.collect { enabled ->
-                _uiState.update { current -> current.copy(testMode = enabled) }
-                startObserving(enabled)
-                refresh(forceLoading = _uiState.value.remits.isEmpty())
-            }
+            _uiState.update { current -> current.copy() }
+            startObserving()
+            refresh(forceLoading = _uiState.value.remits.isEmpty())
         }
         viewModelScope.launch {
             while (true) {
@@ -62,17 +56,17 @@ class RemitViewModel(
         }
     }
 
-    private fun startObserving(testMode: Boolean) {
+    private fun startObserving() {
         observeJob?.cancel()
         observeJob = viewModelScope.launch {
-            repository.observeRemits(testMode).collect { remits ->
+            repository.observeRemits().collect { remits ->
                 val now = Instant.now()
-                val bmus = if (testMode) listOf(TEST_BMU) else SOFIA_BMUS
+                val bmus = SOFIA_BMUS
                 _uiState.update {
                     it.copy(
                         remits = remits,
                         sections = groupRemits(remits, bmus, now),
-                        units = UnitsData(testMode, computeUnitStatuses(remits, testMode, now), now, fromCache = false),
+                        units = UnitsData(computeUnitStatuses(remits, now), now, fromCache = false),
                         isLoading = false,
                         isRefreshing = false
                     )
@@ -93,7 +87,7 @@ class RemitViewModel(
                 )
             }
             runCatching {
-                repository.refreshRemits(_uiState.value.testMode)
+                repository.refreshRemits()
             }.onSuccess {
                 _uiState.update { it.copy(lastFetchTimestamp = Instant.now(), errorMessageRes = null) }
             }.onFailure { throwable ->
@@ -117,11 +111,10 @@ class RemitViewModel(
 
     class Factory(
         private val repository: SofiaRemitRepository,
-        private val settingsRepository: SettingsRepository,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return RemitViewModel(repository, settingsRepository) as T
+            return RemitViewModel(repository) as T
         }
     }
 }
