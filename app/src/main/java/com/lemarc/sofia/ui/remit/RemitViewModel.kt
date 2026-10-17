@@ -83,7 +83,6 @@ class RemitViewModel(
                 it.copy(
                     isLoading = forceLoading || !hasExistingData,
                     isRefreshing = hasExistingData,
-                    errorMessageRes = R.string.error_unable_to_refresh_remit,
                 )
             }
             runCatching {

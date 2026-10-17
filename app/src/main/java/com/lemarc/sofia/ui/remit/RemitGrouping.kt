@@ -1,6 +1,8 @@
 package com.lemarc.sofia.ui.remit
 
+import com.lemarc.sofia.data.model.OutageStep
 import com.lemarc.sofia.data.model.RemitNotice
+import com.lemarc.sofia.data.model.parseOutageProfile
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
@@ -20,6 +22,7 @@ data class RemitGroup(
     val isFarmWide: Boolean,
 ) {
     val first: RemitNotice get() = notices.first()
+    val title: String get() = first.cause.ifBlank { first.messageHeading.ifBlank { first.eventType } }
     val start: Instant? get() = notices.mapNotNull { it.eventStartTime }.minOrNull()
     val end: Instant? get() = if (notices.any { it.eventEndTime == null }) null else notices.mapNotNull { it.eventEndTime }.maxOrNull()
 
@@ -40,6 +43,26 @@ fun RemitNotice.effectiveAvailableMw(): Double? {
     val n = normalCapacityMw
     val u = unavailableCapacityMw
     return if (n != null && u != null) n - u else null
+}
+
+/** « T_SOFOW-11 » → « 11 ». */
+fun unitNumber(bmuId: String): String = bmuId.substringAfterLast('-').removePrefix("T_")
+
+/**
+ * Profil de capacité du groupe : somme des profils de chaque unité, palier par palier.
+ * Vide si une unité n'a pas de profil.
+ */
+fun RemitGroup.outageProfile(): List<OutageStep> {
+    val profiles = notices.map { parseOutageProfile(it.outageProfile) }
+    if (profiles.isEmpty() || profiles.any { it.isEmpty() }) return emptyList()
+    if (profiles.size == 1) return profiles.first()
+    val bounds = profiles.flatten().flatMap { listOf(it.start, it.end) }.distinct().sorted()
+    return bounds.zipWithNext().mapNotNull { (from, to) ->
+        val capacities = profiles.map { steps ->
+            steps.firstOrNull { !it.start.isAfter(from) && it.end.isAfter(from) }?.capacityMw
+        }
+        if (capacities.any { it == null }) null else OutageStep(from, to, capacities.sumOf { it ?: 0.0 })
+    }
 }
 
 private fun List<Double?>.sumOrNull(): Double? = if (any { it == null }) null else sumOf { it ?: 0.0 }

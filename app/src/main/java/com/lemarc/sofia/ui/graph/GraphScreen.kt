@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.R
 import com.lemarc.sofia.SOFIA_MAX_CAPACITY_MW
@@ -59,6 +60,7 @@ private val drawOrder = listOf(GraphDataset.MEL, GraphDataset.PN, GraphDataset.B
 fun GraphScreen(
     state: GraphUiState,
     modifier: Modifier = Modifier,
+    bottomInset: Dp = 0.dp,
     onRefresh: () -> Unit,
     onSelectWindow: (TimeWindow) -> Unit,
     onToggleDataset: (GraphDataset) -> Unit,
@@ -140,7 +142,7 @@ fun GraphScreen(
             else -> LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
+                contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp + bottomInset),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 item { TitleBanner(title = stringResource(R.string.title_graph)) }

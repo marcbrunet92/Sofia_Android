@@ -60,39 +60,17 @@
     <string name="empty_production_title">No production data available yet.</string>
     <string name="empty_production_message">Pull to refresh and try again once the API returns data.</string>
 
-    <!-- REMIT Screen & Details -->
-    <string name="remit_test_mode_info">TEST MODE — T_HEYM11 only.</string>
-    <string name="remit_notices_title">Notices</string>
-    <plurals name="remit_active_notices_format">
-        <item quantity="one">%1$d active notice</item>
-        <item quantity="other">%1$d active notices</item>
-    </plurals>
-    <string name="remit_no_active_notices">No active REMIT notices.</string>
-    <string name="remit_last_update_format">Updated: %1$s</string>
-    <string name="remit_cause_format">Cause: %1$s</string>
-    <string name="remit_capacity_unavailable">Unavailable</string>
-    <string name="remit_capacity_available">Available</string>
-    <string name="remit_capacity_normal">Normal</string>
-    <string name="remit_published_format">Published: %1$s</string>
-    <string name="remit_end_format">End: %1$s</string>
-    <string name="error_unable_to_refresh_remit">Unable to refresh REMIT data.</string>
+    <!-- Alerts Screen -->
+    <string name="remit_last_update_format">Updated at %1$s</string>
+    <string name="remit_no_alerts">No active alerts</string>
+    <string name="remit_available_now">Available now</string>
+    <string name="remit_out_of_format">of %1$d MW</string>
+    <string name="error_unable_to_refresh_remit">Unable to refresh alerts.</string>
 
-    <string name="remit_detail_capacities">Capacities</string>
-    <string name="remit_detail_normal">Normal</string>
-    <string name="remit_detail_available">Available</string>
-    <string name="remit_detail_dates">Dates</string>
+    <string name="remit_detail_available">Capacity</string>
     <string name="remit_detail_start">Start</string>
     <string name="remit_detail_end">End</string>
-    <string name="remit_detail_published">Published</string>
-    <string name="remit_detail_asset_section">Asset</string>
-    <string name="remit_detail_bmu">BMU</string>
-    <string name="remit_detail_participant">Participant</string>
-    <string name="remit_detail_asset">Asset</string>
-    <string name="remit_detail_revision">Revision</string>
-    <string name="remit_detail_mrid">MRID</string>
-    <string name="remit_detail_cause">Cause</string>
     <string name="remit_detail_related_info">Additional information</string>
-    <string name="remit_detail_outage_profile">Outage profile</string>
 
     <!-- Sofia Screen -->
     <string name="title_sofia">Sofia</string>
@@ -122,7 +100,7 @@
     <string name="widget_units_label">Sofia · Availability by unit</string>
     <string name="widget_graph_label">Sofia · Graph</string>
     <string name="widget_live_description">Live production with gauge</string>
-    <string name="widget_units_description">REMIT availability of each unit</string>
+    <string name="widget_units_description">Availability of each unit</string>
     <string name="widget_graph_description">Committed vs actual production over a chosen period</string>
 
     <!-- Modern Widgets (Glance & Config) -->
@@ -154,7 +132,7 @@
     <string name="widget_units_header">AVAILABILITY BY UNIT</string>
 
     <!-- MEL, UOU2T14D, AGWS et écran REMIT regroupé -->
-    <string name="dataset_mel">Available (MEL)</string>
+    <string name="dataset_mel">Available capacity</string>
     <string name="next_days_title">Next 14 days</string>
     <string name="next_days_subtitle">Planned availability</string>
     <string name="next_days_empty">No forecast yet.</string>
@@ -162,8 +140,7 @@
     <string name="gb_context_title">GB context</string>
     <string name="gb_offshore_label">GB offshore wind</string>
     <string name="gb_share_label">Sofia share in GB wind production</string>
-    <string name="gb_share_caption">PN ÷ offshore</string>
-    <string name="gb_source_format">AGWS · %1$s</string>
+    <string name="gb_source_format">Data from %1$s</string>
     <string name="gb_gw_format">%1$s GW</string>
     <string name="gb_others_format">Onshore %1$s GW · Solar %2$s GW</string>
     <string name="gb_empty">No data yet.</string>
@@ -175,20 +152,19 @@
     <string name="data_info_agws">Wind and solar generation for the whole of Great Britain, about 2 h 30 behind.</string>
     <string name="data_info_remit">Official unavailability notices: outages, commissioning, reduced capacity.</string>
     <string name="data_info_wind">Wind speed at 120 m at the farm, history and forecast.</string>
+    <string name="remit_section_current">Ongoing</string>
     <string name="remit_section_upcoming">Upcoming</string>
     <string name="remit_type_planned">Planned</string>
     <string name="remit_type_unplanned">Unplanned</string>
-    <string name="remit_all_units_format">All %1$d units</string>
+    <string name="remit_all_units">All units</string>
     <string name="remit_unit_format">Unit %1$s</string>
     <string name="remit_available_of_format">%1$d / %2$d MW available</string>
     <string name="remit_available_format">%1$d MW available</string>
     <string name="remit_available_unknown">Available capacity unknown</string>
-    <string name="remit_until_format">Until %1$s</string>
-    <string name="remit_no_end">No end date</string>
-    <string name="remit_starts_format">Starts %1$s</string>
-    <string name="remit_show_units">Show units</string>
-    <string name="remit_hide_units">Hide units</string>
-    <string name="remit_profile_caption">Available capacity (MW) over time</string>
+    <string name="remit_until_format">until %1$s</string>
+    <string name="remit_no_end">no end date</string>
+    <string name="remit_starts_format">starts %1$s</string>
+    <string name="remit_profile_caption">Available capacity over time</string>
     <string name="remit_profile_now">now</string>
     <string name="remit_profile_normal_format">Normal %1$d MW</string>
     <plurals name="remit_in_days">
@@ -202,16 +178,16 @@
 
     <!-- Widgets « 14 prochains jours » et « Part de l'éolien GB » -->
     <string name="widget_next_days_label">Sofia · Next 14 days</string>
-    <string name="widget_next_days_description">Planned availability for each of the next 14 days (UOU2T14D)</string>
+    <string name="widget_next_days_description">Planned availability for each of the next 14 days</string>
     <string name="widget_next_days_header">NEXT 14 DAYS</string>
     <string name="widget_next_days_header_short">14 DAYS</string>
     <string name="widget_next_days_today_format">Today %1$d MW</string>
     <string name="widget_gb_label">Sofia · Share of GB wind</string>
-    <string name="widget_gb_description">Sofia\'s announced output compared to offshore wind across Great Britain (AGWS)</string>
+    <string name="widget_gb_description">Sofia\'s announced output compared to offshore wind across Great Britain</string>
     <string name="widget_gb_header">SOFIA VS GB</string>
     <string name="widget_gb_of_offshore">of GB offshore wind</string>
     <string name="widget_gb_of_all_wind_format">%1$s of all GB wind</string>
-    <string name="widget_gb_sofia_format">Sofia (PN) %1$s MW</string>
+    <string name="widget_gb_sofia_format">Sofia %1$s MW</string>
     <string name="widget_gb_offshore_format">GB offshore %1$s GW</string>
     <string name="widget_gb_onshore_format">GB onshore %1$s GW</string>
 </resources>

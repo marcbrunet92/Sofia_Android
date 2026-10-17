@@ -2,7 +2,7 @@ package com.lemarc.sofia.ui.remit
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,13 +13,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -29,20 +29,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.R
-import com.lemarc.sofia.data.model.RemitNotice
-import com.lemarc.sofia.data.model.parseOutageProfile
 import com.lemarc.sofia.ui.components.OutageProfileChart
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RemitDetailScreen(
-    notice: RemitNotice,
+    group: RemitGroup,
     onBack: () -> Unit,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(notice.bmuId) },
+                title = {},
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -58,88 +56,72 @@ fun RemitDetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // ── Header ────────────────────────────────────────────────────────
-            Text(
-                text = notice.messageHeading.ifBlank { notice.eventType },
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-            )
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                LabeledChip(notice.eventStatus)
-                LabeledChip(notice.eventType)
-                if (notice.unavailabilityType.isNotBlank()) LabeledChip(notice.unavailabilityType)
-                if (notice.fuelType.isNotBlank()) LabeledChip(notice.fuelType)
-            }
-
-            HorizontalDivider()
-
-            // ── Capacités ─────────────────────────────────────────────────────
-            SectionTitle(stringResource(R.string.remit_detail_capacities))
-            DetailRow(
-                stringResource(R.string.remit_detail_normal),
-                notice.normalCapacityMw?.let { stringResource(R.string.mw_value_format, it.toInt()) } ?: "—",
-            )
-            DetailRow(
-                stringResource(R.string.remit_detail_available),
-                notice.availableCapacityMw?.let { stringResource(R.string.mw_value_format, it.toInt()) } ?: "—",
-            )
-            HorizontalDivider()
-
-            // ── Dates ─────────────────────────────────────────────────────────
-            SectionTitle(stringResource(R.string.remit_detail_dates))
-            DetailRow(stringResource(R.string.remit_detail_start), formatTimestamp(notice.eventStartTime))
-            DetailRow(stringResource(R.string.remit_detail_end), formatTimestamp(notice.eventEndTime))
-            DetailRow(stringResource(R.string.remit_detail_published), formatTimestamp(notice.publishTime))
-
-            HorizontalDivider()
-
-            // ── Actif ─────────────────────────────────────────────────────────
-            SectionTitle(stringResource(R.string.remit_detail_asset_section))
-            DetailRow(stringResource(R.string.remit_detail_bmu), notice.bmuId)
-            DetailRow(stringResource(R.string.remit_detail_participant), notice.participantId)
-            DetailRow(stringResource(R.string.remit_detail_asset), notice.assetId)
-            DetailRow(stringResource(R.string.remit_detail_revision), notice.revisionNumber.toString())
-            DetailRow(stringResource(R.string.remit_detail_mrid), notice.mrid)
-
-            // ── Cause ─────────────────────────────────────────────────────────
-            if (notice.cause.isNotBlank()) {
-                HorizontalDivider()
-                SectionTitle(stringResource(R.string.remit_detail_cause))
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                typeLabel(group)?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = typeColor(group),
+                    )
+                }
                 Text(
-                    text = notice.cause,
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = group.title,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = scopeText(group),
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
 
-            // ── Informations complémentaires ──────────────────────────────────
-            if (notice.relatedInformation.isNotBlank()) {
-                HorizontalDivider()
-                SectionTitle(stringResource(R.string.remit_detail_related_info))
-                Text(
-                    text = notice.relatedInformation,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+            DetailCard {
+                DetailRow(
+                    stringResource(R.string.remit_detail_available),
+                    availabilityText(group.availableMw, group.normalMw),
+                )
+                DetailRow(stringResource(R.string.remit_detail_start), group.start?.let(::alertDate) ?: "—")
+                DetailRow(
+                    stringResource(R.string.remit_detail_end),
+                    group.end?.let(::alertDate) ?: stringResource(R.string.remit_no_end),
                 )
             }
 
-            // ── Profil d'indisponibilité ──────────────────────────────────────
-            val profile = remember(notice.outageProfile) { parseOutageProfile(notice.outageProfile) }
+            if (group.notices.size > 1) {
+                DetailCard {
+                    group.notices.forEach { notice ->
+                        DetailRow(
+                            stringResource(R.string.remit_unit_format, unitNumber(notice.bmuId)),
+                            availabilityText(notice.effectiveAvailableMw(), notice.normalCapacityMw),
+                        )
+                    }
+                }
+            }
+
+            val profile = remember(group) { group.outageProfile() }
             if (profile.isNotEmpty()) {
-                HorizontalDivider()
-                SectionTitle(stringResource(R.string.remit_detail_outage_profile))
-                Text(
-                    text = stringResource(R.string.remit_profile_caption),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                OutageProfileChart(steps = profile, normalMw = notice.normalCapacityMw)
+                DetailCard {
+                    Text(text = stringResource(R.string.remit_profile_caption), style = MaterialTheme.typography.titleSmall)
+                    OutageProfileChart(steps = profile, normalMw = group.normalMw)
+                }
+            }
+
+            val info = group.first.relatedInformation
+            if (info.isNotBlank()) {
+                DetailCard {
+                    Text(text = stringResource(R.string.remit_detail_related_info), style = MaterialTheme.typography.titleSmall)
+                    Text(
+                        text = info,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -147,40 +129,34 @@ fun RemitDetailScreen(
 }
 
 @Composable
-private fun SectionTitle(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.labelMedium,
-        fontWeight = FontWeight.SemiBold,
-        color = MaterialTheme.colorScheme.primary,
-    )
-}
-
-@Composable
-private fun DetailRow(label: String, value: String) {
-    Row(
+private fun DetailCard(content: @Composable ColumnScope.() -> Unit) {
+    Card(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
     ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.weight(0.45f),
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier.weight(0.55f),
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            content = content,
         )
     }
 }
 
 @Composable
-private fun LabeledChip(text: String) {
-    SuggestionChip(
-        onClick = {},
-        label = { Text(text = text, style = MaterialTheme.typography.labelSmall) },
-    )
+private fun DetailRow(label: String, value: String) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium,
+        )
+    }
 }
