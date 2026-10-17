@@ -20,7 +20,7 @@ import java.time.Instant
         GbContextEntity::class,
     ],
     // v2 : + mel_points, uou_days, gb_context. C'est un cache : on le recrée au lieu de migrer.
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(SofiaDatabase.Converters::class)
