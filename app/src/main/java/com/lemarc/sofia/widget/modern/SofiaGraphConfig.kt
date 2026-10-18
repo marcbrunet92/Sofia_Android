@@ -55,23 +55,17 @@ fun TimeWindow.showsActual(): Boolean {
 
 @StringRes
 fun TimeWindow.longLabelRes(): Int = when (this) {
-    TimeWindow.HOURS_6 -> R.string.time_window_long_6h
     TimeWindow.HOURS_24 -> R.string.time_window_long_24h
-    TimeWindow.HOURS_48 -> R.string.time_window_long_48h
     TimeWindow.DAYS_7 -> R.string.time_window_long_7d
     TimeWindow.MONTH_1 -> R.string.time_window_long_1m
-    TimeWindow.MONTH_3 -> R.string.time_window_long_3m
     TimeWindow.ALL -> R.string.time_window_long_all
 }
 
 @StringRes
 fun TimeWindow.shortTitleRes(): Int = when (this) {
-    TimeWindow.HOURS_6 -> R.string.time_window_short_6h
     TimeWindow.HOURS_24 -> R.string.time_window_short_24h
-    TimeWindow.HOURS_48 -> R.string.time_window_short_48h
     TimeWindow.DAYS_7 -> R.string.time_window_short_7d
     TimeWindow.MONTH_1 -> R.string.time_window_short_1m
-    TimeWindow.MONTH_3 -> R.string.time_window_short_3m
     TimeWindow.ALL -> R.string.time_window_short_all
 }
 

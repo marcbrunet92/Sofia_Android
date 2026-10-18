@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.R
 
@@ -19,14 +20,14 @@ fun TitleBanner(title: String = stringResource(R.string.title_sofia_live_generat
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(8.dp),
+        contentAlignment = Alignment.Center,
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-            )
-        }
+        Text(
+            text = title,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+        )
     }
 }

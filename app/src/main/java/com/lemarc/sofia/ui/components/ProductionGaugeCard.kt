@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
@@ -58,7 +59,10 @@ fun ProductionGaugeCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(20.dp)
+                // L'arc (270°) est ouvert en bas : ~32 dp vides sous le dessin dans le carré de 240 dp.
+                // On décale de la moitié pour que la jauge paraisse centrée dans la carte.
+                .offset(y = 16.dp),
             contentAlignment = Alignment.Center,
         ) {
             Canvas(modifier = Modifier.size(240.dp)) {

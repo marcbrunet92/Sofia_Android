@@ -7,6 +7,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -71,7 +73,10 @@ fun SofiaApp(
             NavHost(
                 navController = navController,
                 startDestination = Route.Tabs,
-                modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
+                // La marge de la barre d'état est consommée ici : sinon la TopAppBar du détail l'ajoute une 2e fois
+                modifier = PaddingValues(top = innerPadding.calculateTopPadding()).let { top ->
+                    Modifier.padding(top).consumeWindowInsets(top)
+                },
             ) {
                 composable<Route.Tabs> {
                     HorizontalPager(

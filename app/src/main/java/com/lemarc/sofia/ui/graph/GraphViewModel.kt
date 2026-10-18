@@ -37,8 +37,8 @@ enum class GraphDataset(@StringRes val labelRes: Int) {
 data class GraphUiState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
-    val selectedWindow: TimeWindow = TimeWindow.ALL,
-    val selectedDatasets: Set<GraphDataset> = setOf(GraphDataset.PN),
+    val selectedWindow: TimeWindow = TimeWindow.MONTH_1,
+    val selectedDatasets: Set<GraphDataset> = setOf(GraphDataset.PN, GraphDataset.B1610),
     // Raw data
     val pnPoints: List<GraphPoint> = emptyList(), // MW
     val b1610PointsMwh: List<GraphPoint> = emptyList(), // MWh per 30min

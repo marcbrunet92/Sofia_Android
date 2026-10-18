@@ -50,8 +50,7 @@ private enum class AxisTimeFormat(val pattern: String) {
     HOURS("HH:mm"),         // ≤ 12 h
     DAY_HOURS("EEE HH:mm"), // ≤ 3 j ET dans les 3 derniers jours de données
     DATES("dd/MM"),         // ≤ 1 an
-    MONTHS("MM/yy");        // > 1 an
-
+    DATES_WITH_HOURS("dd/MM HH:00");
     companion object {
         private val RECENT_MS = Duration.ofDays(3).toMillis()
 
@@ -62,8 +61,8 @@ private enum class AxisTimeFormat(val pattern: String) {
             return when {
                 spanMs <= Duration.ofHours(12).toMillis() -> HOURS
                 spanMs <= RECENT_MS && isRecent -> DAY_HOURS
-                spanMs <= Duration.ofDays(365).toMillis() -> DATES
-                else -> MONTHS
+                spanMs <= Duration.ofDays(6).toMillis() -> DATES_WITH_HOURS
+                else -> DATES
             }
         }
     }

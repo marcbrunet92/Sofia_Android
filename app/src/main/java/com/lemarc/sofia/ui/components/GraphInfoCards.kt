@@ -20,14 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.R
 import com.lemarc.sofia.data.model.GbContext
 import com.lemarc.sofia.data.model.GraphPoint
 import com.lemarc.sofia.data.model.UouDay
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -74,7 +72,7 @@ private fun CardTitle(title: String, subtitle: String? = null) {
 @Composable
 fun NextDaysCard(days: List<UouDay>, capacityMw: Double?) {
     InfoCardContainer {
-        CardTitle(stringResource(R.string.next_days_title), stringResource(R.string.next_days_subtitle))
+        CardTitle(stringResource(R.string.next_days_title))
         val today = LocalDate.now()
         val shown = days.filter { !it.date.isBefore(today) }.take(14)
         if (shown.isEmpty()) {
@@ -125,7 +123,6 @@ fun NextDaysCard(days: List<UouDay>, capacityMw: Double?) {
 @Composable
 fun GbContextCard(context: GbContext?, pnPoints: List<GraphPoint>) {
     InfoCardContainer {
-        CardTitle(stringResource(R.string.gb_context_title))
         if (context == null) {
             Text(
                 text = stringResource(R.string.gb_empty),
@@ -139,13 +136,8 @@ fun GbContextCard(context: GbContext?, pnPoints: List<GraphPoint>) {
         val share = if (offshore != null && offshore > 0.0 && sofiaMw != null) sofiaMw / offshore * 100 else null
 
         Text(
-            text = share?.let { String.format(Locale.getDefault(), "%.1f %%", it) } ?: "—",
-            style = MaterialTheme.typography.headlineMedium,
-        )
-        Text(
-            text = stringResource(R.string.gb_share_label),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            text = stringResource(R.string.gb_context_title, share?.let { String.format(Locale.getDefault(), "%.1f %%", it) } ?: "—"),
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }

@@ -14,13 +14,13 @@
     <string name="time_window_6h">6h</string>
     <string name="time_window_24h">24h</string>
     <string name="time_window_48h">48h</string>
-    <string name="time_window_7d">7d</string>
+    <string name="time_window_7d">1w</string>
     <string name="time_window_1m">1m</string>
     <string name="time_window_3m">3m</string>
     <string name="time_window_all">All</string>
 
     <string name="time_window_long_6h">6 hours</string>
-    <string name="time_window_long_24h">24 hours</string>
+    <string name="time_window_long_24h">1 days</string>
     <string name="time_window_long_48h">48 hours</string>
     <string name="time_window_long_7d">7 days</string>
     <string name="time_window_long_1m">1 month</string>
@@ -28,7 +28,7 @@
     <string name="time_window_long_all">Full history</string>
 
     <string name="time_window_short_6h">6 H</string>
-    <string name="time_window_short_24h">24 H</string>
+    <string name="time_window_short_24h">1d</string>
     <string name="time_window_short_48h">48 H</string>
     <string name="time_window_short_7d">7 D</string>
     <string name="time_window_short_1m">1 MONTH</string>
@@ -41,7 +41,7 @@
     <string name="mw_value_format">%1$d MW</string>
     <string name="capacity_format">%1$s: %2$s MW</string>
     <string name="gauge_capacity_format">%1$d%% of %2$d MW</string>
-    <string name="gauge_data_timestamp_format">Data from %1$s</string>
+    <string name="gauge_data_timestamp_format">Power committed \n on %1$s</string>
 
     <!-- Graph Screen -->
     <string name="title_graph">Sofia Generation</string>
@@ -49,9 +49,9 @@
     <string name="title_sofia_live_generation">Sofia Live Generation</string>
     <string name="test_mode_warning">TEST MODE — displaying T_HEYM11 only</string>
     <string name="chart_title">Chart</string>
-    <string name="dataset_weather">Weather</string>
+    <string name="dataset_weather">Wind speed</string>
     <string name="dataset_pn">Committed</string>
-    <string name="dataset_b1610">Actual production</string>
+    <string name="dataset_b1610">Actual</string>
     <string name="error_unable_to_refresh_data">Unable to refresh data.</string>
 
     <!-- Chart Placeholder & Empty States -->
@@ -133,13 +133,12 @@
 
     <!-- MEL, UOU2T14D, AGWS et écran REMIT regroupé -->
     <string name="dataset_mel">Available capacity</string>
-    <string name="next_days_title">Next 14 days</string>
-    <string name="next_days_subtitle">Planned availability</string>
+    <string name="next_days_title">Planned availability</string>
     <string name="next_days_empty">No forecast yet.</string>
     <string name="next_days_label_format">%1$s · %2$d MW</string>
-    <string name="gb_context_title">GB context</string>
+    <string name="gb_context_title">Sofia currently generates %1$s of the total UK wind power generation.</string>
     <string name="gb_offshore_label">GB offshore wind</string>
-    <string name="gb_share_label">Sofia share in GB wind production</string>
+    <string name="gb_share_label">Sofia vs UK actual wind power generation</string>
     <string name="gb_source_format">Data from %1$s</string>
     <string name="gb_gw_format">%1$s GW</string>
     <string name="gb_others_format">Onshore %1$s GW · Solar %2$s GW</string>
@@ -190,4 +189,5 @@
     <string name="widget_gb_sofia_format">Sofia %1$s MW</string>
     <string name="widget_gb_offshore_format">GB offshore %1$s GW</string>
     <string name="widget_gb_onshore_format">GB onshore %1$s GW</string>
+    <string name="chart_subtitle">Actual generation is reported with 7 days delay.</string>
 </resources>
