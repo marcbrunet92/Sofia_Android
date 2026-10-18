@@ -45,7 +45,7 @@
 
     <!-- Graph Screen -->
     <string name="title_graph">Sofia Generation</string>
-    <string name="timestamp_today_format">today at %1$s CET</string>
+    <string name="timestamp_today_format">today at %1$s</string>
     <string name="title_sofia_live_generation">Sofia Live Generation</string>
     <string name="test_mode_warning">TEST MODE — displaying T_HEYM11 only</string>
     <string name="chart_title">Chart</string>

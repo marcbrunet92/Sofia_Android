@@ -16,6 +16,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.patrykandpatrick.vico.compose.cartesian.AutoScrollCondition
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.Scroll
 import com.patrykandpatrick.vico.compose.cartesian.Zoom
@@ -46,11 +47,11 @@ import java.util.Locale
  * Format de l'axe X choisi d'après la durée RÉELLEMENT visible (et non d'après le chip sélectionné),
  * donc il suit aussi les pincements de zoom.
  */
-private enum class AxisTimeFormat(val pattern: String) {
-    HOURS("HH:mm"),         // ≤ 12 h
-    DAY_HOURS("EEE HH:mm"), // ≤ 3 j ET dans les 3 derniers jours de données
-    DATES("dd/MM"),         // ≤ 1 an
-    DATES_WITH_HOURS("dd/MM HH:00");
+private enum class AxisTimeFormat(val pattern: String, val showsTime: Boolean) {
+    HOURS("HH:mm", true),         // ≤ 12 h
+    DAY_HOURS("EEE HH:mm", true), // ≤ 3 j ET dans les 3 derniers jours de données
+    DATES("dd/MM", false),        // ≤ 1 an
+    DATES_WITH_HOURS("dd/MM HH:00", true);
     companion object {
         private val RECENT_MS = Duration.ofDays(3).toMillis()
 
@@ -95,6 +96,26 @@ private fun areaFillFor(series: ChartSeries): LineCartesianLayer.AreaFill? =
 // x = timestamp en millisecondes epoch, pour que chaque quantity reste liée à son propre instant
 private fun xOf(point: GraphPoint): Double = point.timeFrom.toEpochMilli().toDouble()
 
+/** Heures du graphique toujours en heure de Paris, quel que soit le fuseau du téléphone. */
+private val ChartZone: ZoneId = ZoneId.of("Europe/Paris")
+
+// « CET » est écrit en dur, comme dans ProductionGaugeCard, pour que les deux affichent la même chose.
+// Attention : l'heure est celle de Paris, donc en heure d'été (fin mars → fin octobre) c'est en
+// réalité du CEST (UTC+2) alors que le texte affiche toujours « CET ».
+// Pour une étiquette exacte toute l'année : DateTimeFormatter.ofPattern("z", Locale.ENGLISH).withZone(ChartZone)
+// (à changer aussi dans ProductionGaugeCard).
+private const val ChartZoneLabel = "CET"
+
+/**
+ * Revient à la fin des données dès que leur étendue change (série ajoutée/retirée, nouveaux points).
+ * Sinon Vico garde la position de scroll en pixels : en retirant la météo, qui va jusqu'à maintenant,
+ * la fenêtre restait calée sur une date plus ancienne au lieu de suivre la nouvelle fin des données.
+ */
+private val ScrollToEndOnRangeChange = AutoScrollCondition { oldModel, newModel ->
+    oldModel != null &&
+        (oldModel.models.size != newModel.models.size || oldModel.width != newModel.width)
+}
+
 private fun zoomFor(tw: TimeWindow): Zoom =
     tw.duration?.let { Zoom.x(it.toMillis().toDouble()) } ?: Zoom.Content // "All" : tout voir
 
@@ -110,7 +131,10 @@ fun ProductionChartContent(
     // Zoom/scroll INITIAUX = fenêtre sélectionnée : Vico les applique dès que le premier modèle arrive.
     // Avant, l'effet sur `tw` s'exécutait alors que le modèle était encore vide (retour sur l'onglet,
     // item recréé par la LazyColumn...), donc le graphique restait sur « All » alors que le chip disait autre chose.
-    val scrollState = rememberVicoScrollState(initialScroll = Scroll.Absolute.End)
+    val scrollState = rememberVicoScrollState(
+        initialScroll = Scroll.Absolute.End,
+        autoScrollCondition = ScrollToEndOnRangeChange,
+    )
     val zoomState = rememberVicoZoomState(zoomEnabled = true, initialZoom = zoomFor(tw))
 
     // Toutes les données vont dans le modèle — pas de filtrage par fenêtre temporelle
@@ -172,7 +196,7 @@ fun ProductionChartContent(
     }
     val formatters = remember {
         AxisTimeFormat.entries.associateWith {
-            DateTimeFormatter.ofPattern(it.pattern, Locale.getDefault()).withZone(ZoneId.systemDefault())
+            DateTimeFormatter.ofPattern(it.pattern, Locale.getDefault()).withZone(ChartZone)
         }
     }
 
@@ -232,7 +256,10 @@ fun ProductionChartContent(
             bottomAxis = HorizontalAxis.rememberBottom(
                 // Lu à chaque dessin : le format suit le zoom courant (pincement ou chip)
                 valueFormatter = { _, value, _ ->
-                    formatters.getValue(visibleFormat).format(Instant.ofEpochMilli(value.toLong()))
+                    val instant = Instant.ofEpochMilli(value.toLong())
+                    val format = visibleFormat
+                    val label = formatters.getValue(format).format(instant)
+                    if (format.showsTime) "$label $ChartZoneLabel" else label
                 },
                 labelRotationDegrees = -20f,
             ),

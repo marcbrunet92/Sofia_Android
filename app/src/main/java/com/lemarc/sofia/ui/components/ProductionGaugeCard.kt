@@ -215,17 +215,22 @@ private fun DrawScope.drawGaugeArcs(progress: Float, strokePx: Float, trackColor
     )
 }
 
-/** « Aujourd'hui, 14:30 » / « Today, 14:30 » si la donnée date d'aujourd'hui, sinon « 17/10 14:30 ». */
+/** « Today, 2 PM CET » si la donnée date d'aujourd'hui, sinon « 17/10 14:30 CET ». */
 @Composable
 private fun formatDataTimestamp(timestamp: Instant?): String {
     if (timestamp == null) return "—"
     val zone = ZoneId.of("Europe/Paris")
     val locale = LocalLocale.current.platformLocale
     val dateTime = timestamp.atZone(zone)
+    // « CET » est écrit en dur (texte entre apostrophes dans le motif), et non via le motif « z ».
+    // Attention : l'heure est celle de Paris, donc en heure d'été (fin mars → fin octobre) c'est
+    // en réalité du CEST (UTC+2) alors que le texte affiche toujours « CET ».
+    // Pour une étiquette exacte toute l'année, remplacer 'CET' par z (avec Locale.ENGLISH),
+    // comme sur l'axe du graphique (ProductionChartContent).
     return if (dateTime.toLocalDate() == LocalDate.now(zone)) {
-        val time = DateTimeFormatter.ofPattern("h a", Locale.ENGLISH).format(dateTime)
+        val time = DateTimeFormatter.ofPattern("h a 'CET'", Locale.ENGLISH).format(dateTime)
         stringResource(R.string.timestamp_today_format, time)
     } else {
-        DateTimeFormatter.ofPattern("dd/MM HH:mm", locale).format(dateTime)
+        DateTimeFormatter.ofPattern("dd/MM HH:mm 'CET'", locale).format(dateTime)
     }
 }
