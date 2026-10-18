@@ -26,8 +26,8 @@ android {
         applicationId = "com.lemarc.sofia"
         minSdk = 26
         targetSdk = 37
-        versionCode = 4
-        versionName = "4"
+        versionCode = 5
+        versionName = "5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
