@@ -42,6 +42,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import kotlin.math.roundToInt
 
 @Composable
@@ -120,6 +121,8 @@ fun ProductionGaugeCompactCard(
     val animatedProgress by animateFloatAsState(targetValue = progress, label = "compactGaugeProgress")
     val animatedMw by animateFloatAsState(targetValue = currentMw.toFloat(), label = "compactGaugeValue")
     val trackColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+    // Même taille pour « XX MW » et « XX % » ; plus grand, « 1400 MW » ne tient plus dans l'arc
+    val valueStyle = MaterialTheme.typography.headlineSmall
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
@@ -148,8 +151,9 @@ fun ProductionGaugeCompactCard(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = stringResource(R.string.mw_value_format, animatedMw.roundToInt()),
-                            style = MaterialTheme.typography.titleLarge,
+                            style = valueStyle,
                             fontWeight = FontWeight.Bold,
+                            maxLines = 1,
                         )
                         Text(
                             text = stringResource(R.string.gauge_data_timestamp_format, formatDataTimestamp(dataTimestamp)),
@@ -170,7 +174,7 @@ fun ProductionGaugeCompactCard(
             ) {
                 Text(
                     text = formatGbShare(gbSharePercent),
-                    style = MaterialTheme.typography.displaySmall,
+                    style = valueStyle,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
                 )
@@ -215,11 +219,11 @@ private fun DrawScope.drawGaugeArcs(progress: Float, strokePx: Float, trackColor
 @Composable
 private fun formatDataTimestamp(timestamp: Instant?): String {
     if (timestamp == null) return "—"
-    val zone = ZoneId.systemDefault()
+    val zone = ZoneId.of("Europe/Paris")
     val locale = LocalLocale.current.platformLocale
     val dateTime = timestamp.atZone(zone)
     return if (dateTime.toLocalDate() == LocalDate.now(zone)) {
-        val time = DateTimeFormatter.ofPattern("HH:mm", locale).format(dateTime)
+        val time = DateTimeFormatter.ofPattern("h a", Locale.ENGLISH).format(dateTime)
         stringResource(R.string.timestamp_today_format, time)
     } else {
         DateTimeFormatter.ofPattern("dd/MM HH:mm", locale).format(dateTime)

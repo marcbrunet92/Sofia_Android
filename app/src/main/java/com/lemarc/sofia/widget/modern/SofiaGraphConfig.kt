@@ -59,6 +59,7 @@ fun TimeWindow.longLabelRes(): Int = when (this) {
     TimeWindow.DAYS_7 -> R.string.time_window_long_7d
     TimeWindow.MONTH_1 -> R.string.time_window_long_1m
     TimeWindow.ALL -> R.string.time_window_long_all
+    TimeWindow.MONTH_6 -> R.string.time_window_long_6m
 }
 
 @StringRes
@@ -67,6 +68,7 @@ fun TimeWindow.shortTitleRes(): Int = when (this) {
     TimeWindow.DAYS_7 -> R.string.time_window_short_7d
     TimeWindow.MONTH_1 -> R.string.time_window_short_1m
     TimeWindow.ALL -> R.string.time_window_short_all
+    TimeWindow.MONTH_6 -> R.string.time_window_short_6m
 }
 
 fun TimeWindow.longLabel(context: Context): String = context.getString(longLabelRes())

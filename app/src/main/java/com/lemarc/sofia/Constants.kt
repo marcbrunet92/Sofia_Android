@@ -15,9 +15,9 @@ enum class TimeWindow(
     val duration: Duration?,
     @StringRes val labelRes: Int = R.string.time_window_all,
 ) {
-    // HOURS_6("6h", Duration.ofHours(6), R.string.time_window_6h),
     HOURS_24("24h", Duration.ofHours(24), R.string.time_window_24h),
     DAYS_7("7d", Duration.ofDays(7), R.string.time_window_7d),
     MONTH_1("1m", Duration.ofDays(30), R.string.time_window_1m),
+    MONTH_6("6m", Duration.ofDays(30*6), R.string.time_window_short_6m),
     ALL("All", null, R.string.time_window_all),
 }
