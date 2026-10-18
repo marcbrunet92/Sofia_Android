@@ -27,14 +27,12 @@ import androidx.compose.ui.unit.dp
 import com.lemarc.sofia.R
 
 @Composable
-fun EmptyChartPlaceholder(modifier: Modifier = Modifier) {
+fun EmptyChartPlaceholder(modifier: Modifier = Modifier.height(280.dp)) {
     val lineColor = MaterialTheme.colorScheme.outlineVariant
     val containerColor = MaterialTheme.colorScheme.surfaceContainerLow
 
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(280.dp),
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor),
     ) {

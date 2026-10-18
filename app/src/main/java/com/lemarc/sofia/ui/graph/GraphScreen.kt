@@ -4,18 +4,18 @@ import android.graphics.Color
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,13 +34,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import com.lemarc.sofia.R
 import com.lemarc.sofia.TimeWindow
 import com.lemarc.sofia.ui.components.ChartSeries
 import com.lemarc.sofia.ui.components.ErrorBanner
-import com.lemarc.sofia.ui.components.GbContextCard
 import com.lemarc.sofia.ui.components.ProductionChartMulti
-import com.lemarc.sofia.ui.components.ProductionGaugeCard
+import com.lemarc.sofia.ui.components.ProductionGaugeCompactCard
+import com.lemarc.sofia.ui.components.gbSharePercent
 import com.lemarc.sofia.ui.components.TitleBanner
 import androidx.compose.ui.graphics.Color as ComposeColor
 
@@ -65,8 +66,6 @@ fun GraphScreen(
     onToggleDataset: (GraphDataset) -> Unit,
     onDismissError: () -> Unit,
 ) {
-    val listState = rememberLazyListState()
-
     val leftRightSeries = remember(
         state.selectedDatasets,
         state.pnPoints,
@@ -138,31 +137,33 @@ fun GraphScreen(
                     verticalArrangement = Arrangement.Center,
                 ) { CircularProgressIndicator() }
 
-            else -> LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp + bottomInset),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                item { TitleBanner(title = stringResource(R.string.title_graph)) }
-                if (state.errorMessageRes != null) {
-                    item {
+            // Écran à hauteur fixe : le graphique prend toute la place restante, rien ne défile.
+            // verticalScroll est gardé pour que le tirer-pour-rafraîchir reçoive le geste ; il ne défile
+            // réellement que sur les très petits écrans, où la hauteur minimale dépasse l'écran.
+            else -> BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .height(max(maxHeight, MinScreenHeight + bottomInset))
+                        .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp + bottomInset),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    TitleBanner(title = stringResource(R.string.title_graph))
+                    if (state.errorMessageRes != null) {
                         ErrorBanner(
                             text = stringResource(state.errorMessageRes),
                             onDismiss = onDismissError,
                         )
                     }
-                }
-                item {
                     val latest = state.pnPoints.maxByOrNull { it.timeFrom }
-                    ProductionGaugeCard(
+                    ProductionGaugeCompactCard(
                         currentMw = latest?.quantity ?: 0.0,
                         maxCapacityMw = 1400.toDouble(),
                         dataTimestamp = latest?.timeFrom,
+                        gbSharePercent = remember(state.gbContext, state.pnPoints) {
+                            gbSharePercent(state.gbContext, state.pnPoints)
+                        },
                     )
-                }
-
-                item {
                     GraphChartCard(
                         left = leftRightSeries.first,
                         right = leftRightSeries.second,
@@ -170,13 +171,16 @@ fun GraphScreen(
                         onSelectWindow = onSelectWindow,
                         selectedDataset = state.selectedDatasets,
                         onSelectDataset = onToggleDataset,
+                        modifier = Modifier.weight(1f),
                     )
                 }
-                item { GbContextCard(context = state.gbContext, pnPoints = state.pnPoints) }
             }
         }
     }
 }
+
+// En dessous (hors barre d'onglets), le graphique deviendrait illisible : l'écran défile alors
+private val MinScreenHeight = 620.dp
 
 @Composable
 private fun DatasetSelector(
@@ -255,15 +259,15 @@ private fun GraphChartCard(
     onSelectWindow: (TimeWindow) -> Unit,
     selectedDataset: Set<GraphDataset>,
     onSelectDataset: (GraphDataset) -> Unit,
-
+    modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
@@ -283,7 +287,12 @@ private fun GraphChartCard(
                     )
                 }
             }
-            ProductionChartMulti(left = left, right = right, tw = selectedWindow)
+            ProductionChartMulti(
+                left = left,
+                right = right,
+                tw = selectedWindow,
+                modifier = Modifier.weight(1f),
+            )
             if (selectedDataset.contains(GraphDataset.B1610)) {
                 Text(stringResource(R.string.chart_subtitle), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }

@@ -103,6 +103,7 @@ fun ProductionChartContent(
     left: List<ChartSeries>,
     right: List<ChartSeries>,
     tw: TimeWindow,
+    modifier: Modifier = Modifier.height(280.dp),
 ) {
     val modelProducer = remember { CartesianChartModelProducer() }
 
@@ -206,9 +207,8 @@ fun ProductionChartContent(
     val axisTitleStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 11.sp)
 
     CartesianChartHost(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .height(280.dp)
             .onSizeChanged { viewportPx = it.width.toFloat() },
         scrollState = scrollState,
         zoomState = zoomState,

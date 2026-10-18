@@ -137,6 +137,7 @@
     <string name="next_days_empty">No forecast yet.</string>
     <string name="next_days_label_format">%1$s · %2$d MW</string>
     <string name="gb_context_title">Sofia currently generates %1$s of the total UK wind power generation.</string>
+    <string name="gb_share_subtitle">of UK wind power generation</string>
     <string name="gb_offshore_label">GB offshore wind</string>
     <string name="gb_share_label">Sofia vs UK actual wind power generation</string>
     <string name="gb_source_format">Data from %1$s</string>

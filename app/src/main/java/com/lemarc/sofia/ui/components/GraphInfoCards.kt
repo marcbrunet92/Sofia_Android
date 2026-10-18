@@ -131,14 +131,21 @@ fun GbContextCard(context: GbContext?, pnPoints: List<GraphPoint>) {
             )
             return@InfoCardContainer
         }
-        val offshore = context.windOffshoreMw?.let { off -> off + (context.windOnshoreMw ?: 0.0) }
-        val sofiaMw = pnPoints.lastOrNull { it.timeFrom == context.timeFrom }?.quantity
-        val share = if (offshore != null && offshore > 0.0 && sofiaMw != null) sofiaMw / offshore * 100 else null
-
         Text(
-            text = stringResource(R.string.gb_context_title, share?.let { String.format(Locale.getDefault(), "%.1f %%", it) } ?: "—"),
+            text = stringResource(R.string.gb_context_title, formatGbShare(gbSharePercent(context, pnPoints))),
             style = MaterialTheme.typography.bodyMedium,
         )
     }
 }
+
+/** Part de Sofia (PN) dans l'éolien GB (en mer + terrestre) au même créneau, en %. null si incalculable. */
+fun gbSharePercent(context: GbContext?, pnPoints: List<GraphPoint>): Double? {
+    if (context == null) return null
+    val wind = context.windOffshoreMw?.let { off -> off + (context.windOnshoreMw ?: 0.0) }
+    val sofiaMw = pnPoints.lastOrNull { it.timeFrom == context.timeFrom }?.quantity
+    return if (wind != null && wind > 0.0 && sofiaMw != null) sofiaMw / wind * 100 else null
+}
+
+fun formatGbShare(share: Double?): String =
+    share?.let { String.format(Locale.getDefault(), "%.1f %%", it) } ?: "—"
 
