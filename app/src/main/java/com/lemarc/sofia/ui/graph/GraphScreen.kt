@@ -2,6 +2,7 @@ package com.lemarc.sofia.ui.graph
 
 import android.graphics.Color
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -188,64 +189,71 @@ private fun DatasetSelector(
     onSelect: (GraphDataset) -> Unit,
 ) {
     // Chaque chip garde sa largeur naturelle, l'espace restant est réparti à parts égales
-    // pour que l'ensemble occupe toute la largeur
-    Layout(
-        modifier = Modifier.fillMaxWidth(),
-        content = {
-            listOf(GraphDataset.B1610, GraphDataset.PN, GraphDataset.Weather).forEach { option ->
-                FilterChip(
-                    selected = option in selected,
-                    onClick = { onSelect(option) },
-                    label = {
-                        Text(
-                            text = stringResource(option.labelRes),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    },
-                    leadingIcon = {
-                        Box(
-                            modifier = Modifier
-                                .size(12.dp)
-                                .clip(RoundedCornerShape(2.dp))
-                                .background(ComposeColor(option.color)),
-                        )
-                    },
+    // pour que l'ensemble occupe toute la largeur. Sur un petit écran où les chips ne tiennent pas,
+    // elles gardent leur largeur naturelle et la rangée défile horizontalement.
+    // BoxWithConstraints : dans horizontalScroll la largeur max est infinie, il faut la lire avant.
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        val viewportPx = constraints.maxWidth
+        Layout(
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            content = {
+                listOf(GraphDataset.B1610, GraphDataset.PN, GraphDataset.Weather).forEach { option ->
+                    FilterChip(
+                        selected = option in selected,
+                        onClick = { onSelect(option) },
+                        label = {
+                            Text(
+                                text = stringResource(option.labelRes),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        },
+                        leadingIcon = {
+                            Box(
+                                modifier = Modifier
+                                    .size(12.dp)
+                                    .clip(RoundedCornerShape(2.dp))
+                                    .background(ComposeColor(option.color)),
+                            )
+                        },
+                    )
+                }
+            },
+        ) { measurables, constraints ->
+            val gap = 8.dp.roundToPx()
+            val available = viewportPx - gap * (measurables.size - 1)
+            val natural = measurables.map { it.maxIntrinsicWidth(constraints.maxHeight) }
+            val naturalSum = natural.sum()
+
+            val widths = if (naturalSum <= available) {
+                val extra = (available - naturalSum) / measurables.size
+                natural.map { it + extra }.toMutableList().also {
+                    // Le reste des arrondis va au dernier chip pour remplir exactement la largeur
+                    it[it.lastIndex] += available - it.sum()
+                }
+            } else {
+                // Pas assez de place : largeur naturelle, la rangée défile
+                natural
+            }
+
+            val placeables = measurables.mapIndexed { i, measurable ->
+                measurable.measure(
+                    Constraints(
+                        minWidth = widths[i],
+                        maxWidth = widths[i],
+                        maxHeight = constraints.maxHeight,
+                    ),
                 )
             }
-        },
-    ) { measurables, constraints ->
-        val gap = 8.dp.roundToPx()
-        val available = constraints.maxWidth - gap * (measurables.size - 1)
-        val natural = measurables.map { it.maxIntrinsicWidth(constraints.maxHeight) }
-        val naturalSum = natural.sum()
+            val height = placeables.maxOf { it.height }
+            val totalWidth = widths.sum() + gap * (measurables.size - 1)
 
-        val widths = if (naturalSum <= available) {
-            val extra = (available - naturalSum) / measurables.size
-            natural.map { it + extra }
-        } else {
-            // Pas assez de place : on réduit proportionnellement
-            natural.map { it * available / naturalSum }
-        }.toMutableList()
-        // Le reste des arrondis va au dernier chip pour remplir exactement la largeur
-        widths[widths.lastIndex] += available - widths.sum()
-
-        val placeables = measurables.mapIndexed { i, measurable ->
-            measurable.measure(
-                Constraints(
-                    minWidth = widths[i],
-                    maxWidth = widths[i],
-                    maxHeight = constraints.maxHeight,
-                ),
-            )
-        }
-        val height = placeables.maxOf { it.height }
-
-        layout(constraints.maxWidth, height) {
-            var x = 0
-            placeables.forEach { placeable ->
-                placeable.placeRelative(x, (height - placeable.height) / 2)
-                x += placeable.width + gap
+            layout(totalWidth, height) {
+                var x = 0
+                placeables.forEach { placeable ->
+                    placeable.placeRelative(x, (height - placeable.height) / 2)
+                    x += placeable.width + gap
+                }
             }
         }
     }

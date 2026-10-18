@@ -42,9 +42,9 @@ fun FloatingTabBar(
             .clip(CircleShape)
             .background(colors.surfaceContainerHigh.copy(alpha = 0.88f))
             .border(0.5.dp, colors.onSurface.copy(alpha = 0.10f), CircleShape)
-            .padding(6.dp)
+            .padding(3.dp)
             .selectableGroup(),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         items.forEachIndexed { index, item ->
             val selected = index == selectedIndex
@@ -55,14 +55,14 @@ fun FloatingTabBar(
                     .clip(CircleShape)
                     .background(pill)
                     .selectable(selected = selected, role = Role.Tab, onClick = { onSelect(index) })
-                    .padding(horizontal = 20.dp, vertical = 12.dp),
+                    .padding(horizontal = 14.dp, vertical = 6.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                Icon(item.icon, contentDescription = null, tint = tint, modifier = Modifier.size(22.dp))
+                Icon(item.icon, contentDescription = null, tint = tint, modifier = Modifier.size(18.dp))
                 Text(
                     text = item.label,
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.labelMedium,
                     fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
                     color = tint,
                 )

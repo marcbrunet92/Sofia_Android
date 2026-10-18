@@ -49,7 +49,8 @@ private enum class AppTab(@StringRes val labelRes: Int, val icon: ImageVector) {
 }
 
 // Place réservée sous le contenu pour qu'il défile au-delà de la barre flottante
-private val TabBarSpace = 88.dp
+// (barre ≈ 36 dp + 4 dp de marge sous elle + un peu d'air)
+private val TabBarSpace = 48.dp
 
 @Composable
 fun SofiaApp(
@@ -122,7 +123,7 @@ fun SofiaApp(
                 exit = fadeOut() + slideOutVertically { it },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = innerPadding.calculateBottomPadding() + 12.dp),
+                    .padding(bottom = innerPadding.calculateBottomPadding() + 4.dp),
             ) {
                 FloatingTabBar(
                     items = AppTab.entries.map { TabItem(stringResource(it.labelRes), it.icon) },
