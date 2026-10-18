@@ -1,6 +1,7 @@
 package com.lemarc.sofia.data.local
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -43,15 +44,34 @@ abstract class SofiaDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: SofiaDatabase? = null
 
+        private const val DATABASE_NAME = "sofia_database"
+
         fun getDatabase(context: Context): SofiaDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    SofiaDatabase::class.java,
-                    "sofia_database"
-                ).fallbackToDestructiveMigration(dropAllTables = true).build()
-                INSTANCE = instance
-                instance
+                INSTANCE ?: openOrRecreate(context.applicationContext).also { INSTANCE = it }
+            }
+        }
+
+        private fun build(context: Context): SofiaDatabase =
+            Room.databaseBuilder(context, SofiaDatabase::class.java, DATABASE_NAME)
+                .fallbackToDestructiveMigration(dropAllTables = true)
+                .build()
+
+        /**
+         * Room n'ouvre la base qu'à la première requête : on force l'ouverture ici pour que l'erreur
+         * « Room cannot verify the data integrity » (schéma modifié sans changer la version) arrive
+         * maintenant, et pas plus tard dans un DAO. C'est un cache : on supprime le fichier et on recrée.
+         */
+        private fun openOrRecreate(context: Context): SofiaDatabase {
+            val db = build(context)
+            return try {
+                db.openHelper.writableDatabase
+                db
+            } catch (e: IllegalStateException) {
+                Log.w("SofiaDatabase", "Base invalide, suppression et recréation", e)
+                db.close()
+                context.deleteDatabase(DATABASE_NAME)
+                build(context)
             }
         }
     }
